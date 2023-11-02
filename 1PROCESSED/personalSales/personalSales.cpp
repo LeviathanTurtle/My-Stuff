@@ -48,7 +48,7 @@ struct personalSales {
     double time;
     int cups;
     double cupCost;
-}
+};
 
 
 int main (int argc, char* argv[])
