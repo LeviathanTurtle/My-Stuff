@@ -1,0 +1,58 @@
+// semantic analysis
+
+void parser::program()
+{
+    // stuff from slides
+
+
+}
+
+// BELOW ARE ALL IN id_table.cpp
+int id_table_entry::level()
+{
+    return 
+}
+
+void id_table_entry::add_param(id_table_entry* param_entry)
+{
+    if(typ_entry.is_type(lille_type::type_func) or type_entry.is_type(lille_type::type_proc)) {
+        id_table_entry* p = this->p_list_entry;
+        id_table_entry* q;
+        if(p==NULL)
+            this->p_list_entry = param_entry;
+        else {
+            while(p!=NULL) {
+                q = p;
+                p = p->p_list_entry;
+            }
+            q->p_list_entry = param_entry;
+        }
+        n_par_entry++;
+    }
+    else
+        throw lille_exception("internal compiler error - adding parameter to something other than a ");
+}
+
+id_table_entry* id_table_entry::nth_parmeter()
+{
+
+}
+
+
+void id_table::dump_tree(node* ptr) 
+{
+    if(ptr !- NULL) {
+        dump_tree(ptr->left);
+        
+        dump_tree(ptr->right);
+    }
+}
+
+
+void id_table::dump_id_table(bool dump_all)
+{
+    if(!dump_all) {
+        cout << ".....";
+        dump_tree(sym_table[scope_level]);
+    }
+}
