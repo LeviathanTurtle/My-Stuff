@@ -65,8 +65,7 @@ int main()
    //I don't understand why this doesn't work. Any ideas? Shouldn't be because I'm comparing a string right?
 
    // input validation
-   while (inp != "distance" || inp != "radius" || inp != "circumference" || inp != "area")
-   {
+   while (inp != "distance" || inp != "radius" || inp != "circumference" || inp != "area") {
       cout << "Not valid: ";
       cin >> inp;
    }
