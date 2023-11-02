@@ -1,6 +1,0 @@
-1ame: William Wadsworth, Department: ComputerScience
-Monthly Gross Income: $6000.00, Bonus: 10.00%, Taxes: 25.00%
-Distance traveled: 266.00 miles, Traveling Time: 4.00 hours
-Average Speed: 66.50 miles per hour
-Number of coffee cups sold: 56, Cost: $2.00 per cup
-Sales amount = $112.00
