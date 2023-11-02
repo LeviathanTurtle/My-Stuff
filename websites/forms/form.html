@@ -1,0 +1,206 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Form</title>
+    <!--
+    <link rel="stylesheet" href="assign1.css">
+    -->
+    
+    <style>
+
+        .left {
+            float: left;
+            margin-left: 50px;
+            margin-right: 50px;
+            column-width: 750px;
+            padding: 10px;
+            width: 50%;
+        }
+/*
+        .right {
+            margin-right: 50px;
+        }
+*/
+        form {
+            background-color: #eaeaea;
+            padding: 10px;
+        }
+        
+        div {
+            column-count: 2;
+            column-gap: 50px;
+            column-rule: 4px solid black;
+        }
+
+/*
+        label {
+            float: left;
+            width: 100px;
+            margin-top: 10px;
+        }
+*/
+/*
+        input, textarea {
+            margin-top: 10px;
+            display: block;
+        }
+*/
+
+        footer {
+            float: right;
+        }
+
+
+
+    </style>
+
+</head>
+</html>
+
+    <header>
+        <h1 style="color:purple; margin-left:100px;"><em>Survey Questions: HPU</em></h1>
+    </header>
+    <body>
+
+        <div class="left">
+            <form>
+                <fieldset>
+                    <legend>Question 1</legend>
+                    University of attendance: <select>
+                        <option value="default" tabindex="4">---</option>
+                        <option value="HPU" tabindex="5">High Point University</option>
+                    </select>
+                </fieldset>
+            </form><br><br>
+
+            <form>
+                <fieldset>
+                    <legend>Question 2</legend>
+                    Browser of choice:<br><br>
+                    <input type="checkbox" tabindex="6">Internet Explorer<br>
+                    <input type="checkbox" tabindex="7">Firefox          <br>
+                    <input type="checkbox" tabindex="8">Chrome           <br>
+                    <input type="checkbox" tabindex="9">Microsoft Edge   <br>
+                </fieldset>
+            </form><br><br>
+
+            <form>
+                <fieldset>
+                    <legend>Question 3</legend>
+                    Search engine of choice:<br><br>
+                    <input type="radio" tabindex="10">Bing      <br>
+                    <input type="radio" tabindex="11">Google    <br>
+                    <input type="radio" tabindex="12">DuckDuckGo<br><br>
+                    <input type="reset" tabindex="13">
+                </fieldset>
+            </form><br><br>
+
+            <form>
+                <fieldset>
+                    <legend>Question 4</legend>
+                    Are you a Windows or Mac user:<br><br>
+                    <input type="radio" tabindex="14">Windows<br>
+                    <input type="radio" tabindex="15">Mac    <br><br>
+                    <input type="reset" tabindex="16">
+                </fieldset>
+            </form><br><br>
+
+            <form>
+                <fieldset>
+                    <legend>Question 5</legend>
+                    Favorite university: <select>
+                        <option value="default">---</option>
+                        <option value="HPU" tabindex="17">High Point University</option>
+                        <option value="HPU" tabindex="18">High Point University</option>
+                        <option value="HPU" tabindex="19">High Point University</option>
+                        <option value="HPU" tabindex="20">High Point University</option>
+                        <option value="HPU" tabindex="21">High Point University</option>
+                        <option value="HPU" tabindex="22">High Point University</option>
+                        <option value="HPU" tabindex="23">High Point University</option>
+                    </select>
+                </fieldset>
+            </form><br><br>
+
+            <input type="submit" tabindex="24">
+
+        </div>
+
+
+
+        <div class="left">
+            <h3>Login:</h3>
+            <form>
+                Username: <input type="text" tabindex="1">    <br><br>
+                Password: <input type="password" tabindex="2"><br><br>
+                          <input type="submit" tabindex="3">
+            </form>
+            <br><br><br><br><br>
+
+            <h3>Sign-up for centennial updates!</h3>
+            <form method="post" action="lucy.highpoint.edu/~wwadsworth/forms/form.php">
+                <label for="fname">First name:</label>
+                <input type="text" id="fname" tabindex="25">   <br><br>
+
+                <label for="lname">Last name:</label>
+                <input type="text" id="lname" tabindex="26">   <br><br>
+
+                <label for="email">E-mail:</label>
+                <input type="text" id="email" tabindex="27">   <br><br>
+
+                <label for="bday">Birthday:</label>
+                <input type="date" id="bday" tabindex="28"><br><br>
+                    <input type="submit" tabindex="29">
+                    <input type="reset" tabindex="30">
+            </form>
+            <br><br><br><br><br>
+
+            <h3>Feedback:</h3>
+            <label for="rating">Rate the quality of this survey</label><br><br>
+            Excellent<input type="range" id="rating" min="1" max="10">Extraordinary<br><br>
+
+            <textarea rows="4" cols="50" tabindex="31">This survey was extraordinary!</textarea><br><br>
+
+            <input type="submit" tabindex="32">
+            <br>
+
+
+        </div>
+
+
+
+    </body>
+    
+<!--
+    <footer>
+        <h3>Sign-up for centennial updates!</h3>
+        <form method="post" action="lucy.highpoint.edu/~wwadsworth/forms/form.php">
+            <label for="fname">First name:</label>
+            <input type="text" id="fname" tabindex="24">   <br><br>
+
+            <label for="lname">Last name:</label>
+            <input type="text" id="lname" tabindex="25">   <br><br>
+
+            <label for="email">E-mail:</label>
+            <input type="text" id="email" tabindex="26">   <br><br>
+
+            <label for="bday">Birthday:</label>
+            <input type="date" id="bday" tabindex="27"><br><br>
+                    <input type="submit" tabindex="28">
+                    <input type="reset" tabindex="29">
+        </form>
+        <br><br><br><br><br>
+
+        <h3>Feedback:</h3>
+        <label for="rating">Rate the quality of this survey</label><br><br>
+        Excellent<input type="range" id="rating" min="1" max="10">Extraordinary<br><br>
+
+        <textarea rows="4" cols="50" tabindex="30">This survey was extraordinary!</textarea><br><br>
+
+        <input type="submit" tabindex="31">
+        <br>
+
+
+
+    </footer>
+-->
