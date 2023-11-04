@@ -34,8 +34,8 @@ using namespace std;
 
 // function prototypes
 void makeHoles(int*, const int&);
+void printLine(const int&, const int&, string*, int**);
 
-void printLine(string name, string user[], int data[][4], int pars[]);
 int calculateSum(string name, int data[][4]);
 
 int main(int argc, char* argv[])
@@ -48,18 +48,18 @@ int main(int argc, char* argv[])
     }
     
     // in order of file
-    int numPlayers = argv[1];
-    int numHoles = argv[2];
+    int playerCount = argv[1];
+    int holeCount = argv[2];
 
-    int* pars = new int [numHoles];
-    string* names = new string [numPlayers];
+    int* pars = new int [holeCount];
+    string* names = new string [playerCount];
     // x -> players
     // y -> holes
-    int** results = new int* [numPlayers];
-    for(int i=0; i<numPlayers; i++)
-        results[i] = new int [numHoles];
+    int** results = new int* [playerCount];
+    for(int i=0; i<playerCount; i++)
+        results[i] = new int [holeCount];
 
-    int* holes = new int [numHoles];
+    int* holes = new int [holeCount];
 
 
     // data variable, open file
@@ -67,20 +67,20 @@ int main(int argc, char* argv[])
 
 
     // make holes array
-    makeHoles(holes,numHoles);
+    makeHoles(holes,holeCount);
 
 
     // read in pars
-    for (int i=0; i<numHoles; i++)
+    for (int i=0; i<holeCount; i++)
         golfData >> pars[i];
 
     // read in names
-    for (int i=0; i<numPlayers; i++)
+    for (int i=0; i<playerCount; i++)
         golfData >> names[i];
 
     // read in strokes
-    for (int i=0; i<numHoles; i++)
-        for (int j=0; j<numPlayers; j++)
+    for (int i=0; i<holeCount; i++)
+        for (int j=0; j<playerCount; j++)
             golfData >> results[i][j];
 
     // close file, no longer needed
@@ -90,50 +90,29 @@ int main(int argc, char* argv[])
     // OUTPUT HOLES
 
     cout << endl << "       ";
-    for (int i=0; i<numHoles; i++)
+    for (int i=0; i<holeCount; i++)
         cout << setw(3) << holes[i];
     cout << " Scores" << endl << endl;
 
-
-    for(int i=0; i<numPlayers; i++) {
-        string name = names[i];
-        printLine(name,names,results,pars);
-    }
-
-
-    // WILLIAM RESULT
-    string name1 = names[0];
-    printLine(name1, names, results, pars);
-
-    // JEFFERY RESULT
-    string name2 = names[1];
-    printLine(name2, names, results, pars);
-
-    // WILL RESULT
-    string name3 = names[2];
-    printLine(name3, names, results, pars);
-
-    // KRISTY RESULT
-    string name4 = names[3];
-    printLine(name4, names, results, pars);
-
+    // print each player's number of strikes per hole 
+    // void printLine(const int& playerNum, const int& numPlayers, string* players, int** data)
+    for(int i=0; i<holeCount; i++)
+        printLine(playerCount,names,results);
     cout << endl;
     
     // ========================================================================
-    // calculate sums, store in array
-    int sums[4];
-    
-    // 78
-    sums[0] = calculateSum(name1, results);
-    
-    // 78
-    sums[1] = calculateSum(name2, results);
+    // CALCULATE SUMS
 
+    int* sums = new int [numPlayers];
+
+    // int calculateSum(const int& playerNum, const int& holeCount, int** data)
+    for(int i=0; i<numPlayers; i++)
+        sums[i] = calculateSum(i,playerCount,data);
+    
+    // 78
+    // 78
     // 101
-    sums[2] = calculateSum(name3, results);
-
     // 64
-    sums[3] = calculateSum(name4, results);
     
     // ========================================================================
     // find lowest score
@@ -157,78 +136,30 @@ int main(int argc, char* argv[])
     return 0;
 }
 
+
 void makeHoles(int* array, const int& size)
 {
     for (int i=0; i<size; i++)
         array[i] = i+1;
 }
 
-void printLine(string name, string user[], int data[][4], int pars[])
+
+void printLine(const int& playerNum, const int& numPlayers, string* players, int** data)
 {
-    if (name == "William") {
-        int WMsum = 0;
-        cout << left << setw(9) << user[0];
-        for (int i=0; i<18; i++)
-            cout << setw(3) << data[i][0];
-        for (int i=0; i<18; i++)
-            WMsum += data[i][0];
-        cout << WMsum;
+    cout << left << setw(9) << players[playerNum];
+    for(int i=0; i<numPlayers; i++) {
+        cout << setw(3) << data[i][playerNum];
     }
-    else if (name == "Jeffery") {
-        int JYsum = 0;
-        cout << left << setw(9) << user[1];
-        for (int i=0; i<18; i++)
-            cout << setw(3) << data[i][1];
-        for (int i=0; i<18; i++)
-            JYsum += data[i][1];
-        cout << JYsum;
-    }
-    else if (name == "Will") {
-        int WLsum = 0;
-        cout << left << setw(9) << user[2];
-        for (int i=0; i<18; i++)
-            cout << setw(3) << data[i][2];
-        for (int i=0; i<18; i++)
-            WLsum += data[i][2];
-        cout << WLsum;
-    }
-    // Kristy
-    else {
-        int KYsum = 0;
-        cout << left << setw(9) << user[3];
-        for (int i=0; i<18; i++)
-            cout << setw(3) << data[i][3];
-        for (int i=0; i<18; i++)
-            KYsum += data[i][3];
-        cout << KYsum;
-    }
-    cout << endl;
 }
 
-int calculateSum(string name, int data[][4])
+
+int calculateSum(const int& playerNum, const int& holeCount, int** data)
 {
-    if (name == "William") {
-        int WMsum = 0;
-        for (int i=0; i<18; i++)
-            WMsum += data[i][0];
-        return WMsum;
-    }
-    else if (name == "Jeffery") {
-        int JYsum = 0;
-        for (int i=0; i<18; i++)
-            JYsum += data[i][1];
-        return JYsum;
-    }
-    else if (name == "Will") {
-        int WLsum = 0;
-        for (int i=0; i<18; i++)
-            WLsum += data[i][2];
-        return WLsum;
-    }
-    else {
-        int KYsum = 0;
-        for (int i=0; i<18; i++)
-            KYsum += data[i][3];
-        return KYsum;
-    }
+    int sum = 0;
+    
+    // calculate number of strokes in the game
+    for(int i=0; i<holeCount; i++)
+        sum += data[playerNum][i];
+    
+    return sum;
 }
