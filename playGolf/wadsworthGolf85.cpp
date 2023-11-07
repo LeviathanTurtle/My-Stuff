@@ -12,7 +12,7 @@
  * 
  * [COMPILE/RUN]:
  * To compile:
- *     
+ *     g++ 
  * 
  * To run (4 args):
  *     ./
@@ -96,8 +96,8 @@ int main(int argc, char* argv[])
 
     // print each player's number of strikes per hole 
     // void printLine(const int& playerNum, const int& numPlayers, string* players, int** data)
-    for(int i=0; i<holeCount; i++)
-        printLine(playerCount,names,results);
+    for(int i=0; i<playerCount; i++)
+        printLine(i,playerCount,names,results);
     cout << endl;
     
     // ========================================================================
@@ -107,7 +107,7 @@ int main(int argc, char* argv[])
 
     // int calculateSum(const int& playerNum, const int& holeCount, int** data)
     for(int i=0; i<numPlayers; i++)
-        sums[i] = calculateSum(i,playerCount,data);
+        sums[i] = calculateSum(i,holeCount,data);
     
     // 78
     // 78
@@ -143,16 +143,15 @@ void makeHoles(int* array, const int& size)
         array[i] = i+1;
 }
 
-
+// function to output a player's strokes per hole
 void printLine(const int& playerNum, const int& numPlayers, string* players, int** data)
 {
     cout << left << setw(9) << players[playerNum];
-    for(int i=0; i<numPlayers; i++) {
+    for(int i=0; i<numPlayers; i++)
         cout << setw(3) << data[i][playerNum];
-    }
 }
 
-
+// function to output a player and their total strokes
 int calculateSum(const int& playerNum, const int& holeCount, int** data)
 {
     int sum = 0;
