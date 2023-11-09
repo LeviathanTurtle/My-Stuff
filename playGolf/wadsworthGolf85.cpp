@@ -33,7 +33,9 @@
 using namespace std;
 
 // function prototypes
+// function to load the hole numbers into an array
 void makeHoles(int*, const int&);
+// function to 
 void printLine(const int&, const int&, string*, int**);
 
 int calculateSum(string name, int data[][4]);
@@ -48,26 +50,34 @@ int main(int argc, char* argv[])
     }
     
     // in order of file
-    int playerCount = argv[1];
-    int holeCount = argv[2];
+    const int playerCount = argv[1];
+    const int holeCount = argv[2];
 
+    // data arrays
+    // array for pars (of holes)
     int* pars = new int [holeCount];
+
+    // array for player names
     string* names = new string [playerCount];
+
+    // array for player strokes per hole
     // x -> players
     // y -> holes
     int** results = new int* [playerCount];
     for(int i=0; i<playerCount; i++)
         results[i] = new int [holeCount];
 
+    // array for hole numbers, will be used as a title
     int* holes = new int [holeCount];
+    makeHoles(holes,holeCount);
+
+
+    // ========================================================================
+    // GATHER INPUT
 
 
     // data variable, open file
     ifstream golfData (arv[3]);
-
-
-    // make holes array
-    makeHoles(holes,holeCount);
 
 
     // read in pars
@@ -103,6 +113,7 @@ int main(int argc, char* argv[])
     // ========================================================================
     // CALCULATE SUMS
 
+    // array for the total strokes of the game per player
     int* sums = new int [numPlayers];
 
     // int calculateSum(const int& playerNum, const int& holeCount, int** data)
@@ -116,7 +127,12 @@ int main(int argc, char* argv[])
     
     // ========================================================================
     // find lowest score
+
     int lowest = sums[0];
+
+    
+
+
     
     if (lowest > sums[1]) {
         lowest = sums[1];
