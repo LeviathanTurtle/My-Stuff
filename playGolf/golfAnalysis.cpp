@@ -7,15 +7,34 @@
  * 
  * 
  * [DESCRIPTION]:
- * This program
+ * This program analyzes a file consisting of golf data (file structure below).
+ * It finds and outputs the player with the lowest number of strokes for the
+ * game. The number of players and holes can be different than the number of
+ * players and holes in the input file, that can be adjusted at runtime.
  * 
  * 
  * [COMPILE/RUN]:
  * To compile:
- *     g++ 
+ *     g++ golfAnalysis.cpp -Wall -o golfAnalysis
  * 
  * To run (4 args):
- *     ./
+ *     ./golfAnalysis <players> <holes> <input file>
+ *
+ *
+ * [FILE STRUCTURE]:
+ * <pars for hole 1> <pars for hole 2> ... <pars for hole n>
+ * <player name 1>
+ * <player name 2>
+ * ...
+ * <player name m>
+ * <P1 strokes for hole1> <P2 strokes for hole1> ... <Pm strokes for hole1>
+ * <P1 strokes for hole2> <P2 strokes for hole2> ... <Pm strokes for hole2>
+ * ...
+ * <P1 strokes for holen> <P2 strokes for holen> ... <Pm strokes for holen>
+ *
+ * where:
+ *   n = number of holes 
+ *   m = number of players 
  *
  *
  * [EXIT/TERMINATING CODES]:
@@ -35,10 +54,10 @@ using namespace std;
 // function prototypes
 // function to load the hole numbers into an array
 void makeHoles(int*, const int&);
-// function to 
+// function to output a player and their strokes per hole
 void printLine(const int&, const int&, string*, int**);
-
-int calculateSum(string name, int data[][4]);
+// function calculate total player strokes 
+int calculateSum(const int&, const int&, int**);
 
 int main(int argc, char* argv[])
 {
@@ -128,26 +147,20 @@ int main(int argc, char* argv[])
     // ========================================================================
     // find lowest score
 
+    // set lowest to first total stroke array element, will iterate later to 
+    // find true lowest
     int lowest = sums[0];
+    // index in array of winning player
+    int winningPlayerIndex = 0;
 
-    
+    for(int i=1; i<playerCount; i++)
+        // find the lowest score, making note of index in array
+        if(lowest > sums[i]) {
+            lowest = sums[i];
+            winningPlayerIndex = i;
+        }
 
-
-    
-    if (lowest > sums[1]) {
-        lowest = sums[1];
-        cout << "The winner is " << name2 << " with a score of " << lowest << endl;
-     }
-     else if (lowest > sums[2]) {
-        lowest = sums[2];
-        cout << "The winner is " << name3 << " with a score of " << lowest << endl;
-    }
-    else if (lowest > sums[3]) {
-        lowest = sums[3];
-        cout << "The winner is " << name4 << " with a score of " << lowest << endl;
-    }
-    else
-        cout << "The winner is " << name1 << " with a score of " << lowest << endl;
+    cout << "The winner is " << names[i] << " with a score of " << lowest << endl;
 
     return 0;
 }
