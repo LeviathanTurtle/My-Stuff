@@ -1,3 +1,33 @@
+/* 
+ * William Wadsworth
+ * Created: 
+ * CSC - KATTIS
+ *
+ *
+ * [DESCRIPTION]:
+ * This program 
+ * 
+ * 
+ * [COMPILE/RUN]:
+ * To compile:
+ *     g++ nums.cpp -Wall -o nums
+ * 
+ * To run:
+ *     ./nums < <data file>
+ * 
+ * 
+ * [DATA FILE STRUCTURE]:
+ * 
+ * 
+ * 
+ * [DATA FILE EXAMPLE]:
+ * 
+ *
+ * 
+ * [EXIT/TERMINATING CODES]:
+ * 0 - program successfully completed a full execution
+*/
+
 #include <iostream>
 using namespace std;
 
