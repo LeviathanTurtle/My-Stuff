@@ -56,6 +56,9 @@ void readArray(studentType*, const int&, char*);
 // function to assign relevant grade to each student
 void assignGrade(studentType*, const int&);
 
+// function to return the size of the largest name string
+int findNameSize(studentType*, const int&);
+
 
 // function to print the test grade
 void printRow(studentType array[]);
@@ -85,7 +88,12 @@ int main(int argc, char* argv[])
     readArray(students,numStudents,argv[2]);
 
     // assign letter grade
+    //void assignGrade(studentType* array, const int& numStudents)
     assignGrade(students,numStudents);
+
+    // find the largest name size for spacing in output
+    //int findNameSize(studentType* array, const int& numStudents)
+    int largestNameSize = findNameSize(array, numStudents);
 
     // categories
     cout << "Student Name" << setw(20) << "Test Score" << setw(10) << "Grade" << endl << endl;
@@ -134,6 +142,23 @@ void assignGrade(studentType* array, const int& numStudents)
             array[i].grade = 'F';
     }
 }
+
+
+// function to return the size of the largest name string
+int findNameSize(studentType* array, const int& numStudents)
+{
+    //int largest = strlen(array[0].studentFName) + strlen(array[0].studentLName);
+    int largest = strlen(array[0].studentFName + array[0].studentLName);
+
+    for(int i=1; i<numStudents; i++)
+        //if(strlen(array[0].studentFName)+strlen(array[0].studentLName) > largest)
+        if(strlen(array[i].studentFName + array[i].studentLName) > largest)
+            //largest = strlen(array[0].studentFName) + strlen(array[0].studentLName);
+            largest = strlen(array[i].studentFName + array[i].studentLName);
+    
+    return largest;
+}
+
 
 
 // not using a loop unfortunately because the sizes of names are different which means different spacing 
