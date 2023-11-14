@@ -7,7 +7,8 @@
  *
  *
  * [DESCRIPTION]:
- * This program 
+ * This program performs circuit math taken from an input file. The program
+ * outputs the outcome of the circuit.
  * 
  * 
  * [COMPILE/RUN]:
