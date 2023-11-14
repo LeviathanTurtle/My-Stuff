@@ -32,6 +32,7 @@
  * 2 - file unable to be opened or created
 */
 
+
 // libraries
 #include <iostream>
 #include <fstream>
@@ -65,10 +66,8 @@ void printRows(studentType*, const int&, const int&);
 // function to print highest test score
 int highestScore(studentType*, const int&);
 
-
-
 // function to print names of students with highest test score
-void studentScores(studentType array[], int maxScore);
+void studentScores(studentType*, const int&, const int);
 
 
 int main(int argc, char* argv[])
@@ -104,10 +103,11 @@ int main(int argc, char* argv[])
     printRows(students,numStudents,largestNameSize);
 
     // show highest score
-    cout << endl << "Highest test score: " << highestScore(students,numStudents) << endl;
+    //cout << endl << "Highest test score: " << highestScore(students,numStudents) << endl;
 
     // who has highest score
-    studentScores(students, highestScore(students));
+    //void studentScores(studentType*, const int&, const int)
+    studentScores(students,numStudents,highestScore(students,numStudents));
 
     return 0;
 }
@@ -119,7 +119,7 @@ void readArray(studentType* array, const int& numStudents, char* filename)
     // create data file object
     ifstream file (filename);
     
-    for (int i=0; i<numStudents; i++) {
+    for(int i=0; i<numStudents; i++) {
         file >> array[i].studentFName;
         file >> array[i].studentLName;
         file >> array[i].testScore;
@@ -133,14 +133,14 @@ void readArray(studentType* array, const int& numStudents, char* filename)
 // function to assign relevant grade to each student
 void assignGrade(studentType* array, const int& numStudents)
 {
-    for (int i=0; i<numStudents; i++) {
-        if (array[i].testScore >= 90 && array[i].testScore <= 100)
+    for(int i=0; i<numStudents; i++) {
+        if(array[i].testScore >= 90 && array[i].testScore <= 100)
             array[i].grade = 'A';
-        else if (array[i].testScore >= 80 && array[i].testScore < 90)
+        else if(array[i].testScore >= 80 && array[i].testScore < 90)
             array[i].grade = 'B';
-        else if (array[i].testScore >= 70 && array[i].testScore < 80)
+        else if(array[i].testScore >= 70 && array[i].testScore < 80)
             array[i].grade = 'C';
-        else if (array[i].testScore >= 60 && array[i].testScore < 70)
+        else if(array[i].testScore >= 60 && array[i].testScore < 70)
             array[i].grade = 'D';
         else
             array[i].grade = 'F';
@@ -181,8 +181,8 @@ int highestScore(studentType* array, const int& numStudents)
 {
     int max = array[0].testScore;
     
-    for (int i=1; i<numStudents; i++)
-        if (array[i].testScore > max)
+    for(int i=1; i<numStudents; i++)
+        if(array[i].testScore > max)
             max = array[i].testScore;
 
     return max;
@@ -190,11 +190,11 @@ int highestScore(studentType* array, const int& numStudents)
 
 
 // function to print names of students with highest test score
-void studentScores(studentType array[], int maxScore)
+void studentScores(studentType* array, const int& numStudents, int maxScore)
 {
-    cout << "Students with the highest score (" << maxScore << "): " << endl;
+    cout << "Student(s) with the highest score (" << maxScore << "): " << endl;
 
-    for (int i = 0; i < 20; i++)
-        if (array[i].testScore == maxScore)
+    for(int i=0; i<numStudents; i++)
+        if(array[i].testScore == maxScore)
             cout << array[i].studentFName << " " << array[i].studentLName << endl;
 }
