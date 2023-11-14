@@ -1,50 +1,72 @@
+/* 
+ * William Wadsworth
+ * Created: 
+ * CSC - KATTIS
+ *
+ *
+ * [DESCRIPTION]:
+ * This program 
+ * 
+ * 
+ * [COMPILE/RUN]:
+ * To compile:
+ *     g++ nums.cpp -Wall -o nums
+ * 
+ * To run:
+ *     ./nums < <data file>
+ * 
+ * 
+ * [DATA FILE STRUCTURE]:
+ * 
+ * 
+ * 
+ * [DATA FILE EXAMPLE]:
+ * 
+ *
+ * 
+ * [EXIT/TERMINATING CODES]:
+ * 0 - program successfully completed a full execution
+*/
+
 #include <iostream>
 using namespace std;
 
-int main ()
+int main()
 {
-    // read-in number of lines, 
-    // correct couting number, 
-    // read-in holder, 
-    // missing numbers array: hardcoded to max size to avoid dynamic allocation
-    int templine, num=1, temp, missing[100];
-
-    // read in number of lines
-    cin >> templine;
-    // convert number of lines to const so compiler doesn't complain
-    const int lines = templine;
-
-    // go through lines, if the correct number is missing, add 
-    // correct number (num) to array of missing numbers. if read-in 
-    // number (temp) is correct, increment correct number and 
-    for(int i=0; i<lines; i++)
-    {
-        cin >> temp;
-        while(num!=temp)
-        {
-            missing[num-1]=num;
-            num++;
-            //break;
-        }
-        num++;
-        missing[num-1]=0;
-    }
-    // since num was incremented before loop fails, decrement to 
-    // have final count number (last number counting to)
-    num--;
-
-    // go through missing numbers array, if the sum of contents=0,
-    // output "good job" (they counted correctly)
+    // temp variable for next/current number
+    int read;
+    // variable for keeping track of the next number
+    int num=1;
+    // variable for amount of numbers missed
     int cnt=0;
-    for(int i=0; i<num; i++)
-        cnt+=missing[i];
+    // loop control
+    int i=0;
+
+    // read in amount of numbers in file
+    cin >> read;
+    int length = read;
+
+    // read in first number
+    cin >> read;
+    // repeat for each remaining number in file
+    while(i<length) {
+        if(read==num) {
+            // number is present
+            cin >> read;
+            num++;
+            i++;
+        }
+        else {
+            // number is missing
+            cout << num << endl;
+            cnt++;
+            num++;
+        }
+    }
+
+    // if no numbers were missed
     if(cnt==0)
         cout << "good job" << endl;
-    else
-        for(int i=0; i<num; i++)
-            if(missing[i]!=0)
-                cout << "i= " << i << " " << missing[i] << endl;
-
 
     return 0;
 }
