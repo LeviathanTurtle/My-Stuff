@@ -5,9 +5,10 @@
  *
  *
  * [DESCRIPTION]:
- * This program reads from a data file sets the second read value to be the
- * "target" value. If a following number is a multiple of the target, then it
- * is output. The following value becomes the next target value.
+ * This program reads from a data file using I/O redirection and sets the
+ * second read value to be the "target" value. If a following number is a
+ * multiple of the target, then it is output. The following value becomes the
+ * next target value.
  * 
  * 
  * [COMPILE/RUN]:

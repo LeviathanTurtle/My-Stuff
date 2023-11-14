@@ -5,9 +5,10 @@
  *
  *
  * [DESCRIPTION]:
- * This program reads from a data file. The first value is the amount of
- * numbers in the file, and the next lines count from 1 to 200. Any numbers
- * missing will be output.
+ * This program reads from a data file using I/O redirection. The first value
+ * is the amount of numbers in the file, and the next lines count from 1 to
+ * 200. Any numbers missing will be output. If no numbers were missed, "good
+ * job" is output.
  * 
  * 
  * [COMPILE/RUN]:
@@ -39,7 +40,7 @@
  *
  * Note: the arrows are not part of the file, they are just there so the 
  *       problem is easier to understand
- *
+ * 
  * 
  * [EXIT/TERMINATING CODES]:
  * 0 - program successfully completed a full execution

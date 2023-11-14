@@ -7,8 +7,8 @@
  *
  *
  * [DESCRIPTION]:
- * This program performs circuit math taken from an input file. The program
- * outputs the outcome of the circuit.
+ * This program performs circuit math taken from an input file using I/O
+ * redirection. The program outputs the outcome of the circuit.
  * 
  * 
  * [COMPILE/RUN]:
