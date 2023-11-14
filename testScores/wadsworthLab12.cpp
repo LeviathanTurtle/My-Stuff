@@ -19,7 +19,7 @@
  *
  *
  * [DATA FILE STRUCTURE]:
- * 
+ * <first name> <last name> <test score>
  *
  *
  * [EXIT/TERMINATING CODES]:
@@ -42,6 +42,7 @@ struct studentType
     char grade;
 };
 
+// FUNCTION PROTOTYPES
 // function to read student data into array
 void readArray(studentType array[], ifstream& file);
 // function to assign relevant grade to each student
@@ -79,6 +80,8 @@ int main()
     return 0;
 }
 
+
+// function to read student data into array
 void readArray(studentType array[], ifstream& file)
 {
     for (int i = 0; i < 20; i++) {
@@ -88,6 +91,8 @@ void readArray(studentType array[], ifstream& file)
     }
 }
 
+
+// function to assign relevant grade to each student
 void assignGrade(studentType array[])
 {
     for (int i = 0; i < 20; i++) {
@@ -171,6 +176,8 @@ void printRow(studentType array[])
     i++;
 }
 
+
+// function to print the test grade
 int highestScore(studentType array[])
 {
     int max = array[0].testScore;
@@ -182,6 +189,8 @@ int highestScore(studentType array[])
     return max;
 }
 
+
+// function to print names of students with highest test score
 void studentScores(studentType array[], int maxScore)
 {
     cout << "Students with the highest score (" << maxScore << "): " << endl;
