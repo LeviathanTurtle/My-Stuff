@@ -62,10 +62,11 @@ int findNameSize(studentType*, const int&);
 // function to print the test grade
 void printRows(studentType*, const int&, const int&);
 
-
-
 // function to print highest test score
-int highestScore(studentType array[]);
+int highestScore(studentType*, const int&);
+
+
+
 // function to print names of students with highest test score
 void studentScores(studentType array[], int maxScore);
 
@@ -103,7 +104,7 @@ int main(int argc, char* argv[])
     printRows(students,numStudents,largestNameSize);
 
     // show highest score
-    cout << endl << "Highest test score: " << highestScore(students) << endl;
+    cout << endl << "Highest test score: " << highestScore(students,numStudents) << endl;
 
     // who has highest score
     studentScores(students, highestScore(students));
@@ -176,11 +177,11 @@ void printRows(studentType* array, const int& numStudents, const int& largestNam
 
 
 // function to print the test grade
-int highestScore(studentType array[])
+int highestScore(studentType* array, const int& numStudents)
 {
     int max = array[0].testScore;
     
-    for (int i = 1; i < 20; i++)
+    for (int i=1; i<numStudents; i++)
         if (array[i].testScore > max)
             max = array[i].testScore;
 
