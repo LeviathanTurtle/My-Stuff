@@ -7,7 +7,9 @@
  * 
  * 
  * [DESCRIPTION]:
- * This program
+ * This program takes a data file from argv and processes a number of students'
+ * test grade (number of students is also provided in argv). The program then
+ * assigns a letter grade to the student based on their (one) test score.
  *
  *
  * [COMPILE/RUN]:
@@ -49,7 +51,9 @@ struct studentType
 
 // FUNCTION PROTOTYPES
 // function to read student data into array
-void readArray(studentType array[], ifstream& file);
+void readArray(studentType*, char*);
+
+
 // function to assign relevant grade to each student
 void assignGrade(studentType array[]);
 // function to print the test grade
@@ -71,14 +75,10 @@ int main(int argc, char* argv[])
     
     
     // define stuct variable, file variable, open data file
-    studentType students[20];
-    ifstream data;
-    data.open("data.txt");
+    studentType* students = new studentType [atoi(argv[1])];
 
     // read in array
-    readArray(students, data);
-    // close file
-    data.close();
+    readArray(students, argv[2]);
 
     // assign letter grade
     assignGrade(students);
@@ -98,13 +98,19 @@ int main(int argc, char* argv[])
 
 
 // function to read student data into array
-void readArray(studentType array[], ifstream& file)
+void readArray(studentType* array, char* filename)
 {
+    // create data file object
+    ifstream file (filename);
+    
     for (int i = 0; i < 20; i++) {
         file >> array[i].studentFName;
         file >> array[i].studentLName;
         file >> array[i].testScore;
     }
+
+    // close data file
+    file.close();
 }
 
 
