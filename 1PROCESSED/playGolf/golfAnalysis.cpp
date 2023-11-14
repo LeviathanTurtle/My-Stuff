@@ -21,7 +21,7 @@
  *     ./golfAnalysis <number of players> <number of holes> <input file>
  *
  *
- * [FILE STRUCTURE]:
+ * [DATA FILE STRUCTURE]:
  * <pars for hole 1> <pars for hole 2> ... <pars for hole n>
  * <player name 1>
  * <player name 2>

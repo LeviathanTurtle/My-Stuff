@@ -1,10 +1,27 @@
-/*
+/* TEST SCORE ANALYSIS
  * William Wadsworth
- * 11.12.20
+ * Created: 11.12.2020
+ * Doctored: 11.14.2023
  * CSC1710
  * ~/csc1710/lab12
  * 
  * 
+ * [DESCRIPTION]:
+ * This program
+ *
+ *
+ * [COMPILE/RUN]:
+ * To compile:
+ *     g++ 
+ *
+ * To run:
+ *     ./
+ *
+ *
+ * [DATA FILE STRUCTURE]:
+ *
+ *
+ * [EXIT/TERMINATING CODES]:
 */
 
 // libraries
