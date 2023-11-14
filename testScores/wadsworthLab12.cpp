@@ -59,9 +59,11 @@ void assignGrade(studentType*, const int&);
 // function to return the size of the largest name string
 int findNameSize(studentType*, const int&);
 
-
 // function to print the test grade
-void printRow(studentType array[]);
+void printRows(studentType*, const int&, const int&);
+
+
+
 // function to print highest test score
 int highestScore(studentType array[]);
 // function to print names of students with highest test score
@@ -93,11 +95,12 @@ int main(int argc, char* argv[])
 
     // find the largest name size for spacing in output
     //int findNameSize(studentType* array, const int& numStudents)
-    int largestNameSize = findNameSize(array, numStudents);
+    const int largestNameSize = findNameSize(array, numStudents);
 
     // categories
     cout << "Student Name" << setw(20) << "Test Score" << setw(10) << "Grade" << endl << endl;
-    printRow(students);
+    //void printRows(studentType* array, const int& numStudents, const int& largestName)
+    printRows(students,numStudents,largestNameSize);
 
     // show highest score
     cout << endl << "Highest test score: " << highestScore(students) << endl;
@@ -160,72 +163,15 @@ int findNameSize(studentType* array, const int& numStudents)
 }
 
 
-
-// not using a loop unfortunately because the sizes of names are different which means different spacing 
-void printRow(studentType array[])
+// function to print the test grade
+void printRows(studentType* array, const int& numStudents, const int& largestName)
 {
-    int i = 0;
+    const int spacing = largestName+2;
     
-    // donald
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(15) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // goofy
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(18) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // balto
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(17) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // smitn
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(18) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // wonderful
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(13) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // akthar
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(15) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // green
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(17) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // egger
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(16) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // deer
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(18) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // jackson
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(15) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // gupta
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(18) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // happy
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(16) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // arora
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(17) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // june
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(17) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // cheng
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(19) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // malik
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(16) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // tomek
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(15) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // clodfelter
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(11) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // nields
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(14) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
-    // norman
-    cout << array[i].studentFName << " " << array[i].studentLName << setw(16) << array[i].testScore << setw(12) << array[i].grade << endl;
-    i++;
+    for(int i=0; i<numStudents; i++)
+        cout << array[i].studentFName << " " array[i].studentLName 
+             << setw(spacing) << array[i].testScore << setw(12) 
+             << array[i].grade << endl;
 }
 
 
