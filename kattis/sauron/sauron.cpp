@@ -43,14 +43,16 @@ using namespace std;
 
 int main()
 {
-    int lbarcnt=0, rbarcnt=0;
+    // temp variable for current char value
     char item;
+    // variables vertical bar counts on the left and right
+    int lbarcnt=0, rbarcnt=0;
+    // variable for marking when to count the right-side bars
     bool rparen=false;
 
     // repeat while there is input
     while(cin >> item) {
-        switch(item)
-        {
+        switch(item) {
             case '(':
                 break;
             case ')':
@@ -66,9 +68,9 @@ int main()
         }
     }
     if(lbarcnt==rbarcnt)
-        cout << "correct\n";
+        cout << "correct\n"; // equal number of bars on either side
     else
-        cout << "fix\n";
+        cout << "fix\n"; // unequal number of bars on either side
 
     return 0;
 }
