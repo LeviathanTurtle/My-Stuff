@@ -10,10 +10,8 @@ int main()
     int read, target, i=0;
     cin >> target >> read;
 
-    while(i<numLines)
-    {
-        switch(read%target)
-        {
+    while(i<numLines) {
+        switch(read%target) {
             // mult is found
             case 0:
                 cout << read << endl;
