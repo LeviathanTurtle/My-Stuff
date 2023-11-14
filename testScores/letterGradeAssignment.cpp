@@ -14,10 +14,10 @@
  *
  * [COMPILE/RUN]:
  * To compile:
- *     g++ REPLACETHIS.cpp -Wall -o REPLACETHIS
+ *     g++ letterGradeAssignment.cpp -Wall -o letterGradeAssignment
  *
  * To run (3 args):
- *     ./REPLACETHIS <number of students> <data file>
+ *     ./letterGradeAssignment <number of students> <data file>
  *
  *
  * [DATA FILE STRUCTURE]:
