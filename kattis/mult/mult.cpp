@@ -27,13 +27,25 @@
  * 
  * 
  * [DATA FILE EXAMPLE]:
- * 
+ * 10    <-- number of lines
+ * 8     <-- target value
+ * 3
+ * 12
+ * 6
+ * 24    <-- multiple of target
+ * 14    <-- new target
+ * 12
+ * 9
+ * 70    <-- multiple of target
+ * 5     <-- new target
+ *
+ * Note: the arrows are not part of the file, they are just there so the 
+ *       problem is easier to understand
  *
  * 
  * [EXIT/TERMINATING CODES]:
  * 0 - program successfully completed a full execution
 */
-
 
 #include <iostream>
 using namespace std;
@@ -41,13 +53,22 @@ using namespace std;
 int main()
 {
     // read in number of lines
-    int numLines;
+    const int numLines;
     cin >> numLines;
 
-    int read, target, i=0;
+    // temp variable for reading input
+    int read;
+    // variable for the target value
+    int target
+    // loop control variable
+    int i=0;
+
+    // read the target value and first temp value
     cin >> target >> read;
 
+    // repeat for each line
     while(i<numLines) {
+        // if the remainder of dividing the two numbers is 0, it is a multiple
         switch(read%target) {
             // mult is found
             case 0:
