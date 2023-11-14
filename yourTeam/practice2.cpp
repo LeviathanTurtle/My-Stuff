@@ -2,7 +2,26 @@
  * William Wadsworth
  * Created: 
  * Doctored: 11.14.2023
+ * CSC 17
  * ~/
+ * 
+ * 
+ * [DESCRIPTION]:
+ * This program 
+ * 
+ * 
+ * [COMPILE/RUN]:
+ * To compile:
+ *     g++ 
+ * 
+ * To run:
+ *     ./
+ * 
+ * 
+ * [EXIT/TERMINATING CODES]:
+ * 0 - program successfully completed a full execution
+ * 
+ * 1 - 
 */
 
 //#include <stdio.h>

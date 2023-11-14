@@ -1,88 +1,124 @@
+/* LOGIC CIRCUIT MATH
+ * William Wadsworth
+ *   Professor Shore: suggested stack approach, approach to put respective
+ *                    value onto stack
+ * Created: 
+ * CSC - KATTIS
+ *
+ *
+ * [DESCRIPTION]:
+ * This program 
+ * 
+ * 
+ * [COMPILE/RUN]:
+ * To compile:
+ *     g++ gates.cpp -Wall -o gates
+ * 
+ * To run:
+ *     ./gates < <data file>
+ * 
+ * 
+ * [DATA FILE STRUCTURE]:
+ * <N>
+ * <gate 1 logic value> <gate 2 logic value> ... <gate N logic value>
+ * <N letter values with operators>
+ * 
+ * where N is the number of gates
+ * Note: the order of gates must be alphabetical for this program to make sense
+ *       based on the gate names
+ * 
+ * 
+ * [DATA FILE EXAMPLE]:
+ * 4
+ * T F T F
+ * A B * C D + - +
+ *
+ * 
+ * [EXIT/TERMINATING CODES]:
+ * 0 - program successfully completed a full execution
+ * 
+ * 1 - 
+*/
+
 #include <iostream>
-#include <vector>
 #include <stack>
 using namespace std;
 
-struct component
-{
-    char name, logic;
-};
-
-bool inpCheck();
-
 int main()
 {
-    int gates;
-    cin >> gates;
-    char num, letter;
-    
-    //vector<char> logic[4];
-    char logic[4];
-    
-    component part[4];
-    //char part[4];
-    stack<char> stack;
-    
-    // get T/F
-    for(int i=0; i<4/*num*/; i++) {
-        cin >> part[i].logic;
-        cout << part[i].logic << " ";
-    }
-    // get A, B, C, ...
-    for(int i=0; i<8; i++) {
-	if(inpCheck())
-	    cin >> part[i].name;
-    }
-    // get gate names/operators
-    char op; int j=0;
-    component atemp, btemp;
-    while(cin.peek()!='\n')
-    {
-        if(inpCheck())
-	{
-	    cin >> letter;
-	    stack.push(letter);
-	}
-	// *
-	if(cin.peek()==42)
-	{
-	    cin >> op;
-	    btemp.name=stack.pop(); btemp.logic=part[j];
-	    atemp.name=stack.pop(); atemp.logic=part[j+1];
-	    if(atemp.logic=='T' && btemp.logic=='T')
-		stack.push('T');
-	    else
-		stack.push('F');
-	}
-	// +
-	if(cin.peek()==43)
-	{
-	    cin >> op;
-	    atemp=stack.pop(); btemp=stack.pop();
-	    if(atemp.logic=='F' && btemp.logic=='F')
-		stack.push('F','F');
-	    else
-		stack.push('T','T');
-	}
+    // array for gates
+    // set to 26 because there are 26 alphabet characters
+    int gates[26];
 
-	// -
-	if(cin.peek()==45)
-	{
-	    cin >> op;
-	    atemp=stack.pop();
-	    if(atemp.logic=='T')
-		stack.push('F','F');
-	    else
-		stack.push('T','T');
-	}
+    // get number of gates
+    int numGates;
+    cin >> numGates;
+
+    // define stack, set to int:
+    // 0 - false
+    // 1 - true
+    stack<int> stack;
+
+    // variable to read in logic T/F
+    char logicTemp;
+    // read in logic, repeat for the number of gates
+    for(int i=0; i<numGates; i++) {
+        cin >> logicTemp;
+        if(logicTemp=='T')
+            gates[i]=1;
+        else
+            gates[i]=0; 
     }
-    
+
+    // LOGIC
+    // temporary variables for operations
+    int op1, op2;
+    // variable for character in input stream
+    char x;
+
+    // repeat while there is input
+    while(cin >> x) {
+        switch(x) {
+            case '*':
+                op2=stack.top();
+                stack.pop();
+                op1=stack.top();
+                stack.pop();
+                // logical and 
+                stack.push(op1&op2);
+                break;
+            case '+':
+                op2=stack.top();
+                stack.pop();
+                op1=stack.top();
+                stack.pop();
+                // logical or
+                stack.push(op1|op2);
+                break;
+            case '-':
+                op1=stack.top();
+                stack.pop();
+                // logical not
+                stack.push(!op1);
+                break;
+            default:
+                // put the respective letter onto the stack
+
+                // example: the current gate x = D
+                //     ascii value of D = 68, A = 65
+                //
+                //     gates[68-65] = gates[3]
+                //     gates[3] = 4th letter in alphabet
+                stack.push(gates[x-'A']);
+                break;
+        }
+    }
+
+    // stack is complete, read the top value for the final outcome
+    if(stack.top()==0)
+        cout << "F\n";
+    else
+        cout << "T\n";
+
     return 0;
-}
-
-bool inpCheck()
-{
-    char t;
-    if(cin.peek()>=65 && cin.peek()<=90)
-	return true;
 }
