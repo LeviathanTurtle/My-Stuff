@@ -1,5 +1,8 @@
-/*
-    number 2
+/* 
+ * William Wadsworth
+ * Created: 
+ * Doctored: 11.14.2023
+ * ~/
 */
 
 //#include <stdio.h>
