@@ -1,11 +1,3 @@
-// semantic analysis
-
-void parser::program()
-{
-    // stuff from slides
-
-
-}
 
 // BELOW ARE ALL IN id_table.cpp
 int id_table_entry::level()
