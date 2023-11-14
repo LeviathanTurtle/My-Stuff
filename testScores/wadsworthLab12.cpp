@@ -51,11 +51,12 @@ struct studentType
 
 // FUNCTION PROTOTYPES
 // function to read student data into array
-void readArray(studentType*, char*);
-
+void readArray(studentType*, const int&, char*);
 
 // function to assign relevant grade to each student
-void assignGrade(studentType array[]);
+void assignGrade(studentType*, const int&);
+
+
 // function to print the test grade
 void printRow(studentType array[]);
 // function to print highest test score
@@ -72,16 +73,19 @@ int main(int argc, char* argv[])
              << "students> <data file>.\n";
         exit(1);
     }
-    
+
+    // get number of students to process from CL
+    const int numStudents = atoi(argv[1]);
     
     // define stuct variable, file variable, open data file
-    studentType* students = new studentType [atoi(argv[1])];
+    studentType* students = new studentType [numStudents];
 
     // read in array
-    readArray(students, argv[2]);
+    //void readArray(studentType* array, const int& numStudents, char* filename)
+    readArray(students,numStudents,argv[2]);
 
     // assign letter grade
-    assignGrade(students);
+    assignGrade(students,numStudents);
 
     // categories
     cout << "Student Name" << setw(20) << "Test Score" << setw(10) << "Grade" << endl << endl;
@@ -98,12 +102,12 @@ int main(int argc, char* argv[])
 
 
 // function to read student data into array
-void readArray(studentType* array, char* filename)
+void readArray(studentType* array, const int& numStudents, char* filename)
 {
     // create data file object
     ifstream file (filename);
     
-    for (int i = 0; i < 20; i++) {
+    for (int i=0; i<numStudents; i++) {
         file >> array[i].studentFName;
         file >> array[i].studentLName;
         file >> array[i].testScore;
@@ -115,9 +119,9 @@ void readArray(studentType* array, char* filename)
 
 
 // function to assign relevant grade to each student
-void assignGrade(studentType array[])
+void assignGrade(studentType* array, const int& numStudents)
 {
-    for (int i = 0; i < 20; i++) {
+    for (int i=0; i<numStudents; i++) {
         if (array[i].testScore >= 90 && array[i].testScore <= 100)
             array[i].grade = 'A';
         else if (array[i].testScore >= 80 && array[i].testScore < 90)
@@ -130,6 +134,7 @@ void assignGrade(studentType array[])
             array[i].grade = 'F';
     }
 }
+
 
 // not using a loop unfortunately because the sizes of names are different which means different spacing 
 void printRow(studentType array[])
