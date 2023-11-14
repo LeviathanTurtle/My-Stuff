@@ -18,7 +18,7 @@
  *     g++ golfAnalysis.cpp -Wall -o golfAnalysis
  * 
  * To run (4 args):
- *     ./golfAnalysis <players> <holes> <input file>
+ *     ./golfAnalysis <number of players> <number of holes> <input file>
  *
  *
  * [FILE STRUCTURE]:
@@ -52,7 +52,7 @@
 using namespace std;
 
 // function prototypes
-// function to load the hole numbers into an array
+// function to load the hole numbers into a title array
 void makeHoles(int*, const int&);
 // function to output a player and their strokes per hole
 void printLine(const int&, const int&, string*, int**);
@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
     const int playerCount = argv[1];
     const int holeCount = argv[2];
 
-    // data arrays
+    // DATA ARRAYS
     // array for pars (of holes)
     int* pars = new int [holeCount];
 
@@ -95,9 +95,8 @@ int main(int argc, char* argv[])
     // GATHER INPUT
 
 
-    // data variable, open file
+    // datafile variable, open file
     ifstream golfData (arv[3]);
-
 
     // read in pars
     for (int i=0; i<holeCount; i++)
@@ -115,9 +114,11 @@ int main(int argc, char* argv[])
     // close file, no longer needed
     golfData.close();
 
+
     // ========================================================================
     // OUTPUT HOLES
 
+    // hole number (title)
     cout << endl << "       ";
     for (int i=0; i<holeCount; i++)
         cout << setw(3) << holes[i];
@@ -166,6 +167,7 @@ int main(int argc, char* argv[])
 }
 
 
+// function to load the hole numbers into a title array
 void makeHoles(int* array, const int& size)
 {
     for (int i=0; i<size; i++)
