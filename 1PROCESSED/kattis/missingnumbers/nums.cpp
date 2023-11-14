@@ -5,7 +5,9 @@
  *
  *
  * [DESCRIPTION]:
- * This program 
+ * This program reads from a data file. The first value is the amount of
+ * numbers in the file, and the next lines count from 1 to 200. Any numbers
+ * missing will be output.
  * 
  * 
  * [COMPILE/RUN]:
@@ -17,11 +19,26 @@
  * 
  * 
  * [DATA FILE STRUCTURE]:
- * 
+ * The first line of input contains a single integer n, where 1 <= n <= 100.
+ * Each of the next n lines contains one number that the child recited. Each
+ * recited number is an integer between 1 and 200 (inclusive). They are listed
+ * in increasing order, and there are no duplicates.
  * 
  * 
  * [DATA FILE EXAMPLE]:
- * 
+ * 9   <-- number of values
+ * 2   <-- 1 is missing, output 1
+ * 4   <-- 3 is missing, output 3
+ * 5
+ * 7   <-- 6 is missing, output 6
+ * 8
+ * 9
+ * 10
+ * 11
+ * 13  <-- 12 is missing, output 12
+ *
+ * Note: the arrows are not part of the file, they are just there so the 
+ *       problem is easier to understand
  *
  * 
  * [EXIT/TERMINATING CODES]:
