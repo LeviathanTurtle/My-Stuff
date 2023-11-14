@@ -19,9 +19,13 @@
  *
  *
  * [DATA FILE STRUCTURE]:
+ * 
  *
  *
  * [EXIT/TERMINATING CODES]:
+ * 0 - program successfully completed a full execution
+ *
+ * 1 - 
 */
 
 // libraries
