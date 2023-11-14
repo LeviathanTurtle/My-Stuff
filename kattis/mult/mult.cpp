@@ -5,7 +5,9 @@
  *
  *
  * [DESCRIPTION]:
- * This program 
+ * This program reads from a data file sets the second read value to be the
+ * "target" value. If a following number is a multiple of the target, then it
+ * is output. The following value becomes the next target value.
  * 
  * 
  * [COMPILE/RUN]:
@@ -17,7 +19,11 @@
  * 
  * 
  * [DATA FILE STRUCTURE]:
- * 
+ * The first line of input contains an integer n (2 <= n <= 1000), the length
+ * of the number sequence. The following lines contains the sequence, one
+ * number per line. All numbers in the sequence are positive integers <= 100.
+ * The sequence is guaranteed to contain at least one complete round of the
+ * game (but may end with an incomplete round).
  * 
  * 
  * [DATA FILE EXAMPLE]:
