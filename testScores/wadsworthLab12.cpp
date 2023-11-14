@@ -12,10 +12,10 @@
  *
  * [COMPILE/RUN]:
  * To compile:
- *     g++ 
+ *     g++ REPLACETHIS.cpp -Wall -o REPLACETHIS
  *
- * To run:
- *     ./
+ * To run (3 args):
+ *     ./REPLACETHIS <number of students> <data file>
  *
  *
  * [DATA FILE STRUCTURE]:
@@ -25,7 +25,9 @@
  * [EXIT/TERMINATING CODES]:
  * 0 - program successfully completed a full execution
  *
- * 1 - 
+ * 1 - CLI args used incorrectly
+ *
+ * 2 - file unable to be opened or created
 */
 
 // libraries
@@ -34,6 +36,8 @@
 #include <iomanip>
 using namespace std;
 
+
+// data struct
 struct studentType
 {
     string studentFName;
@@ -41,6 +45,7 @@ struct studentType
     int testScore;
     char grade;
 };
+
 
 // FUNCTION PROTOTYPES
 // function to read student data into array
@@ -54,15 +59,28 @@ int highestScore(studentType array[]);
 // function to print names of students with highest test score
 void studentScores(studentType array[], int maxScore);
 
-int main()
+
+int main(int argc, char* argv[])
 {
+    // process CL
+    if(argc != 3) {
+        cerr << "error: CLI args invalid. Enter: ./REPLACETHIS <number of "
+             << "students> <data file>.\n";
+        exit(1);
+    }
+    
+    
     // define stuct variable, file variable, open data file
     studentType students[20];
     ifstream data;
     data.open("data.txt");
 
-    // read in array, assign letter grade
+    // read in array
     readArray(students, data);
+    // close file
+    data.close();
+
+    // assign letter grade
     assignGrade(students);
 
     // categories
@@ -75,8 +93,6 @@ int main()
     // who has highest score
     studentScores(students, highestScore(students));
 
-    // close file, end program
-    data.close();
     return 0;
 }
 
