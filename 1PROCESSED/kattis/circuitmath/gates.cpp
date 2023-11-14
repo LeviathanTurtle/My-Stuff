@@ -36,8 +36,6 @@
  * 
  * [EXIT/TERMINATING CODES]:
  * 0 - program successfully completed a full execution
- * 
- * 1 - 
 */
 
 #include <iostream>
