@@ -1,3 +1,33 @@
+/* 
+ * William Wadsworth
+ * Created: 
+ * CSC - KATTIS
+ *
+ *
+ * [DESCRIPTION]:
+ * This program 
+ * 
+ * 
+ * [COMPILE/RUN]:
+ * To compile:
+ *     g++ sauron.cpp -Wall -o sauron
+ * 
+ * To run:
+ *     ./sauron < <data file>
+ * 
+ * 
+ * [DATA FILE STRUCTURE]:
+ * 
+ * 
+ * 
+ * [DATA FILE EXAMPLE]:
+ * 
+ *
+ * 
+ * [EXIT/TERMINATING CODES]:
+ * 0 - program successfully completed a full execution
+*/
+
 #include <iostream>
 using namespace std;
 
