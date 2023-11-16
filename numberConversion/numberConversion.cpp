@@ -55,24 +55,24 @@ bool searchCharacter(const char*, const char&);
 void determineType(const string&, bool&, bool&, bool&);
 
 // convert SCIENTIFIC NOTATION to INTEGER
-int stringConv(const string&);    // 3e3
+int stringToInt(const string&);    // 3e3
 // FILE overload
-int* stringConv(const string&);
+int* stringToInt(const string&);
 
 // convert SCIENTIFIC NOTATION to DECIMAL
-double stringConv(const string&); // 3e-3
+double stringToDouble(const string&); // 3e-3
 // FILE overload
-double* stringConv(const string&);
+double* stringToDouble(const string&);
 
 // convert INTEGERS to SCIENTIFIC NOTATION
-string intConv(const int&);       // 128000
+string intToString(const int&);       // 128000
 // FILE overload
-string* intConv(const int&);
+string* intToString(const int&);
 
-// convert DECIMALS to SCIENTIFIC NOTATION
-string doubleConv(const double&); // .003
+// convert DECIMAL to SCIENTIFIC NOTATION
+string doubleToString(const double&); // .003
 // FILE overload
-string* doubleConv(const double&);
+string* doubleToString(const double&);
 
 
 // MAIN CODE
@@ -111,9 +111,17 @@ int main(int argc, char* argv[])
              << "Enter a number: ";
         cin >> number;
 
+        // set respective flag
         determineType(number,isDecimal,isInt,isExponent);
 
-        // same approach as below
+        // if integer
+        // --> string to int
+        // else if decimal
+        // --> string to double
+        // else 
+        // --> 
+
+        // call respective functions
         
     }
     // file was provided at execution
@@ -139,8 +147,11 @@ int main(int argc, char* argv[])
         // else
         //     intToString
         
-        
-        
+        // set respective flag
+        determineType(argv[1],isDecimal,isInt,isExponent);
+
+        // same approach as above
+
     }
     
 
@@ -162,7 +173,10 @@ void processFile(const char* filename)
     // check first value in file
     // if it contains e or E --> stringToInt
     // else --> intToString
+    determineType(file.peek(),isDecimal,isInt,isExponent);
     
+
+
 
     // close file
     file.close();
