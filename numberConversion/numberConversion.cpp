@@ -139,7 +139,7 @@ int main(int argc, char* argv[])
         // else
         //     intToString
         
-        // we know it's a string if e or E is in argv[1]
+        
         
     }
     
