@@ -1,3 +1,6 @@
+// Created: 9.10.2020
+// CSC 1710
+
 #include <iostream>
 #include <iomanip>
 using namespace std;
