@@ -51,18 +51,28 @@ void processFile(const char*);
 // notation) is provided -- by ChatGPT
 bool searchCharacter(const char*, const char&);
 
-// function to determine the type of input number
+// function to update the flags for the type of the output number
 void determineType(const string&, bool&, bool&, bool&);
 
-// function to convert integers to scientific notation
-string intToString(int);
-// function to convert integers to scientific notation - from file
-string* intToString(ifstream&);
+// convert SCIENTIFIC NOTATION to INTEGER
+int stringConv(const string&);    // 3e3
+// FILE overload
+int* stringConv(const string&);
 
-// function to convert numbers in scientific notation to ingegers
-int stringToInt(string);
-// function to convert numbers in scientific notation to ingegers - from file
-int* stringToInt(istream&);
+// convert SCIENTIFIC NOTATION to DECIMAL
+double stringConv(const string&); // 3e-3
+// FILE overload
+double* stringConv(const string&);
+
+// convert INTEGERS to SCIENTIFIC NOTATION
+string intConv(const int&);       // 128000
+// FILE overload
+string* intConv(const int&);
+
+// convert DECIMALS to SCIENTIFIC NOTATION
+string doubleConv(const double&); // .003
+// FILE overload
+string* doubleConv(const double&);
 
 
 // MAIN CODE
@@ -84,7 +94,13 @@ int main(int argc, char* argv[])
     }
 
 
-    // only if a number was not provided at execution
+    // flags for types of number (if needed to be input by user)
+    // separate flags for integer and decimal because taking a float/double as
+    // an integer is truncated
+    bool isDecimal = false, isInt = false, isExponent = false;
+
+
+    // number was not provided at execution
     if(argc == 1) {
         // if only the exe arg was provided, prompt user for number
         string number;
@@ -94,21 +110,14 @@ int main(int argc, char* argv[])
              << "form. If entering an exponent, it must be a whole number.\n"
              << "Enter a number: ";
         cin >> number;
+
+        determineType(number,isDecimal,isInt,isExponent);
+
+        // same approach as below
+        
     }
-
-
-    // flags for types of numbers
-    // separate flags for integer and decimal because taking a float/double as
-    // an integer is truncated
-    bool isDecimal = false, isInt = false, isExponent = false;
-    
-    determineType(number,isDecimal,isInt,isExponent);
-
-
-
-
-    // process command line
-    if(argv[1] == "-f") {
+    // file was provided at execution
+    else if(argv[1] == "-f") {
         // -f specified, file MUST follow
         
         // call function for file, which calls its respective function
@@ -120,6 +129,7 @@ int main(int argc, char* argv[])
             exit(2);
         }
     }
+    // number was provided at execution
     else {
         // no file is specified
         
@@ -130,11 +140,9 @@ int main(int argc, char* argv[])
         //     intToString
         
         // we know it's a string if e or E is in argv[1]
-        if(searchCharacter(argv[1],'e') || searchCharacter(argv[1],'E'))
-            int answer = stringToInt(number); // contains e or E
-        else
-            string answer = intToString(stoi(number));
+        
     }
+    
 
 
     return 0;
@@ -154,10 +162,7 @@ void processFile(const char* filename)
     // check first value in file
     // if it contains e or E --> stringToInt
     // else --> intToString
-    if(searchCharacter(file.peek()))
-        stringToInt(file,promptForItem);
-    else
-        intToString(file,promptForItem);
+    
 
     // close file
     file.close();
@@ -184,75 +189,88 @@ bool searchCharacter(const char* string)
     bool isRight = false;
 
     // iterate through string
-    for(char ch : string)
+    for(char ch : string) {
         if(ch == 'e' || ch == 'E')
             isRight = true;        
 
         if(isRight && ch == '-')
             return true; // found target
+    }
     
     // target not found
     return false;
 }
 
 
-// function to determine the type of input number
+// function to update the flags for the type of the output number
 void determineType(const string& number, bool& isDecimal, bool& isInt, bool& isExponent)
 {
-    // if number is a decimal, mark respective flag
-    if(searchCharacter(number,'.'))
-        isDecimal = true;
     // if the number is in scientific notation, mark respective flag
-    else if(searchCharacter(number))
+    if(searchCharacter(number,'e') || searchCharacter(number,'E'))
         isExponent = true;
+    // if number is a decimal, mark respective flag
+    else if(searchCharacter(number))
+        isDecimal = true;
     // assume number is an integer
     else
         isInt = true;
 }
 
 
-// function to convert integers to scientific notation
-string intToString(int number)
+// INTEGERS to SCIENTIFIC NOTATION
+// ----------------------------------------------------------------------------
+
+string intConv(const int& number)
+{
+
+}
+
+// FILE overload
+string* intConv(const int& number)
+{
+
+}
+
+// DECIMAL to SCIENTIFIC NOTATION
+// ----------------------------------------------------------------------------
+
+string doubleConv(const double&)
+{
+
+}
+
+// FILE overload
+string* doubleConv(const double&)
+{
+
+}
+
+// SCIENTIFIC NOTATION to INTEGER
+// ----------------------------------------------------------------------------
+
+int stringConv(const string&)
 {
 
 }
 
 
-// function to convert integers to scientific notation
-// CONVERT FROM FILE
-string* intToString(ifstream& file)
+// FILE overload
+int* stringConv(const string&)
 {
-    // while there is input, get and process item
 
 }
 
+// SCIENTIFIC NOTATION to DECIMAL
+// ----------------------------------------------------------------------------
 
-// function to convert numbers in scientific notation to ingegers
-int stringToInt(string number)
+double stringConv(const string&)
 {
-    int num;
-
-    // if number was not provided, get from user
-    if(!promptForItem) {
-        cout << "enter a number (in scientific notation): ";
-        cin >> num;
-    }
-    else 
-        num = number;
-    
-    // numbers left of E = L
-    // numbers right of E = R
-
-    // L * 10^R
-
 
 }
 
-
-// function to convert numbers in scientific notation to ingegers
-// CONVERT FROM FILE
-int* stringToInt(ifstream& file)
+// FILE overload
+double* stringConv(const string&)
 {
-    // while there is input, get and process item
 
 }
+
