@@ -49,7 +49,10 @@ void processFile(const char*);
 
 // function to search for specific character if a string (number in scientific
 // notation) is provided -- by ChatGPT
-bool searchCharacter(const char*);
+bool searchCharacter(const char*, const char&);
+
+// function to determine the type of input number
+void determineType(const string&, bool&, bool&, bool&);
 
 // function to convert integers to scientific notation
 string intToString(int);
@@ -81,24 +84,27 @@ int main(int argc, char* argv[])
     }
 
 
-    // if only the exe arg was provided, prompt user for number
-    string number;
-    // flags for types of numbesr
-    bool isDecimal = false, isInt = false;
+    // only if a number was not provided at execution
     if(argc == 1) {
+        // if only the exe arg was provided, prompt user for number
+        string number;
+        
         cout << "No number provided, you must enter one.\nNote: entering a "
              << "number in scientific notation will be converted to integer "
              << "form. If entering an exponent, it must be a whole number.\n"
              << "Enter a number: ";
         cin >> number;
-
-        // if number is a decimal, mark respective flag
-        if(searchCharacter(number,'.'))
-            isDecimal = true;
-        else
-            isInt = true;
-        // problem: 3e-2
     }
+
+
+    // flags for types of numbers
+    // separate flags for integer and decimal because taking a float/double as
+    // an integer is truncated
+    bool isDecimal = false, isInt = false, isExponent = false;
+    
+    determineType(number,isDecimal,isInt,isExponent);
+
+
 
 
     // process command line
@@ -160,7 +166,7 @@ void processFile(const char* filename)
 
 // function to search for a specific character if a string (number in scientific notation)
 // is provided -- by ChatGPT
-bool searchCharacter(const char* string, char target)
+bool searchCharacter(const char* string, const char& target)
 {
     // iterate through string
     for(char ch : string)
@@ -169,6 +175,39 @@ bool searchCharacter(const char* string, char target)
     
     // target not found
     return false;
+}
+
+
+// function to determine if an exponent is negative
+bool searchCharacter(const char* string)
+{
+    bool isRight = false;
+
+    // iterate through string
+    for(char ch : string)
+        if(ch == 'e' || ch == 'E')
+            isRight = true;        
+
+        if(isRight && ch == '-')
+            return true; // found target
+    
+    // target not found
+    return false;
+}
+
+
+// function to determine the type of input number
+void determineType(const string& number, bool& isDecimal, bool& isInt, bool& isExponent)
+{
+    // if number is a decimal, mark respective flag
+    if(searchCharacter(number,'.'))
+        isDecimal = true;
+    // if the number is in scientific notation, mark respective flag
+    else if(searchCharacter(number))
+        isExponent = true;
+    // assume number is an integer
+    else
+        isInt = true;
 }
 
 
