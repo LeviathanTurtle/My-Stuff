@@ -97,6 +97,7 @@ int main(int argc, char* argv[])
             isDecimal = true;
         else
             isInt = true;
+        // problem: 3e-2
     }
 
 
