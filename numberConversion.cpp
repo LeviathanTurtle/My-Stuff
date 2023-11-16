@@ -45,21 +45,21 @@ using namespace std;
 // ----------------------------------------------------------------------------
 
 // function to process file, calls string or int conversion
-void processFile(const char*, const bool&);
+void processFile(const char*);
 
-// function to search for e or E if the string (number in scientific notation)
-// is provided -- provided by ChatGPT
+// function to search for specific character if a string (number in scientific
+// notation) is provided -- by ChatGPT
 bool searchCharacter(const char*);
 
 // function to convert integers to scientific notation
-string intToString(int, const bool&);
+string intToString(int);
 // function to convert integers to scientific notation - from file
-string* intToString(ifstream&, const bool&);
+string* intToString(ifstream&);
 
 // function to convert numbers in scientific notation to ingegers
-int stringToInt(string, const bool&);
+int stringToInt(string);
 // function to convert numbers in scientific notation to ingegers - from file
-int* stringToInt(istream&, const bool&);
+int* stringToInt(istream&);
 
 
 // MAIN CODE
@@ -81,11 +81,23 @@ int main(int argc, char* argv[])
     }
 
 
-    // if only the exe arg was provided, set a flag to prompt user for item to
-    // process
-    bool promptForItem = false;
-    if(argc == 1)
-        promptForItem = true;
+    // if only the exe arg was provided, prompt user for number
+    string number;
+    // flags for types of numbesr
+    bool isDecimal = false, isInt = false;
+    if(argc == 1) {
+        cout << "No number provided, you must enter one.\nNote: entering a "
+             << "number in scientific notation will be converted to integer "
+             << "form. If entering an exponent, it must be a whole number.\n"
+             << "Enter a number: ";
+        cin >> number;
+
+        // if number is a decimal, mark respective flag
+        if(searchCharacter(number,'.'))
+            isDecimal = true;
+        else
+            isInt = true;
+    }
 
 
     // process command line
@@ -95,6 +107,7 @@ int main(int argc, char* argv[])
         // call function for file, which calls its respective function
         if(argc == 3)
             processFile(argv[2]);
+        // error for if filename is not provided
         else {
             cerr << "error: file not provided.\n";
             exit(2);
@@ -110,10 +123,10 @@ int main(int argc, char* argv[])
         //     intToString
         
         // we know it's a string if e or E is in argv[1]
-        if(searchCharacter(argv[1]))
-            string number = stringToInt(argv[1],promptForItem); // contains e or E
+        if(searchCharacter(argv[1],'e') || searchCharacter(argv[1],'E'))
+            int answer = stringToInt(number); // contains e or E
         else
-            int number = intToString(atoi(argv[1]),promptForItem);
+            string answer = intToString(stoi(number));
     }
 
 
@@ -122,7 +135,7 @@ int main(int argc, char* argv[])
 
 
 // function to process file, calls string or int conversion
-void processFile(const char* filename, const bool& promptForItem)
+void processFile(const char* filename)
 {
     ifstream file (filename);
 
@@ -139,28 +152,27 @@ void processFile(const char* filename, const bool& promptForItem)
     else
         intToString(file,promptForItem);
 
-
     // close file
     file.close();
 }
 
 
-// function to search for e or E if the string (number in scientific notation)
-// is provided -- provided by ChatGPT
-bool searchCharacter(const char* string)
+// function to search for a specific character if a string (number in scientific notation)
+// is provided -- by ChatGPT
+bool searchCharacter(const char* string, char target)
 {
     // iterate through string
     for(char ch : string)
-        if(ch == 'e' || ch == 'E')
-            return true; // found e or E
+        if(ch == target)
+            return true; // found target
     
-    // e and E not found
+    // target not found
     return false;
 }
 
 
 // function to convert integers to scientific notation
-string intToString(int number, const bool& promptForItem)
+string intToString(int number)
 {
 
 }
@@ -168,22 +180,39 @@ string intToString(int number, const bool& promptForItem)
 
 // function to convert integers to scientific notation
 // CONVERT FROM FILE
-string* intToString(ifstream& file, const bool& promptForItem)
+string* intToString(ifstream& file)
 {
+    // while there is input, get and process item
 
 }
 
 
 // function to convert numbers in scientific notation to ingegers
-int stringToInt(string number, const bool& promptForItem)
+int stringToInt(string number)
 {
+    int num;
+
+    // if number was not provided, get from user
+    if(!promptForItem) {
+        cout << "enter a number (in scientific notation): ";
+        cin >> num;
+    }
+    else 
+        num = number;
+    
+    // numbers left of E = L
+    // numbers right of E = R
+
+    // L * 10^R
+
 
 }
 
 
 // function to convert numbers in scientific notation to ingegers
 // CONVERT FROM FILE
-int* stringToInt(ifstream& file, const bool& promptForItem)
+int* stringToInt(ifstream& file)
 {
+    // while there is input, get and process item
 
 }
