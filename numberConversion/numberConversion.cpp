@@ -55,24 +55,24 @@ bool searchCharacter(const char*, const char&);
 void determineType(const string&, bool&, bool&, bool&);
 
 // convert SCIENTIFIC NOTATION to INTEGER
-int stringToInt(const string&);    // 3e3
+void stringToInt(const string&);    // 3e3
 // FILE overload
-int* stringToInt(ifstream&);
+void stringToInt(ifstream&);
 
 // convert SCIENTIFIC NOTATION to DECIMAL
-double stringToDouble(const string&); // 3e-3
+void stringToDouble(const string&); // 3e-3
 // FILE overload
-double* stringToDouble(iftream&);
+void stringToDouble(iftream&);
 
 // convert INTEGERS to SCIENTIFIC NOTATION
-string intToString(const int&);       // 128000
+void intToString(const int&);       // 128000
 // FILE overload
-string* intToString(ifstream&);
+void intToString(ifstream&);
 
 // convert DECIMAL to SCIENTIFIC NOTATION
-string doubleToString(const double&); // .003
+void doubleToString(const double&); // .003
 // FILE overload
-string* doubleToString(ifstream&);
+void doubleToString(ifstream&);
 
 
 // MAIN CODE
@@ -267,13 +267,13 @@ void determineType(const string& number, bool& isDecimal, bool& isInt, bool& isE
 // INTEGERS to SCIENTIFIC NOTATION
 // ----------------------------------------------------------------------------
 
-string intToString(const int& number)
+void intToString(const int& number)
 {
 
 }
 
 // FILE overload
-string* intToString(ifstream& file)
+void intToString(ifstream& file)
 {
 
 }
@@ -281,13 +281,13 @@ string* intToString(ifstream& file)
 // DECIMAL to SCIENTIFIC NOTATION
 // ----------------------------------------------------------------------------
 
-string doubleToString(const double&)
+void doubleToString(const double&)
 {
 
 }
 
 // FILE overload
-string* doubleToString(ifstream& file)
+void doubleToString(ifstream& file)
 {
 
 }
@@ -295,14 +295,14 @@ string* doubleToString(ifstream& file)
 // SCIENTIFIC NOTATION to INTEGER
 // ----------------------------------------------------------------------------
 
-int stringToInt(const string&)
+void stringToInt(const string&)
 {
 
 }
 
 
 // FILE overload
-int* stringToInt(ifstream& file)
+void stringToInt(ifstream& file)
 {
 
 }
@@ -310,13 +310,13 @@ int* stringToInt(ifstream& file)
 // SCIENTIFIC NOTATION to DECIMAL
 // ----------------------------------------------------------------------------
 
-double stringToDouble(const string&)
+void stringToDouble(const string&)
 {
 
 }
 
 // FILE overload
-double* stringToDouble(ifstream& file)
+void stringToDouble(ifstream& file)
 {
 
 }
