@@ -57,22 +57,22 @@ void determineType(const string&, bool&, bool&, bool&);
 // convert SCIENTIFIC NOTATION to INTEGER
 int stringToInt(const string&);    // 3e3
 // FILE overload
-int* stringToInt(const string&);
+int* stringToInt(ifstream&);
 
 // convert SCIENTIFIC NOTATION to DECIMAL
 double stringToDouble(const string&); // 3e-3
 // FILE overload
-double* stringToDouble(const string&);
+double* stringToDouble(iftream&);
 
 // convert INTEGERS to SCIENTIFIC NOTATION
 string intToString(const int&);       // 128000
 // FILE overload
-string* intToString(const int&);
+string* intToString(ifstream&);
 
 // convert DECIMAL to SCIENTIFIC NOTATION
 string doubleToString(const double&); // .003
 // FILE overload
-string* doubleToString(const double&);
+string* doubleToString(ifstream&);
 
 
 // MAIN CODE
@@ -115,14 +115,27 @@ int main(int argc, char* argv[])
         determineType(number,isDecimal,isInt,isExponent);
 
         // if integer
-        // --> string to int
+        // --> int to string
         // else if decimal
-        // --> string to double
-        // else 
-        // --> 
+        // --> double to string
+
+        // else (string) 
+        // --> convert to int?
+        // --> or convert to double
 
         // call respective functions
-        
+        if(isInt)
+            intToString(atoi(number)); // the number is an integer (128000)
+        else if(isDecimal)
+            // atod? stod, stof
+            doubleToString(atof(number)); // the number is a decimal (.128)
+        // SCIENTIFIC NOTATION WAS GIVEN
+        else {
+            if(isExponent)
+                stringToDouble(number); // the string is a decimal (128e-3)
+            else
+                stringToInt(number); // the string is an integer (128e3)
+        }
     }
     // file was provided at execution
     else if(argv[1] == "-f") {
@@ -151,10 +164,19 @@ int main(int argc, char* argv[])
         determineType(argv[1],isDecimal,isInt,isExponent);
 
         // same approach as above
-
+        // call respective functions
+        if(isInt)
+            intToString(atoi(argv[1])); // the number is an integer (128000)
+        else if(isDecimal)
+            // atod? stod, stof
+            doubleToString(atof(argv[1])); // the number is a decimal (.128)
+        // SCIENTIFIC NOTATION WAS GIVEN
+        else {
+            if(isExponent)
+                stringToDouble(argv[1]); // the string is a decimal (128e-3)
+            else
+                stringToInt(argv[1]); // the string is an integer (128e3)
     }
-    
-
 
     return 0;
 }
@@ -174,9 +196,20 @@ void processFile(const char* filename)
     // if it contains e or E --> stringToInt
     // else --> intToString
     determineType(file.peek(),isDecimal,isInt,isExponent);
-    
 
-
+    // same approach as main -- call respective functions
+    // call respective functions
+    if(isInt)
+        intToString(file); // the number is an integer (128000)
+    else if(isDecimal)
+        // atod? stod, stof
+        doubleToString(file); // the number is a decimal (.128)
+    // SCIENTIFIC NOTATION WAS GIVEN
+    else {
+        if(isExponent)
+            stringToDouble(file); // the string is a decimal (128e-3)
+        else
+            stringToInt(file); // the string is an integer (128e3)
 
     // close file
     file.close();
@@ -234,13 +267,13 @@ void determineType(const string& number, bool& isDecimal, bool& isInt, bool& isE
 // INTEGERS to SCIENTIFIC NOTATION
 // ----------------------------------------------------------------------------
 
-string intConv(const int& number)
+string intToString(const int& number)
 {
 
 }
 
 // FILE overload
-string* intConv(const int& number)
+string* intToString(ifstream& file)
 {
 
 }
@@ -248,13 +281,13 @@ string* intConv(const int& number)
 // DECIMAL to SCIENTIFIC NOTATION
 // ----------------------------------------------------------------------------
 
-string doubleConv(const double&)
+string doubleToString(const double&)
 {
 
 }
 
 // FILE overload
-string* doubleConv(const double&)
+string* doubleToString(ifstream& file)
 {
 
 }
@@ -262,14 +295,14 @@ string* doubleConv(const double&)
 // SCIENTIFIC NOTATION to INTEGER
 // ----------------------------------------------------------------------------
 
-int stringConv(const string&)
+int stringToInt(const string&)
 {
 
 }
 
 
 // FILE overload
-int* stringConv(const string&)
+int* stringToInt(ifstream& file)
 {
 
 }
@@ -277,13 +310,13 @@ int* stringConv(const string&)
 // SCIENTIFIC NOTATION to DECIMAL
 // ----------------------------------------------------------------------------
 
-double stringConv(const string&)
+double stringToDouble(const string&)
 {
 
 }
 
 // FILE overload
-double* stringConv(const string&)
+double* stringToDouble(ifstream& file)
 {
 
 }
