@@ -275,7 +275,10 @@ void intToString(const int& number)
 // FILE overload
 void intToString(ifstream& file)
 {
+    // repeat for every entry in the file
+    while(!file.eof()) {
 
+    }
 }
 
 // DECIMAL to SCIENTIFIC NOTATION
@@ -289,7 +292,10 @@ void doubleToString(const double&)
 // FILE overload
 void doubleToString(ifstream& file)
 {
-
+    // repeat for every entry in the file
+    while(!file.eof()) {
+        
+    }
 }
 
 // SCIENTIFIC NOTATION to INTEGER
@@ -297,6 +303,9 @@ void doubleToString(ifstream& file)
 
 void stringToInt(const string&)
 {
+    // variable for help getting value after e
+    bool isRight = false;
+
 
 }
 
@@ -304,7 +313,10 @@ void stringToInt(const string&)
 // FILE overload
 void stringToInt(ifstream& file)
 {
-
+    // repeat for every entry in the file
+    while(!file.eof()) {
+        
+    }
 }
 
 // SCIENTIFIC NOTATION to DECIMAL
@@ -318,6 +330,9 @@ void stringToDouble(const string&)
 // FILE overload
 void stringToDouble(ifstream& file)
 {
-
+    // repeat for every entry in the file
+    while(!file.eof()) {
+        
+    }
 }
 
