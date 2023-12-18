@@ -15,10 +15,11 @@
  *     g++ numberConversion.cpp -Wall -o numberConversion
  * 
  * To run (5 args, 4 optional):
- *     ./numberConversion [-f] [file] [number] [string]
+ *     ./numberConversion [-fD] [file] [number] [string]
  * 
  * where:
  *     [-f]     - optional flag, specify if you are providing a file
+ *     [-D]     - optional flag, specify debug (verbose) output
  *     [file]   - optional, but required if -f is specified, file containing
  *                numbers in or not in scientific notation to convert
  *     [number] - optional, provide a number to convert
@@ -31,10 +32,12 @@
  * 0 - program successfully completed a full execution
  * 
  * 1 - CLI args used incorrectly
- * 
+ *
  * 2 - file not provided (-f is specified)
  * 
  * 3 - file unable to be opened
+ * 
+ * 4 - not valid flag
 */
 
 #include <iostream>
@@ -75,6 +78,10 @@ void doubleToString(const double&); // .003
 void doubleToString(ifstream&);
 
 
+// variable for verbose output
+bool DEBUG = false;
+
+
 // MAIN CODE
 // ----------------------------------------------------------------------------
 int main(int argc, char* argv[])
@@ -98,6 +105,33 @@ int main(int argc, char* argv[])
     // separate flags for integer and decimal because taking a float/double as
     // an integer is truncated
     bool isDecimal = false, isInt = false, isExponent = false;
+
+
+    // check flags
+    if(argc > 1) {
+        // verbose output was provided at execution
+        if(searchCharacter(argv[1], '-'))
+            if(searchCharacter(argv[1], 'D'))
+                DEBUG = true;
+        // file was provided at execution
+        else if(searchCharacter(argv[1], 'f')) {
+            // -f specified, file MUST follow
+        
+            // call function for file, which calls its respective function
+            if(argc == 3)
+                processFile(argv[2]);
+            // error for if filename is not provided
+            else {
+                cerr << "error: file not provided.\n";
+                exit(2);
+            }
+        }
+        // error - not valid flag
+        else {
+            cerr << "error: not a valid flag.\n";
+            exit(4);
+        }
+    }
 
 
     // number was not provided at execution
@@ -137,18 +171,9 @@ int main(int argc, char* argv[])
                 stringToInt(number); // the string is an integer (128e3)
         }
     }
-    // file was provided at execution
-    else if(argv[1] == "-f") {
-        // -f specified, file MUST follow
-        
-        // call function for file, which calls its respective function
-        if(argc == 3)
-            processFile(argv[2]);
-        // error for if filename is not provided
-        else {
-            cerr << "error: file not provided.\n";
-            exit(2);
-        }
+    // update debug flag for verbose output
+    else if(searchCharacter(argv[1], 'D')) {
+        DEBUG = true;
     }
     // number was provided at execution
     else {
