@@ -176,6 +176,7 @@ int main(int argc, char* argv[])
                 stringToDouble(argv[1]); // the string is a decimal (128e-3)
             else
                 stringToInt(argv[1]); // the string is an integer (128e3)
+        }
     }
 
     return 0;
@@ -205,7 +206,7 @@ void processFile(const char* filename)
         // atod? stod, stof
         doubleToString(file); // the number is a decimal (.128)
     // SCIENTIFIC NOTATION WAS GIVEN
-    else {
+    else
         if(isExponent)
             stringToDouble(file); // the string is a decimal (128e-3)
         else
