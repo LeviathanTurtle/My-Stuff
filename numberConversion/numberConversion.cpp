@@ -42,6 +42,9 @@
 
 #include <iostream>
 #include <fstream>
+// math
+#include <cmath>
+#include <iomanip>
 using namespace std;
 
 // FUNCTION PROTOTYPES
@@ -58,22 +61,22 @@ bool searchCharacter(const char*, const char&);
 void determineType(const string&, bool&, bool&, bool&);
 
 // convert SCIENTIFIC NOTATION to INTEGER
-void stringToInt(const string&);    // 3e3
+int stringToInt(const string&);    // 3e3
 // FILE overload
 void stringToInt(ifstream&);
 
 // convert SCIENTIFIC NOTATION to DECIMAL
-void stringToDouble(const string&); // 3e-3
+double stringToDouble(const string&); // 3e-3
 // FILE overload
 void stringToDouble(iftream&);
 
 // convert INTEGERS to SCIENTIFIC NOTATION
-void intToString(const int&);       // 128000
+string intToString(const int&);       // 128000
 // FILE overload
 void intToString(ifstream&);
 
 // convert DECIMAL to SCIENTIFIC NOTATION
-void doubleToString(const double&); // .003
+string doubleToString(const double&); // .003
 // FILE overload
 void doubleToString(ifstream&);
 
@@ -159,19 +162,19 @@ int main(int argc, char* argv[])
 
         // call respective functions
         if(isInt)
-            intToString(atoi(number)); // the number is an integer (128000)
+            cout << intToString(atoi(number)) << endl; // the number is an integer (128000)
         else if(isDecimal)
             // atod? stod, stof
-            doubleToString(atof(number)); // the number is a decimal (.128)
+            cout << doubleToString(atof(number)) << endl; // the number is a decimal (.128)
         // SCIENTIFIC NOTATION WAS GIVEN
         else {
             //if(isExponent)
             //    if(searchCharacter(number,'-'))
             //        stringToDouble(number); // the string is a decimal (128e-3)
             if(isExponent && searchCharacter(number,'-'))
-                stringToDouble(number); // the string is a decimal (128e-3)
+                cout << stringToDouble(number) << endl; // the string is a decimal (128e-3)
             else
-                stringToInt(number); // the string is an integer (128e3)
+                cout << stringToInt(number) << endl; // the string is an integer (128e3)
         }
     }
     // number was provided at execution
@@ -191,16 +194,16 @@ int main(int argc, char* argv[])
         // same approach as above
         // call respective functions
         if(isInt)
-            intToString(atoi(argv[1])); // the number is an integer (128000)
+            cout << intToString(atoi(argv[1])) << endl; // the number is an integer (128000)
         else if(isDecimal)
             // atod? stod, stof
-            doubleToString(atof(argv[1])); // the number is a decimal (.128)
+            cout << doubleToString(atof(argv[1])) << endl; // the number is a decimal (.128)
         // SCIENTIFIC NOTATION WAS GIVEN
         else {
             if(isExponent && searchCharacter(argv[1],'-'))
-                stringToDouble(argv[1]); // the string is a decimal (128e-3)
+                cout << stringToDouble(argv[1]) << endl; // the string is a decimal (128e-3)
             else
-                stringToInt(argv[1]); // the string is an integer (128e3)
+                cout << stringToInt(argv[1]) << endl; // the string is an integer (128e3)
         }
     }
 
@@ -293,9 +296,23 @@ void determineType(const string& number, bool& isDecimal, bool& isInt, bool& isE
 // INTEGERS to SCIENTIFIC NOTATION
 // ----------------------------------------------------------------------------
 
-void intToString(const int& number)
+string intToString(const int& number)
 {
+    // check if number is 0
+    if(number == 0) {
+        cout << "0" << endl;
+        return;
+    }
+    
+    // find exponent
+    int exponent = static_cast<int>(log10(abs(number)));
+    // any problems with static_cast?
 
+    // find base ("mantissa")
+    double base = number / pow(10, exponent);
+
+    // output
+    cout << fixed << setprecision(1) << base << "e" << exponent << endl;
 }
 
 // FILE overload
@@ -310,7 +327,7 @@ void intToString(ifstream& file)
 // DECIMAL to SCIENTIFIC NOTATION
 // ----------------------------------------------------------------------------
 
-void doubleToString(const double&)
+string doubleToString(const double&)
 {
 
 }
@@ -327,7 +344,7 @@ void doubleToString(ifstream& file)
 // SCIENTIFIC NOTATION to INTEGER
 // ----------------------------------------------------------------------------
 
-void stringToInt(const string&)
+int stringToInt(const string&)
 {
     // variable for help getting value after e
     bool isRight = false;
@@ -348,7 +365,7 @@ void stringToInt(ifstream& file)
 // SCIENTIFIC NOTATION to DECIMAL
 // ----------------------------------------------------------------------------
 
-void stringToDouble(const string&)
+double stringToDouble(const string&)
 {
     // variable for help getting value after e
     bool isRight = false;
