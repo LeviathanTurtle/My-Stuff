@@ -295,7 +295,7 @@ void determineType(const string& number, bool& isDecimal, bool& isInt, bool& isE
 
 void intToString(const int& number)
 {
-
+    
 }
 
 // FILE overload
@@ -353,7 +353,7 @@ void stringToDouble(const string&)
     // variable for help getting value after e
     bool isRight = false;
 
-    
+
 }
 
 // FILE overload
