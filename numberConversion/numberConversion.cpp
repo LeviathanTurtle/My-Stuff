@@ -350,7 +350,10 @@ void stringToInt(ifstream& file)
 
 void stringToDouble(const string&)
 {
+    // variable for help getting value after e
+    bool isRight = false;
 
+    
 }
 
 // FILE overload
