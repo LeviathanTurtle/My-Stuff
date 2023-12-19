@@ -196,7 +196,7 @@ int main(int argc, char* argv[])
             doubleToString(atof(argv[1])); // the number is a decimal (.128)
         // SCIENTIFIC NOTATION WAS GIVEN
         else {
-            if(isExponent && searchCharacter(number,'-'))
+            if(isExponent && searchCharacter(argv[1],'-'))
                 stringToDouble(argv[1]); // the string is a decimal (128e-3)
             else
                 stringToInt(argv[1]); // the string is an integer (128e3)
@@ -231,7 +231,7 @@ void processFile(const char* filename)
         doubleToString(file); // the number is a decimal (.128)
     // SCIENTIFIC NOTATION WAS GIVEN
     else
-        if(isExponent && searchCharacter(number,'-'))
+        if(isExponent && searchCharacter(file.peek(),'-'))
             stringToDouble(file); // the string is a decimal (128e-3)
         else
             stringToInt(file); // the string is an integer (128e3)
