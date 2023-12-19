@@ -177,6 +177,7 @@ int main(int argc, char* argv[])
     // number was provided at execution
     else {
         // no file is specified
+        // CONVERTING ONE NUMBER
         
         // is argv[1] a string or int?
         // if string
