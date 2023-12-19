@@ -295,7 +295,7 @@ void determineType(const string& number, bool& isDecimal, bool& isInt, bool& isE
 
 void intToString(const int& number)
 {
-    
+
 }
 
 // FILE overload
