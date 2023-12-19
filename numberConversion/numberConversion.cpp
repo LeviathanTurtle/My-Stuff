@@ -161,11 +161,16 @@ int main(int argc, char* argv[])
         // --> or convert to double
 
         // call respective functions
-        if(isInt)
+        if(isInt) {
+            // move elsewhere?
+            cout << fixed << setprecision(1);
             cout << intToString(atoi(number)) << endl; // the number is an integer (128000)
-        else if(isDecimal)
+        }
+        else if(isDecimal) {
             // atod? stod, stof
+            cout << fixed << setprecision(1);
             cout << doubleToString(atof(number)) << endl; // the number is a decimal (.128)
+        }
         // SCIENTIFIC NOTATION WAS GIVEN
         else {
             //if(isExponent)
@@ -193,11 +198,15 @@ int main(int argc, char* argv[])
 
         // same approach as above
         // call respective functions
-        if(isInt)
+        if(isInt) {
+            cout << fixed << setprecision(1);
             cout << intToString(atoi(argv[1])) << endl; // the number is an integer (128000)
-        else if(isDecimal)
+        }
+        else if(isDecimal) {
             // atod? stod, stof
+            cout << fixed << setprecision(1);
             cout << doubleToString(atof(argv[1])) << endl; // the number is a decimal (.128)
+        }
         // SCIENTIFIC NOTATION WAS GIVEN
         else {
             if(isExponent && searchCharacter(argv[1],'-'))
@@ -311,8 +320,8 @@ string intToString(const int& number)
     // find base ("mantissa")
     double base = number / pow(10, exponent);
 
-    // output
-    cout << fixed << setprecision(1) << base << "e" << exponent << endl;
+    // return answer 
+    return (base + "e" + exponent);
 }
 
 // FILE overload
