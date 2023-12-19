@@ -321,16 +321,24 @@ string intToString(const int& number)
     double base = number / pow(10, exponent);
 
     // return answer 
-    return (base + "e" + exponent);
+    return base + "e" + exponent;
 }
 
 // FILE overload
 void intToString(ifstream& file)
 {
-    // repeat for every entry in the file
-    while(!file.eof()) {
+    // create output file object
+    ofstream outputFile (file.str()+"-output");
 
-    }
+    // holder variable for current value in filee
+    int temp;
+    
+    // repeat for every entry in the file
+    //while(!file.eof()) {
+    while(file >> temp)
+        outputFile << intToString(temp);
+
+    outputFile.close();
 }
 
 // DECIMAL to SCIENTIFIC NOTATION
