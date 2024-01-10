@@ -53,6 +53,7 @@ double globalOperatingCost;
 double globalRevenue;
 double globalProfitOrLoss;
 
+// GET METRO AREA AROUND AIRPORT FOR PASSENGERS
 
 
 int main()
