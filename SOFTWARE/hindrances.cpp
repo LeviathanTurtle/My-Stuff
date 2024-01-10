@@ -1,27 +1,58 @@
+
 #include <iostream>
 using namespace std;
 
+// 10 locations
+string hubs[] = {"Atlanta","Dallas","Denver","Chicago","Los Angeles","New York City","Las Vegas","Orlando","Miami","Charlotte"};
+// gate letter possibilities -- 7
+char gateLetters[] = {'A','B','C','D','E','F','G'};
+// gate number possibilities -- 10
+int gateNumbers[] = {1,2,3,4,5,6,7,8,9,10};
+
+
+
+struct location {
+    int degree;
+    char direction;
+};
+
+struct gate {
+    char gateChar = gateLetters[0];
+    int gateNum = gateNumbers[0];
+}
+
 struct planeObj {
-    string departDestination;
-    string arriveDestination;
+    string departDestination = hubs[0];
+    gate departGate;
+    string arriveDestination = hubs[1];
+    gate arriveGate;
     int numPassengers;
     int hoursOperated;
     double percentOnTimeArrival;
     double percentOnTimeDeparture;
+    char flightPath;
+
     // keys
     int tailNum;
     int flightNum;
+
     // location
-    struct location {
-        int degree;
-        char direction;
-    };
-    char flightPath;
+    location locationOfPlane;
 };
 
+struct airport {
+    string name;
+    location locationOfAirport;
+}
 
-// 10
-string hubs[] = {"Atlanta","Dallas","Denver","Chicago","Los Angeles","New York City","Las Vegas","Orlando","Miami","Charlotte"};
+// global total flights
+int totalFlights;
+// global report vars
+int globalPassengersTransported;
+double globalOperatingCost;
+double globalRevenue;
+double globalProfitOrLoss;
+
 
 
 int main()
@@ -30,10 +61,36 @@ int main()
 
     outputPlaneInfo(plane);
 
-    for(int day=1; day<=10; day++)
+    // repeat for each day
+    for(int day=1; day<=10; day++) {
+        // check hindrances
         hindrances(day, plane);
 
-    outputPlaneInfo(plane);
+        // LOADING
+        // update gate
+
+        // update arrive destination
+        // update depart destination
+        // update number of passengers
+        // start timer
+
+        // LAND
+        // stop timer
+        // update flight time
+        // (if applicable): update percent on time arrival/departure
+        // increment hours operated
+
+        // UPDATE REPORT
+        globalPassengersTransported += plane.numPassengers;
+        //globalOperatingCost += plane.hoursOperated * // something
+        //globalRevenue += numPassengers * // ticket price
+        //globalProfitOrLoss += // operating cost +/- revenue
+        //    if(operatingCost - revenue < 0) ? cout << "loss of " << abs(operatingCost - revenue) << endl : cout << "gain of " << operatingCost - revenue << endl;
+
+        outputPlaneInfo(plane);
+        cout << "----- END OF DAY -----" << endl << endl << endl;
+    }
+    // ^ repeat for each day
 
     return 0;
 }
@@ -77,7 +134,11 @@ void outputPlaneInfo(const planeObj& plane)
     cout << "tail number: " << plane.tailNum << endl;
     cout << "flight number (of the day): " << plane.flightNum << endl;
     cout << "departing from: " << plane.departDestination << endl;
+    cout << "degree of location: " << plane.location.degree << endl;
+    cout << "direction of location: " << plane.location.direction << endl;
+
     cout << "arriving at: " << plane.arriveDestination << endl;
+    cout << "flight path: " << plane.flightPath << endl;
     cout << "number of passengers on this flight: " << plane.numPassengers << endl;
     cout << "hours of operation: " << plane.hoursOperated << endl;
 }
