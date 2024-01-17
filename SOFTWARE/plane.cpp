@@ -12,6 +12,9 @@ using namespace std;
 // 15
 void plane::init_Boeing_737_600()
 {
+    // leasing cost (per month, usd)
+    leasing_cost = 245000;
+    
     // typical cruise speed, 35k ft
     max_fly_speed = 0.785 // mach
     max_fuel_capacity = 6875 // us gal, 26020 L
@@ -24,6 +27,9 @@ void plane::init_Boeing_737_600()
 // 15
 void plane::init_Boeing_737_800()
 {
+    // leasing cost (per month, usd)
+    leasing_cost = 270000;
+
     // typical cruise speed, 35k ft
     max_fly_speed = 0.785 // mach
     max_fuel_capacity = 6875 // us gal, 26020 L
@@ -36,6 +42,9 @@ void plane::init_Boeing_737_800()
 // 12
 void plane::init_Airbus_A200_100()
 {
+    // leasing cost (per month, usd)
+    leasing_cost = 192000;
+
     // typical cruise speed, 35k ft
     max_fly_speed = 0.785 // mach
     max_fuel_capacity = 5790 // us gal, 21918 L
@@ -48,6 +57,9 @@ void plane::init_Airbus_A200_100()
 // 13
 void plane::init_Airbus_A220_300()
 {
+    // leasing cost (per month, usd)
+    leasing_cost = 228000;
+
     // typical cruise speed, 35k ft
     max_fly_speed = .82 // mach
     max_fuel_capacity = 5790 // us gal, 21918 L
