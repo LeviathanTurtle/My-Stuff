@@ -309,5 +309,6 @@ void plane::landing()
 
 void plane::get_plane_info()
 {
-    
+    cout << GET_tail_number() << endl;
+    //cout << GET_flight_number() << endl;
 }
