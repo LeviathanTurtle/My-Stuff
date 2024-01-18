@@ -114,7 +114,6 @@ class plane {
         // flight
         void takeoff();
         void landing();
-        void update_destination();
 
         // info, debug
         void get_plane_info();
