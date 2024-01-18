@@ -6,6 +6,7 @@
 
 #include "plane.h"
 #include <iostream>
+#include <sys/time.h>
 
 using namespace std;
 
@@ -149,6 +150,11 @@ flight_distance plane::GET_flight_path()
     return flight_distance;
 }
 
+string plane::GET_tail_number()
+{
+    return tail_nunber;
+}
+
 // ----------------------------------------------------------------------------
 // SET
 
@@ -217,6 +223,11 @@ void plane::SET_flight_path(flight_distance flight_path_in)
     flight_path = flight_path_in;
 }
 
+void plane::SET_tail_number(string tail_nunber_in)
+{
+    tail_nunber = tail_nunber_in;
+}
+
 // ----------------------------------------------------------------------------
 // BOOLS
 
@@ -239,22 +250,56 @@ bool plane::is_valid_destination()
 // ----------------------------------------------------------------------------
 // FLIGHT
 
+// time checks should be sprinkled in, i.e. departTime-55
 void plane::takeoff()
 {
+    // ------------------------------------------------------------------------
+    // UNLOADING
+
+    SET_current_operation("Dismbarking");
+    // time check, record time
+    
+    SET_current_location(/*current location*/);
+
+    // add last flight's hours to total flight hours
+    SET_hours_operated(GET_hours_operated()+GET_actual_flight_time());
+
+    // ------------------------------------------------------------------------
+    // MAINTENANCE
+
+    SET_current_operation("Performing maintenance");
+
+    // check flight hours for maintenance, default false
+    // set destination based on result
+    bool needs_maintenance = false;
+    if(maintenance_check()) {
+        needs_maintenance = true;
+        SET_destination(/*rng from array of hubs*/);
+    }
+    else
+        SET_destination(/*rng from array of destinations*/);
+
+    // ------------------------------------------------------------------------
+    // BOARDING
+
+    SET_current_operation("Boarding");
+
+    SET_departure_gate(/*gate E11*/);
+    SET_destination("California");
+    //SET_flight_nunber("CA1234");
     SET_departure_time(/*11:00*/);
+    SET_projected_flight_time(/*flight eta*/);
 
     SET_current_passengers(/*constrained rng*/);
+
+    SET_current_operation("Taking off");
+    // gettimeofday stuff ...
 }
 
 
 /*
-class plane {
-   public:
-        void takeoff();
         void landing();
         void update_destination();
 
-        // info, debug
         void get_plane_info();
-}
 */

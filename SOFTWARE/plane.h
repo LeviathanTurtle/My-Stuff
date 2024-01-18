@@ -60,6 +60,13 @@ class plane {
 
         // distance between locations
         flight_distance flight_path;
+
+        // tail number 
+        string tail_nunber; // setup in plane init
+
+        // flight number (CA1234)
+        enum flight_number;
+        // needs get/set
     
     public:
         // plane object initializations
@@ -82,34 +89,23 @@ class plane {
         gate GET_arrival_gate();
         gate GET_departure_gate();
         flight_distance GET_flight_path();
+        string GET_tail_number();
 
         // set methods
-        //void SET_current_fly_speed();
         void SET_current_fly_speed(int);
-        //void SET_hours_operated();
         void SET_hours_operated(int);
-        //void SET_current_passengers();
         void SET_current_passengers(int);
-        //void SET_current_location();
         void SET_current_location(string);
-        //void SET_destination();
         void SET_destination(string);
-        //void SET_departure_time();
         void SET_departure_time(int);
-        //void SET_arrival_time();
         void SET_arrival_time(int);
-        //void SET_projected_flight_time();
         void SET_projected_flight_time(int);
-        //void SET_actual_flight_Time();
         void SET_actual_flight_Time(int);
-        //void SET_current_operation();
         void SET_current_operation(string);
-        //void SET_arrival_gate();
         void SET_arrival_gate(gate);
-        //void SET_departure_gate();
         void SET_departure_gate(gate);
-        //void SET_flight_path();
         void SET_flight_path(flight_distance);
+        void SET_tail_number(string);
 
         // bool checks
         bool maintenance_check();
