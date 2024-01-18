@@ -9,11 +9,16 @@
 
 using namespace std;
 
+// ----------------------------------------------------------------------------
+// INITS
+
 // 15
 void plane::init_Boeing_737_600()
 {
     // leasing cost (per month, usd)
     leasing_cost = 245000;
+
+    // set maintenance cost
     
     // typical cruise speed, 35k ft
     max_fly_speed = 0.785 // mach
@@ -30,6 +35,8 @@ void plane::init_Boeing_737_800()
     // leasing cost (per month, usd)
     leasing_cost = 270000;
 
+    // set maintenance cost
+
     // typical cruise speed, 35k ft
     max_fly_speed = 0.785 // mach
     max_fuel_capacity = 6875 // us gal, 26020 L
@@ -45,6 +52,8 @@ void plane::init_Airbus_A200_100()
     // leasing cost (per month, usd)
     leasing_cost = 192000;
 
+    // set maintenance cost
+
     // typical cruise speed, 35k ft
     max_fly_speed = 0.785 // mach
     max_fuel_capacity = 5790 // us gal, 21918 L
@@ -59,6 +68,8 @@ void plane::init_Airbus_A220_300()
 {
     // leasing cost (per month, usd)
     leasing_cost = 228000;
+    
+    // set maintenance cost
 
     // typical cruise speed, 35k ft
     max_fly_speed = .82 // mach
@@ -70,84 +81,148 @@ void plane::init_Airbus_A220_300()
     //max_possible_passengers = 141;
 }
 
+// ----------------------------------------------------------------------------
+// GET
 
+int plane::GET_current_fly_speed()
+{
+    return current_fly_speed;
+}
+
+int plane::GET_hours_operated()
+{
+    return hours_operated;
+}
+
+int plane::GET_current_passengers()
+{
+    return current_passengers;
+}
+
+string plane::GET_current_location()
+{
+    return current_location;
+}
+
+string plane::GET_destination()
+{
+    return destination;
+}
+
+int plane::GET_departure_time()
+{
+    return departure_time;
+}
+
+int plane::GET_arrival_time()
+{
+    return arrival_time;
+}
+
+int plane::GET_projected_flight_time()
+{
+    return projected_flight_time;
+}
+
+int plane::GET_actual_flight_time()
+{
+    return projected_flight_time;
+}
+
+string plane::GET_current_operation()
+{
+    return current_operation;
+}
+
+gate plane::GET_arrival_gate()
+{
+    return arrival;
+}
+
+gate plane::GET_departure_gate()
+{
+    return departure;
+}
+
+flight_distance plane::GET_flight_path()
+{
+    return flight_distance;
+}
+
+// ----------------------------------------------------------------------------
+// SET
+
+void plane::SET_current_fly_speed(int current_fly_speed_in)
+{
+    current_fly_speed = current_fly_speed_in;
+}
+
+void plane::SET_hours_operated(int hours_operated_in)
+{
+    hours_operated = hours_operated_in;
+}
+
+void plane::SET_current_passengers(int current_passengers_in)
+{
+    current_passengers = current_passengers_in;
+}
+
+void plane::SET_current_location(string current_location_in)
+{
+    current_location = current_location_in;
+}
+
+void plane::SET_destination(string destination_in)
+{
+    destination = destination_in;
+}
+
+void plane::SET_departure_time(int departure_time_in)
+{
+    departure_time = departure_time_in;
+}
+
+void plane::SET_arrival_time(int arrival_time_in)
+{
+    arrival_time = arrival_time_in;
+}
+
+void plane::SET_projected_flight_time(int projected_flight_time_in)
+{
+    projected_flight_time = projected_flight_time_in;
+}
+
+void plane::SET_actual_flight_Time(int actual_flight_time_in)
+{
+    actual_flight_time = actual_flight_time_in;
+}
+
+void plane::SET_current_operation(string current_operation_in)
+{
+    current_operation = current_operation_in;
+}
+
+void plane::SET_arrival_gate(gate arrival_in)
+{
+    arrival = arrival_in;
+}
+
+void plane::SET_departure_gate(gate departure_in)
+{
+    departure = departure_in;
+}
+
+void plane::SET_flight_path(flight_distance flight_path_in)
+{
+    flight_path = flight_path_in;
+}
+
+// ----------------------------------------------------------------------------
+// BOOLS
 
 /*
 class plane {
-    private:
-        // flying
-        int max_fly_speed; // setup in plane init
-        int current_fly_speed;
-
-        // maintenance, fuel
-        int hours_operated;
-        int maintenance_cost; // setup in plane init
-        int max_fuel_tank; // setup in plane init
-
-        // passengers
-        int max_possible_passengers; // setup in plane init
-        int current_passengers;
-
-        // location -> current/destination
-        string current_location;
-        string destination;
-        int destination_distance;
-
-        // arrival/departure
-        int departure_time;
-        int arrival_time;
-        // CHANGE FROM INT TO SOMETHING ELSE
-
-        // flight time
-        int projected_flight_time;
-        int actual_flight_time;
-
-        // what the plane is currently doing
-        string current_operation;
-
-        // gates
-        gate arrival;
-        gate depature;
-
-        // distance between locations
-        flight_distance flight_path;
-    
-    public:
-        // plane object initializations
-        void init_Boeing_737_600();
-        void init_Boeing_737_800();
-        void init_Airbus_A200_100();
-        void init_Airbus_A220_300();
-
-        // get methods
-        int GET_current_fly_speed();
-        int GET_hours_operated();
-        int GET_current_passengers();
-        string GET_current_location();
-        string GET_destination();
-        int GET_departure_time();
-        int GET_arrival_time();
-        int GET_projected_flight_time();
-        int GET_actual_flight_Time();
-        string GET_current_operation();
-        gate GET_arrival_gate();
-        gate GET_departure_gate();
-        flight_distance GET_flight_path();
-
-        // set methods
-        int SET_current_fly_speed();
-        int SET_hours_operated();
-        int SET_current_passengers();
-        string SET_current_location();
-        string SET_destination();
-        int SET_departure_time();
-        int SET_arrival_time();
-        int SET_projected_flight_time();
-        int SET_actual_flight_Time();
-        string SET_current_operation();
-        gate SET_arrival_gate();
-        gate SET_departure_gate();
-        flight_distance SET_flight_path();
+   public:
 
         // bool checks
         bool maintenance_check();

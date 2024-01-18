@@ -77,7 +77,7 @@ class plane {
         int GET_departure_time();
         int GET_arrival_time();
         int GET_projected_flight_time();
-        int GET_actual_flight_Time();
+        int GET_actual_flight_time();
         string GET_current_operation();
         gate GET_arrival_gate();
         gate GET_departure_gate();
