@@ -220,6 +220,14 @@ void plane::SET_flight_path(flight_distance flight_path_in)
 // ----------------------------------------------------------------------------
 // BOOLS
 
+bool plane::maintenance_check();
+{
+    if(GET_hours_operated() >= 200)
+        return true;
+    else
+        return false;
+}
+
 /*
 class plane {
    public:
