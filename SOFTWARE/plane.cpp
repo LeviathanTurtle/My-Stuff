@@ -254,15 +254,39 @@ bool plane::is_valid_destination()
 void plane::takeoff()
 {
     // ------------------------------------------------------------------------
+    // BOARDING
+
+    SET_current_operation("Boarding");
+
+    SET_departure_gate(/*gate E11*/);
+    SET_destination("California");
+    //SET_flight_nunber("CA1234");
+    SET_departure_time(/*11:00*/);
+    SET_projected_flight_time(/*flight eta*/);
+
+    SET_current_passengers(/*constrained rng*/);
+
+    SET_current_operation("Taking off");
+    // gettimeofday stuff ...
+    
+    SET_current_operation("In flight");
+}
+
+void plane::landing()
+{
+    SET_current_operation("Arriving at gate");
+    // gettimeofday stuff...
+
+    // add last flight's hours to total flight hours
+    SET_hours_operated(GET_hours_operated()+GET_actual_flight_time());
+
+    // ------------------------------------------------------------------------
     // UNLOADING
 
     SET_current_operation("Dismbarking");
     // time check, record time
     
     SET_current_location(/*current location*/);
-
-    // add last flight's hours to total flight hours
-    SET_hours_operated(GET_hours_operated()+GET_actual_flight_time());
 
     // ------------------------------------------------------------------------
     // MAINTENANCE
@@ -278,28 +302,12 @@ void plane::takeoff()
     }
     else
         SET_destination(/*rng from array of destinations*/);
-
-    // ------------------------------------------------------------------------
-    // BOARDING
-
-    SET_current_operation("Boarding");
-
-    SET_departure_gate(/*gate E11*/);
-    SET_destination("California");
-    //SET_flight_nunber("CA1234");
-    SET_departure_time(/*11:00*/);
-    SET_projected_flight_time(/*flight eta*/);
-
-    SET_current_passengers(/*constrained rng*/);
-
-    SET_current_operation("Taking off");
-    // gettimeofday stuff ...
 }
 
+// ----------------------------------------------------------------------------
+// DEBUG, INFO
 
-/*
-        void landing();
-        void update_destination();
-
-        void get_plane_info();
-*/
+void plane::get_plane_info()
+{
+    
+}
