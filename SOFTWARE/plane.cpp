@@ -220,7 +220,7 @@ void plane::SET_flight_path(flight_distance flight_path_in)
 // ----------------------------------------------------------------------------
 // BOOLS
 
-bool plane::maintenance_check();
+bool plane::maintenance_check()
 {
     if(GET_hours_operated() >= 200)
         return true;
@@ -228,15 +228,28 @@ bool plane::maintenance_check();
         return false;
 }
 
+bool plane::is_valid_destination()
+{
+    if(/*distance between 2 destinations is > 150 mi*/)
+        return true;
+    else
+        return false;
+}
+
+// ----------------------------------------------------------------------------
+// FLIGHT
+
+void plane::takeoff()
+{
+    SET_departure_time(/*11:00*/);
+
+    SET_current_passengers(/*constrained rng*/);
+}
+
+
 /*
 class plane {
    public:
-
-        // bool checks
-        bool maintenance_check();
-        bool is_valid_destination();
-
-        // flight
         void takeoff();
         void landing();
         void update_destination();
