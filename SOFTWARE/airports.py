@@ -1,4 +1,5 @@
 #from wheres_your_md import my_dick
+import queue
 
 #
 # airport class
@@ -74,7 +75,14 @@ class Airport:
     # pre-condition:  
     # post-condition: 
     def tarmac_queue(self):
-        pass
+        # create queue object
+        tarmac = queue.Queue()
+        
+        # plane lands -> check for gate
+        # if gate:
+        #     goto gate
+        # else:
+        #     add to queue <- this here
     
     
     # description: function for "factory"
@@ -82,4 +90,5 @@ class Airport:
     # post-condition: 
     def factory(self):
         pass
+    # idk what this is I forgot
 
