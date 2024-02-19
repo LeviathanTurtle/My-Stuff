@@ -1,12 +1,12 @@
 # Team: Foobar
 # Teammates: Anthony Cox, Corey Lawrence, Dylan Hudson, Parker Blue, Will Wadsworth, Zach Christopher
-# Authors: Anthony Cox, Will Wadsworth
+# Authors: Corey Lawrence, Zach Christopher
 # Date: 2/16/2024
 #
 # Description:
 #   This module defines and implements the model class `Airport`
 
-#from wheres_your_md import my_dick
+
 import queue
 
 
