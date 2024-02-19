@@ -51,7 +51,7 @@ class Airport:
     
     # description: determines the number of gates at the airport (hubs have 11, others have one
     #              gate per million people in their metro population, with a max of 5)
-    # pre-condition: Airport object must be initialized 
+    # pre-condition: Airport object must be initialized and its IATA code must not be null
     # post-condition: The airport's number of gates is updated 
     def determine_gates(self):
         if self.is_hub():
@@ -66,7 +66,7 @@ class Airport:
     
     
     # description: determines if the airport can fly to paris
-    # pre-condition: Airport object must be initialized 
+    # pre-condition: Airport object must be initialized and its IATA code must not be null
     # post-condition: If the aiport is Atlanta, its paris_acceptable bool is updated, and True is
     #                 returned. Otherwise, False is returned 
     def is_paris(self):
