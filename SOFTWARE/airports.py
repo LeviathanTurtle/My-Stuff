@@ -32,7 +32,6 @@ class Airport:
         self.landing_fee = landing_fee
         self.gas_price = gas_price
         # can it have flights to paris
-        # default of false because only 1 (?) will be True
         self.paris_acceptable = paris_acceptable
         # how many gates does the airport have?
         self.num_gates = num_gates
