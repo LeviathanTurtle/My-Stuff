@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebAssembly Example by ChatGPT</title>
+</head>
+<body>
+    <h1>Running C code in a webpage with WebAssembly</h1>
+    <script>
+        // Load and run the WebAssembly module
+        const wasmModule = new WebAssembly.Module(await fetch('example.wasm').then(response => response.arrayBuffer()));
+        const instance = new WebAssembly.Instance(wasmModule);
+        
+        // Call the exported function
+        instance.exports._main(); // "_main" is the name of the exported function from our C code
+    </script>
+</body>
+</html>
