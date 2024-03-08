@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+
+<!--
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,5 +17,48 @@
         // Call the exported function
         instance.exports._main(); // "_main" is the name of the exported function from our C code
     </script>
+</body>
+</html>
+-->
+
+<!--
+<html>
+<head>
+  <title>WebAssembly C Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/@assemblyscript/loader"></script>
+  <script>
+    // Load and run the WebAssembly module
+    async function run() {
+      const module = await WebAssembly.instantiateStreaming(fetch('example.wasm'));
+      const result = module.instance.exports.main(); // Call the 'add' function exported from the C module
+      console.log('Result:', result); // Print the result
+    }
+    run();
+  </script>
+</head>
+<body>
+  <p>this is normal text</p>
+</body>
+</html>
+-->
+
+
+<html>
+<head>
+  <title>WebAssembly C Example</title>
+  <script>
+    async function run() {
+      const response = await fetch('example.wasm');
+      const bytes = await response.arrayBuffer();
+      const module = await WebAssembly.instantiate(bytes);
+      const { add } = module.instance.exports;
+      const result = add(3, 4);
+      console.log('Result:', result);
+    }
+    run();
+  </script>
+</head>
+<body>
+    <p>this is normal text</p>
 </body>
 </html>
