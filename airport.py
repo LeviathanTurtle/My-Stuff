@@ -6,7 +6,7 @@
 # Description:
 #   This module defines and implements the model class `Airport`.
 
-import decimal
+from decimal import Decimal
 from queue import Queue
 from typing import Type
 from aircraft import AircraftType
@@ -15,8 +15,8 @@ class Airport:
     """Model class. A generic representation of an airport."""
     def __init__(
             self, name: str, iata_code: str, city: str, state: str, metro_population: int, is_hub: bool,
-            available_gates: int, latitude: float, longitude: float, gas_price: decimal, takeoff_fee: decimal,
-            landing_fee: decimal, tarmac: Queue[Type[AircraftType]]#, paris_connected: bool
+            available_gates: int, latitude: float, longitude: float, gas_price: Decimal, takeoff_fee: Decimal,
+            landing_fee: Decimal, tarmac: Queue[Type[AircraftType]]#, paris_connected: bool
         ):
         self.name = name
         self.iata_code = iata_code
