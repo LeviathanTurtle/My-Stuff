@@ -1,3 +1,10 @@
+/* NUMBER OF CONTENTS IN A FILE -- V.PY
+ * William Wadsworth
+ * CSC1710
+ * 3.13.2024
+ * 
+ * This program reads through the contents of a file and counts how many itmes are in it.
+*/ 
 
 #include <iostream>
 #include <fstream>
