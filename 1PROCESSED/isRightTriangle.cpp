@@ -18,7 +18,7 @@ int main ()
     int a, b, c;
 
     // prompt for sides
-    cout << "Give 3 sides of a triangle.\n Must be rounded to the nearest "
+    cout << "Give 3 sides of a triangle.\nMust be rounded to the nearest "
          << "whole, > 0, and in order of a b c (e.g. 3 4 5): " << endl;
     // store in respective variables
     cin >> a >> b >> c;
