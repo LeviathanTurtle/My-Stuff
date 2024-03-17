@@ -28,7 +28,7 @@
 # 50 has 5 multiples of 10
 # 
 # [EXIT CODES]:
-# 1 - 
+# 1 - incorrect CLI argument usage
 
 
 # --- IMPORTS ---------------------------------------------------------------------------

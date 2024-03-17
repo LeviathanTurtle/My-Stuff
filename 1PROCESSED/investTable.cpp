@@ -99,14 +99,12 @@ int main ()
     cout << fixed << showpoint << setprecision(2);
 
     // table for changing interest
-    if (inp == "yes")
-    {
+    if (inp == "yes") {
         cout << setw(35) << "Investment Table" << endl << " " << endl;
         cout << "  Month  |  Total Invested ($)  | Value of Investment ($) " << endl;
         cout << "----------------------------------------------------------" << endl;
 
-        while (t <= y)
-        {
+        while (t <= y) {
             A = p + (p*r*t) + (t*d);
             cout << setw(5) << t << setw(5) << "|" << setw(13) << t*d << setw(10) << "|" << setw(16) << A << endl;
             t++;
@@ -116,14 +114,12 @@ int main ()
         }
     }
     // table for constant interest
-    else
-    {
+    else {
         cout << setw(35) << "Investment Table" << endl << " " << endl;
         cout << "  Month  |  Total Invested ($)  | Value of Investment ($) " << endl;
         cout << "----------------------------------------------------------" << endl;
 
-        while (t <= y)
-        {
+        while (t <= y) {
 	         A = p + (p*r*t) + (t*d);
             cout << setw(5) << t << setw(5) << "|" << setw(14) << t*d << setw(9) << "|" << setw(16) << A << endl;
             t++;
