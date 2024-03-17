@@ -5,6 +5,10 @@
 #  
 # This program reads through the contents of a file and counts how many itmes are in it.
 # 
+# [USAGE]:
+# To run:
+#     python3 numberOfFileContents.py <filename>
+# 
 # [EXIT CODES]:
 # 1 - incorrect CLI argument usage
 # 
