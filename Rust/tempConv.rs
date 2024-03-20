@@ -2,32 +2,54 @@
  * William Wadsworth
  * CSC1710
  * Created: 1.10.2020
- * ~/csc1710/lab7/wadsworthlab7.cpp
+ * Rust-ified: 3.20.2024
  * 
  * This program creates a temperature conversion chart based on a degree given
  * in Fahrenheit, incrementing by a value imput by the user.
 */
 
+// --- IMPORTS --------------------------------------------------------------------------
+/*
 #include <iostream>
 #include <iomanip>
 using namespace std;
+*/
+use std::io;
 
+// --- MAIN -----------------------------------------------------------------------------
+// --- INTRODUCTION -----------------------------
+/*
 int main ()
 {
-    // introduction
     cout << "This program creates a temperature conversion chart based on a "
          << "degree given in Fahrenheit, incrementing by a value you choose. "
          << "\nAll values must be rounded to the nearest thousandth.\n";
+*/
+//fn main() -> io::Result<()> 
+fn main() {
+    println!("This program creates a temperature conversion chart based on a degree given in \
+             Fahrenheit, incrementing by a value you choose.\nAll values must be rounded to the \
+             nearest thousandth.\n");
 
-    // confirm
+// --- CONFIRMATION -----------------------------
+/*
     cout << "Do you want to run this program? [Y/n]: ";
     char confirmation;
     cin >> confirmation;
-    // if declined, terminate
+
     if(confirmation == 'n') {
         cout << "terminating...\n";
         exit(0);
     }
+*/
+    println!("Do you want to run this program? [Y/n]: ");
+    let mut confirmation = char;
+    io::stdin().read_line(&mut confirmation).expect("Failed to read response");
+
+
+
+
+}
     
     // display 3 decimal places in output
     cout << fixed << showpoint << setprecision(3);
