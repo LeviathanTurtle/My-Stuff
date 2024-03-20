@@ -2,19 +2,7 @@
  * WILLIAM WADSWORTH
  * Created: 10.5.2023
  * Doctored: 10.7.2023*
- * Updated: 10.23.2023 -- added optional flag -m to specify matrix construction,
- *                        offloaded bulk of program to functions (made it more
- *                        modular), updated documentation, added function
- *                        prototypes, updated confirmation checks, included
- *                        filename in error for file creation checks, updated 
- *                        argument count error to show a more helpful message.
  * 
- * Updated: 10.24.2023 -- added random character and string generation, added
- *                        optional debug flag -d, various output messages if in
- *                        debugging mode, updated documentation, added range of
- *                        values check.
- *
- * Updated: 10.31.2023 -- promoted alphabet and DEBUG flag to global variables
  * CSC-4510
  * ~/csc4510/prog3-sort/Source/create_test.cpp
  * 
@@ -31,6 +19,7 @@
  * optional -m flag is present, the program will output the data in matrix
  * form: first the dimensions, then the data. Matrix output is limited to
  * numerical datatypes and characters.
+ * Revision hitory and notes are at the bottom.
  * 
  * 
  * [COMPILE/RUN]:
@@ -87,29 +76,6 @@
 #include <cstdlib>      // popen(), pclose()
 using namespace std;
 
-// THE IDEA IS TO EXECUTE A BASH COMMAND TO HELP CREATE THE PROPER TEST FILE NAME
-/* THE PROCESS
- * This was my original approach:
- *
- *      string filenum = argv[4];   <- argv[4] is the command
- *      ofstream outfile ("test"+filenum);
- *
- * after errors (and noticing it would create the wrong named file), it became:
- * 
- *      string filenum = argv[4];
- *      int number = stoi(filenum)+1;
- *      ofstream outfile ("test"+to_string(number));
- * 
- * after executing, the following error came:
- * 
- *      terminate called after throwing an instance of 'std::invalid_argument'
- *      what(): stoi
- *      Aborted (core dumped).
- * 
- * after some research, I learned this is when stoi() fails to convert string
- * to integer. I asked ChatGPT for a solution, and this is what it gave me.
-*/
-
 
 // function prototypes
 //                  CLI command
@@ -130,6 +96,17 @@ char alphabet[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 // maybe use printf instead of cout?
 int main(int argc, char* argv[])
 {
+    // check if I/O redirection is used correctly (must be 4, 5, or 6 flags)
+    // 4 required flags, +2 optional (6)
+    //if(argc != 4 && argc != 5 && argc != 6) {
+    if(argc < 4 || argc > 6) {
+        cerr << "error: must have 4, 5, or 6 arguments: exe, -d flag (optional)"
+             << ", -m flag (optional), number of cases, range of values, "
+             << "datatype. only " << argc << " arguments were provided." << endl;
+        return 1; // return 1 (stdout) vs. return 2 (stderr)?
+    }
+
+
     // introduction
     cout << "This program generates a test file (./TestFiles) where the "
          << "user specifies the number of values, range, and type\n";
@@ -146,16 +123,6 @@ int main(int argc, char* argv[])
     }
     // using 0 for exit because it is successful - user specified
     // would normally use >0 if for error
-
-    // check if I/O redirection is used correctly (must be 4, 5, or 6 flags)
-    // 4 required flags, +2 optional (6)
-    //if(argc != 4 && argc != 5 && argc != 6) {
-    if(argc < 4 || argc > 6) {
-        cerr << "error: must have 4, 5, or 6 arguments: exe, -d flag (optional)"
-             << ", -m flag (optional), number of cases, range of values, "
-             << "datatype. only " << argc << " arguments were provided." << endl;
-        return 1; // return 1 (stdout) vs. return 2 (stderr)?
-    }
     
 
     // number of cases, range of values
@@ -164,7 +131,6 @@ int main(int argc, char* argv[])
     // boolean for debug output
     //bool DEBUG = false;
     // promote to global variable? would not have to pass to each function
-
 
 
     // should this be cleaned up? can it?
@@ -307,7 +273,7 @@ int executeCommand(const string& command)
     
     //                         (notes)
     //                            V
-    FILE* pipe = _popen(command.c_str(), "r");
+    FILE* pipe = popen(command.c_str(), "r");
     //        open command in read mode   ^ 
 
     // if pipe opening was unsuccessful, throw error
@@ -333,7 +299,7 @@ int executeCommand(const string& command)
 
     // REMOVE _ AFTER UPLOADING (_pclose() -> pclose())
     // close the pipe, return command result
-    _pclose(pipe);
+    pclose(pipe);
 
     // DEBUG
     if(DEBUG)
@@ -372,9 +338,23 @@ void loadMatrix(const int& N, const int& T, const char* datatype)
     
     //  CONFIRMATION
     cout << "\nYou have chosen to construct:\n" << "matrix: " << N << "x" << M;
-    cout << "\nmax value: " << T;
-    cout << "\ntype: " << datatype;
-    cout << "\n\nConfirm [Y/n]: ";
+
+    // check if user wants to create an identity matrix
+    char ident;
+    cout << "\nWould you like this matrix to be the identity? [Y/n]: ";
+    cin >> ident;
+
+    // assume true, will override if false
+    bool isIdentity = true;
+    switch(ident) {
+        case 'n':
+            isIdentity = false;
+            cout << "\nmax value: " << T;
+            cout << "\ntype: " << datatype;
+            break;
+    }
+    
+    cout << "\nConfirm [Y/n]: ";
     char conf;
     cin >> conf;
 
@@ -389,6 +369,8 @@ void loadMatrix(const int& N, const int& T, const char* datatype)
         // DEBUG
         if(DEBUG)
             cout << "\nloadMatrix: beginning file write\n";
+
+        
 
         int testFileNum = executeCommand("ls TestFiles/matrix-test* | wc -l")+1;
         ofstream outputFile ("matrix-test"+to_string(testFileNum));
@@ -409,6 +391,25 @@ void loadMatrix(const int& N, const int& T, const char* datatype)
             outputFile << N << " " << M << endl;
 
         
+        // create identity
+        if(isIdentity) {
+            if(N==M) {
+                for(int i=0; i<N; i++) {
+                    for(int j=0; j<M; j++)
+                        if(i == j)
+                            outputFile << 1 << " ";
+                        else
+                            outputFile << 0 << " ";
+                    outputFile << endl;
+                }
+            }
+            else {
+                cerr << "error: identity matrices must be equal (matrix must be square)\n";
+                exit(2);
+            }
+        }
+
+
         // integer
         if(strcmp(datatype,"INT") == 0)
             for(int i=0; i<N; i++) {
@@ -611,6 +612,51 @@ void loadFile(const int& N, const int& T, const char* datatype)
 }
 
 
+/* REVISION HISTORY
+ * Updated: 10.23.2023 -- added optional flag -m to specify matrix construction,
+ *                        offloaded bulk of program to functions (made it more
+ *                        modular), updated documentation, added function
+ *                        prototypes, updated confirmation checks, included
+ *                        filename in error for file creation checks, updated 
+ *                        argument count error to show a more helpful message.
+ * 
+ * Updated: 10.24.2023 -- added random character and string generation, added
+ *                        optional debug flag -d, various output messages if in
+ *                        debugging mode, updated documentation, added range of
+ *                        values check.
+ *
+ * Updated: 10.31.2023 -- promoted alphabet and DEBUG flag to global variables
+ * 
+ * Updated: 3.20.2024 -- added option to create identity matrix. TODO: export 
+ *                       a few things to new functions.
+*/
+
+
+/* BACKGROUND ON BASH COMMANDS IN THIS PROGRAM
+ *
+ * THE IDEA IS TO EXECUTE A BASH COMMAND TO HELP CREATE THE PROPER TEST FILE NAME
+ * This was my original approach:
+ *
+ *      string filenum = argv[4];   <- argv[4] is the command
+ *      ofstream outfile ("test"+filenum);
+ *
+ * after errors (and noticing it would create the wrong named file), it became:
+ * 
+ *      string filenum = argv[4];
+ *      int number = stoi(filenum)+1;
+ *      ofstream outfile ("test"+to_string(number));
+ * 
+ * after executing, the following error came:
+ * 
+ *      terminate called after throwing an instance of 'std::invalid_argument'
+ *      what(): stoi
+ *      Aborted (core dumped).
+ * 
+ * after some research, I learned this is when stoi() fails to convert string
+ * to integer. I asked ChatGPT for a solution, and I used what it gave me.
+*/
+
+
 /* FULL LIST OF THINGS REFERENCED, RESEARCHED, OR TAKEN FROM CHATGPT
  *
  * 
@@ -661,3 +707,4 @@ void loadFile(const int& N, const int& T, const char* datatype)
  * unsigned integer type, and the loop variable i is of type int, which is
  * signed"
 */
+
