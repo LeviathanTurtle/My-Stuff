@@ -203,10 +203,10 @@ A suite of Python classes that serve as the fundamental objects. All are Python 
     - the baseline flight class containing the flight number, scheduled time, aircraft type, flight path (route), and number of passengers.
 4. `passenger`:
     - the baseline passenger class containing the source airport of the passenger, location of the passenger, the passenger's destination, number of flights taken, and a unique passenger ID.
-    - a function to return the passenger's expected departure time.
-    - a function to return the passenger's actual departure time.
-    - a function to return the passenger's expected arrival time.
-    - a function to return the passenger's actual arrival time.
+    - `expected_departure_time` -- return the passenger's expected departure time.
+    - `actual_departure_time` -- return the passenger's actual departure time.
+    - `expected_arrival_time` -- return the passenger's expected arrival time.
+    - `actual_departure_time` -- return the passenger's actual arrival time.
 5. `route`:
     - the baseline route class containing the type of aircraft flying said route, the source airport, destination airport, flight path distance, daily passengers, estimated flight time, and fuel requirement.
 The following modules are helper or main modules.
