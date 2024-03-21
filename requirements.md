@@ -194,7 +194,7 @@ A suite of Python classes that serve as the fundamental objects. All are Python 
 5. `route` -- the baseline route class (contains details about the flight path).
 6. `reference_wrapper` -- class used to pass primitive types by reference in Python.
 7. `processors` -- defines several functions in a function pipeline that transforms a log event.
-8. `simulation` -- tmp
+8. `simulation` -- tmp class that contains details about the simulation.
 9. `constants` -- holds all constant values used.
 10. `main` -- entry point to the program, and takes care of all pre-program initialization before starting.
 
