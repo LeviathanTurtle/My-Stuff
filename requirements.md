@@ -164,6 +164,7 @@ and testability
 - Time should be stored in UTC in ISO 8601-compliant formats
 
 # 4. Deliverables
+The following subsections will all be delivered to the client. 
 
 ## 4.1 Data 
 A suite of .csv data files that are used by the scripts. The following list details the name of the file and its contents.
@@ -171,6 +172,8 @@ A suite of .csv data files that are used by the scripts. The following list deta
 2. `airports` -- rank (based on most popular), airport name, IATA code, city, state, metropolitan area, metropolitan population, latitude, longitude.
 3. `flight_fuel_capacity` -- source airport, destination airport, fuel for Boeing 737-600 (gallons), fuel for Boeing 767-800 (gallons), fuel for Airbus A200-100 (gallons), fuel for Airbus A220-300 (gallons).
 4. `flight_master_record` -- source airport, destination airport, distance (weighted km), fuel, number of passengers, aircraft type, expected time, ticket cost, net profit.
+
+tmp archive `flight_weighted_distances`, `flight_times`, `flight_profit_loss`?, `flight_demand`, `flights`
 
 ## 4.2 Scripts
 A suite of Python scripts that helped us create, edit, or merge data files. The following list details the name of the script and what it does. All scripts create a .csv data file.
