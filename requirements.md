@@ -10,8 +10,8 @@ The table of contents provide quick-access to the major sections of the document
 2. [Functional Requirements](#2-functional-requirements)
 3. [Non-functional Requirements](#3-non-functional-requirements)
 4. [Deliverables](#4-delivables)
-5. [Assurance](#5-assurance)
-6. [Unattempted Functionality](#6-unattempted-functionality)
+5. [Unattempted Functionality](#5-unattempted-functionality)
+6. [Assurance](#6-assurance)
 7. [Appendix](#6-appendix)
 
 # 1. Introduction
@@ -165,28 +165,68 @@ and testability
 
 # 4. Deliverables
 
+## 4.1 Data 
+A suite of .csv data files that are used by the scripts. The following list details the name of the file and its contents.
+1. `aircraft` -- aircraft name, passenger capacity, max speed (in km/h), max fuel (gallons), max range (km), and miles per galon.
+2. `airports` -- rank (based on most popular), airport name, IATA code, city, state, metropolitan area, metropolitan population, latitude, longitude.
+3. `flight_fuel_capacity` -- source airport, destination airport, fuel for Boeing 737-600 (gallons), fuel for Boeing 767-800 (gallons), fuel for Airbus A200-100 (gallons), fuel for Airbus A220-300 (gallons).
+4. `flight_master_record` -- source airport, destination airport, distance (weighted km), fuel, number of passengers, aircraft type, expected time, ticket cost, net profit.
 
+## 4.2 Scripts
+A suite of Python scripts that helped us create, edit, or merge data files. The following list details the name of the script and what it does. All scripts create a .csv data file.
+1. `flight_combine` -- creates an aggregated list of: source airport, destination airport, distance, number of passengers.
+2. `flight_demand` -- creates a list of flights between each airport and the number of passengers (based on 0.5% of the source airport's metropolitan population) that want to take that flight (for a 2% market share) each day.
+3. `flight_fuel_capacity` -- creates a list of flights between each airport and the amount of fuel required for it.
+4. `flight_master_record` -- creates an aggregated list of: source airport, destination airport, distance, fuel required, number of passengers, profit.
+5. `flight_profit_or_loss` -- creates a list of all possible flight combinations between the 4 planes and over 800 routes. Note: this script creates two .csv files: one for profitable flights and one for unprofitable flights. This script is purely a monetary calculation, and does not account for max fuel capacity, refuel, etc. It only accounts for a generic takeoff and landing fee, and gas price.
+6. `flight_profit_per_hour` -- identical to `flight_profit_or_loss`, but determines the profit or loss by the hour.
+7. `flight_times` -- creates a list of the estimated flight times between pairs of airports.
+8. `flight_weighted_distances` -- creates a list of the weighted distances between pairs of airports. 
+9. `overlapping_airports` -- creates a filtered mapping of metropolitan areas to airports where the airports share the same metropolitan area.
+10. `pipline.ps1` -- powershell script to run the following scripts in order: `flight_weighted_distances`, `flight_demand`, `flight_fuel_capacity`, `flight_combine`, `flight_profit_or_loss`.
 
+## 4.3 Models
+A suite of Python classes that serve as the fundamental objects. All are Python scripts. The following list details the name of the module and what it contains.
+1. `aircraft` -- the baseline aircraft class (contains properties of an aircraft), an enumerated aircraft type class, an enumerated aircraft status class, an aircraft factory class (for determining the next tail number and initialize an aircraft), a dictionary of wait timers.
+2. `airport` -- the baseline airport class (contains details about an airport), an enumerated airport type class. 
+3. `flight` -- the baseline flight class (contains the details of a flight), a flight factory class (for creating a new flight instance).
+4. `passenger` -- the baseline passenger class (contains details about a passenger). 
+5. `route` -- the baseline route class (contains details about the flight path).
+6. `reference_wrapper` -- class used to pass primitive types by reference in Python.
+7. `processors` -- defines several functions in a function pipeline that transforms a log event.
+8. `simulation` -- tmp
+9. `constants` -- holds all constant values used.
+10. `main` -- entry point to the program, and takes care of all pre-program initialization before starting.
 
+## 4.4 Documentation
+These documents detail the thought process as well as specifics about the execution. As stated before, all documentation follows the Markdown format.
+1. `algorithm` -- contains definitions of phrases used, progam input and output, aircraft statuses, ledger entries, and pseudocode for the main algorithm.
+2. `docker` -- notes on how to use the docker, with links to official docker documentation.
+3. `logging` -- details on the usage and implementation of logging information.
+4. `requirements` -- software requirements specification (this document).
+5. `testing` -- details types of testing, and the method of testing.
+The following directories contain multiple documents about their topics.
+1. `diagrams` -- contains outlines of modules and an Entity Relational Diagram (ERD) of the database.
+2. `meeting minutes` -- notes about what the group discussed in group meetings.
+3. `process` -- a rough introduction to the process, if one were to re-create this project.
+4. `standards` -- project specifications for code, documentation, and the general project. 
+5. `timeline` -- a rough timeline of production.
 
+## 4.5 Database
+The client will receive a database that contains tmp
 
 # 5. Unattempted Functionality
 n/a.
 
+# 6. Assurance
 
-
-
-
-
-# 5. Assurance
-
-## 5.1 Client Feedback
+## 6.1 Client Feedback
 The development team must meet with the client at least once per week to update the client on their progress and 
 present their development plans for the following week for approval. The presentation should include the team' s
 understanding of the functional and non-functional requirements to be planned or implemented that week. By the end
 of the meeting with the client, the development team must have a clear requirements specification.
 
-## 5.2 Software Testing
+## 6.2 Software Testing
 All software should be rigorously tested to ensure the developed software complies with client requirements. Application
 code should be tested with PyTest for a minimum of 50% code coverage. These tests must include unit, integration, and 
 system tests. Software tests will be integrated into the development workflow to ensure any commit does not inadvertently
