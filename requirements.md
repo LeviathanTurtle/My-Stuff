@@ -206,7 +206,7 @@ A suite of Python classes that serve as the fundamental objects. All are Python 
     - `expected_departure_time` -- return the passenger's expected departure time.
     - `actual_departure_time` -- return the passenger's actual departure time.
     - `expected_arrival_time` -- return the passenger's expected arrival time.
-    - `actual_departure_time` -- return the passenger's actual arrival time.
+    - `actual_arrival_time` -- return the passenger's actual arrival time.
 5. `route`:
     - the baseline route class containing the type of aircraft flying said route, the source airport, destination airport, flight path distance, daily passengers, estimated flight time, and fuel requirement.
 The following modules are helper or main modules.
