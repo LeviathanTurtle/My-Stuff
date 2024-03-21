@@ -171,9 +171,7 @@ A suite of .csv data files that are used by the scripts. The following list deta
 1. `aircraft` -- aircraft name, passenger capacity, max speed (in km/h), max fuel (gallons), max range (km), and miles per galon.
 2. `airports` -- rank (based on most popular), airport name, IATA code, city, state, metropolitan area, metropolitan population, latitude, longitude.
 3. `flight_fuel_capacity` -- source airport, destination airport, fuel for Boeing 737-600 (gallons), fuel for Boeing 767-800 (gallons), fuel for Airbus A200-100 (gallons), fuel for Airbus A220-300 (gallons).
-4. `flight_master_record` -- source airport, destination airport, distance (weighted km), fuel, number of passengers, aircraft type, expected time, ticket cost, net profit.
-
-tmp archive `flight_weighted_distances`, `flight_times`, `flight_profit_loss`?, `flight_demand`, `flights`
+4. `flight_master_record` -- source airport, destination airport, distance (weighted km), fuel, number of passengers, aircraft type, expected time, ticket cost, net profit. This is a merge of tmp other scripts.
 
 ## 4.2 Scripts
 A suite of Python scripts that helped us create, edit, or merge data files. The following list details the name of the script and what it does. All scripts create a .csv data file.
@@ -190,11 +188,28 @@ A suite of Python scripts that helped us create, edit, or merge data files. The 
 
 ## 4.3 Models
 A suite of Python classes that serve as the fundamental objects. All are Python scripts. The following list details the name of the module and what it contains.
-1. `aircraft` -- the baseline aircraft class (contains properties of an aircraft), an enumerated aircraft type class, an enumerated aircraft status class, an aircraft factory class (for determining the next tail number and initialize an aircraft), a dictionary of wait timers.
-2. `airport` -- the baseline airport class (contains details about an airport), an enumerated airport type class. 
-3. `flight` -- the baseline flight class (contains the details of a flight), a flight factory class (for creating a new flight instance).
-4. `passenger` -- the baseline passenger class (contains details about a passenger). 
-5. `route` -- the baseline route class (contains details about the flight path).
+1. `aircraft`:
+    - the baseline aircraft class containing aircraft name, model type, status, location, tail number, passenger capacity, cruise speed, fuel level, feul capacity, fuel efficiency, max range, and a wait timer for its status.
+    - an enumerated aircraft type class for determining the model aircraft.
+    - an enumerated aircraft status class for determing what the aircraft is currently doing.
+    - an aircraft factory class (for determining the next tail number and initialize an aircraft) that contains the following functions:
+        - `__next_tail_number` -- calculates the plane's tail number.
+        - `create_aircraft` -- creates an aircraft object and initializes it with appropriate values.
+    - a dictionary of wait timers.
+2. `airport`:
+    - the baseline airport class containing the airport name, IATA code, city, state, metropolitan population, if the airport is a hub, available gates, latitude, longitude, gas price, takeoff fee, landing fee, and a tarmac queue.
+    - an enumerated airport type class for determining if the airport is a hub or not.
+3. `flight`:
+    - the baseline flight class containing the flight number, scheduled time, aircraft type, flight path (route), and number of passengers.
+4. `passenger`:
+    - the baseline passenger class containing the source airport of the passenger, location of the passenger, the passenger's destination, number of flights taken, and a unique passenger ID.
+    - a function to return the passenger's expected departure time.
+    - a function to return the passenger's actual departure time.
+    - a function to return the passenger's expected arrival time.
+    - a function to return the passenger's actual arrival time.
+5. `route`:
+    - the baseline route class containing the type of aircraft flying said route, the source airport, destination airport, flight path distance, daily passengers, estimated flight time, and fuel requirement.
+The following modules are helper or main modules.
 6. `reference_wrapper` -- class used to pass primitive types by reference in Python.
 7. `processors` -- defines several functions in a function pipeline that transforms a log event.
 8. `simulation` -- tmp class that contains details about the simulation.
