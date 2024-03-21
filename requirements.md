@@ -9,7 +9,7 @@ The table of contents provide quick-access to the major sections of the document
 1. [Introduction](#1-introduction)
 2. [Functional Requirements](#2-functional-requirements)
 3. [Non-functional Requirements](#3-non-functional-requirements)
-4. [Deliverables](#4-delivables)
+4. [Deliverables](#4-deliverables)
 5. [Unattempted Functionality](#5-unattempted-functionality)
 6. [Assurance](#6-assurance)
 7. [Appendix](#6-appendix)
