@@ -1,46 +1,41 @@
-/* TEST SCORE ANALYSIS
- * William Wadsworth
- * Created: 11.12.2020
- * Doctored: 11.14.2023
- * CSC1710
- * ~/csc1710/lab12
- * 
- * 
- * [DESCRIPTION]:
- * This program takes a data file from argv and processes a number of students'
- * test grade (number of students is also provided in argv). The program then
- * assigns a letter grade to the student based on their (one) test score.
- *
- *
- * [COMPILE/RUN]:
- * To compile:
- *     g++ letterGradeAssignment.cpp -Wall -o letterGradeAssignment
- *
- * To run (3 args):
- *     ./letterGradeAssignment <number of students> <data file>
- *
- *
- * [DATA FILE STRUCTURE]:
- * <first name> <last name> <test score>
- *
- *
- * [EXIT/TERMINATING CODES]:
- * 0 - program successfully completed a full execution
- *
- * 1 - CLI args used incorrectly
- *
- * 2 - file unable to be opened or created
-*/
+# TEST SCORE ANALYSIS -- V.PY
+# William Wadsworth
+# CSC1710
+# Created: 11.12.2020
+# Doctored: 11.14.2023
+# Python-ized: 3.25.2024
+# 
+# [DESCRIPTION]:
+# This program takes a data file from argv and processes a number of students' test grade (number 
+# of students is also provided in argv). The program then assigns a letter grade to the student
+# based on their (one) test score.
+# 
+# [USAGE]:
+# To run:
+#     python3 letterGradeAssignment.py <number of students> <data file>
+# 
+# [DATA FILE STRUCTURE]:
+# <first name> <last name> <test score>
+# 
+# [EXIT/TERMINATING CODES]:
+# 0 - program successfully completed a full execution
+# 
+# 1 - CLI args used incorrectly
+# 
+# 2 - file unable to be opened or created
 
-
-// libraries
+# --- IMPORTS ---------------------------------------------------------------------------
+"""
 #include <iostream>
 #include <fstream>
 #include <iomanip>
 using namespace std;
+"""
+import sys
+from dataclasses import dataclass
 
-
-// data struct
+# --- OBJECTS ---------------------------------------------------------------------------
+"""
 struct studentType
 {
     string studentFName;
@@ -48,6 +43,30 @@ struct studentType
     int testScore;
     char grade;
 };
+"""
+# data 'struct'
+@dataclass
+class studentType:
+    first_name: str
+    last_name: str
+    test_score: int
+    grade: str
+
+# --- MAIN ------------------------------------------------------------------------------
+# --- CHECK CLI ARGS ----------------------------
+"""
+int main(int argc, char* argv[])
+{
+    if(argc != 3) {
+        cerr << "error: CLI args invalid. Enter: ./REPLACETHIS <number of "
+             << "students> <data file>.\n";
+        exit(1);
+    }
+"""
+if len(sys.argv) < 2:
+    print("Usage: python3 numberOfFileContents.py filename")
+    sys.exit(1)
+
 
 
 // FUNCTION PROTOTYPES
@@ -70,14 +89,7 @@ int highestScore(studentType*, const int&);
 void studentScores(studentType*, const int&, const int);
 
 
-int main(int argc, char* argv[])
-{
-    // process CL
-    if(argc != 3) {
-        cerr << "error: CLI args invalid. Enter: ./REPLACETHIS <number of "
-             << "students> <data file>.\n";
-        exit(1);
-    }
+
 
     // get number of students to process from CL
     const int numStudents = atoi(argv[1]);
