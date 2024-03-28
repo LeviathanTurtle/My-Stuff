@@ -155,6 +155,7 @@ def printRows(array, num_students, largest_name):
     spacing = largest_name + 2
     
     for i in range(0,num_students):
+        print(f"{array[i].first_name} {array[i].last_name}")
         
 
 # --- HIGHEST SCORE -----------------------------
