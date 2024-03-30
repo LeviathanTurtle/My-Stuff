@@ -155,7 +155,7 @@ def printRows(array, num_students, largest_name):
     spacing = largest_name + 2
     
     for i in range(0,num_students):
-        print(f"{array[i].first_name} {array[i].last_name: <{spacing}} {array[i].test_score: <12} {array[i].grade}")
+        print(f"{array[i].first_name} {array[i].last_name:<{spacing}} {array[i].test_score:<12} {array[i].grade}")
         
 
 # --- HIGHEST SCORE -----------------------------
@@ -173,7 +173,7 @@ int highestScore(studentType* array, const int& numStudents)
 }
 """
 # function to print highest test score
-def highestScore(array, num_students) -> int:
+def highestScores(array, num_students) -> int:
     max = array[0].test_score
     
     for i in range(1,num_students):
@@ -195,7 +195,7 @@ void studentScores(studentType* array, const int& numStudents, int maxScore)
 }
 """
 # function to print names of students with highest test score
-def studentScore(array, num_students, max_score):
+def studentScores(array, num_students, max_score):
     print(f"Student(s) with the highest score ({max_score}): ")
     
     for i in range(0,num_students):
@@ -229,36 +229,40 @@ num_students = int(sys.argv[1])
 students = [studentType() for _ in range(num_students)]
 
 # --- READ ARRAY --------------------------------
-
-
-    
-
-    // read in array
-    //void readArray(studentType* array, const int& numStudents, char* filename)
+"""
     readArray(students,numStudents,argv[2]);
+"""
+# read in array
+readArray(students,num_students,sys.argv[2])
 
-    // assign letter grade
-    //void assignGrade(studentType* array, const int& numStudents)
+# --- ASSIGN LETTER GRADE -----------------------
+"""
     assignGrade(students,numStudents);
+"""
+# assign letter grade
+assignGrade(students,num_students)
 
-    // find the largest name size for spacing in output
-    //int findNameSize(studentType* array, const int& numStudents)
+# --- FIND LARGEST NAME -------------------------
+"""
     const int largestNameSize = findLargestNameSize(students, numStudents);
+"""
+# find the largest name size for spacing in output
+largest_name_size = findLargestNameSize(students,num_students)
 
-    // categories
+# --- CATEGORIES --------------------------------
+"""
     cout << "Student Name" << setw(20) << "Test Score" << setw(10) << "Grade" << endl << endl;
-    //void printRows(studentType* array, const int& numStudents, const int& largestName)
     printRows(students,numStudents,largestNameSize);
+"""
+print(f"{'Student Name':<20} {'Test Score':<10} {'Grade'}")
+printRows(students,num_students,largest_name_size)
 
-    // show highest score
-    //cout << endl << "Highest test score: " << highestScore(students,numStudents) << endl;
-
-    // who has highest score
-    //void studentScores(studentType*, const int&, const int)
+# --- HIGHEST SCORE -----------------------------
+"""
     studentScores(students,numStudents,highestScore(students,numStudents));
 
     return 0;
 }
-
-
-
+"""
+# show highest score
+studentScores(students,num_students,highestScores(students,num_students))
