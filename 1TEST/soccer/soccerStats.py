@@ -181,7 +181,7 @@ int main (int argc, char* argv[])
     }
 """
 # check that CLI args are used correctly
-if len(sys.argv) < 2:
+if len(sys.argv) != 2:
     print("Usage: python3 soccerStats.py <input file>")
     sys.exit(1)
 

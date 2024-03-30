@@ -69,8 +69,8 @@ int main(int argc, char* argv[])
     }
     
     // in order of file
-    const int playerCount = argv[1];
-    const int holeCount = argv[2];
+    const int playerCount = atoi(argv[1]);
+    const int holeCount = atoi(argv[2]);
 
     // DATA ARRAYS
     // array for pars (of holes)
@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
 
 
     // datafile variable, open file
-    ifstream golfData (arv[3]);
+    ifstream golfData (argv[3]);
 
     // read in pars
     for (int i=0; i<holeCount; i++)
@@ -134,11 +134,11 @@ int main(int argc, char* argv[])
     // CALCULATE SUMS
 
     // array for the total strokes of the game per player
-    int* sums = new int [numPlayers];
+    int* sums = new int [playerCount];
 
     // int calculateSum(const int& playerNum, const int& holeCount, int** data)
-    for(int i=0; i<numPlayers; i++)
-        sums[i] = calculateSum(i,holeCount,data);
+    for(int i=0; i<playerCount; i++)
+        sums[i] = calculateSum(i,holeCount,results);
     
     // 78
     // 78
@@ -153,8 +153,10 @@ int main(int argc, char* argv[])
     int lowest = sums[0];
     // index in array of winning player
     int winningPlayerIndex = 0;
+    // array index
+    int i = 1;
 
-    for(int i=1; i<playerCount; i++)
+    for(i; i<playerCount; i++)
         // find the lowest score, making note of index in array
         if(lowest > sums[i]) {
             lowest = sums[i];
