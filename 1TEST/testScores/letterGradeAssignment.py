@@ -196,7 +196,11 @@ void studentScores(studentType* array, const int& numStudents, int maxScore)
 """
 # function to print names of students with highest test score
 def studentScore(array, num_students, max_score):
-    pass
+    print(f"Student(s) with the highest score ({max_score}): ")
+    
+    for i in range(0,num_students):
+        if(array[i].test_score == max_score):
+            print(f"{array[i].first_name} {array[i].last_name}")
 
 # --- MAIN ------------------------------------------------------------------------------
 # --- CHECK CLI ARGS ----------------------------
