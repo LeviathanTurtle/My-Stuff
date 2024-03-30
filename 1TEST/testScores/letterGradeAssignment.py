@@ -155,7 +155,7 @@ def printRows(array, num_students, largest_name):
     spacing = largest_name + 2
     
     for i in range(0,num_students):
-        print(f"{array[i].first_name} {array[i].last_name}")
+        print(f"{array[i].first_name} {array[i].last_name: <{spacing}} {array[i].test_score: <12} {array[i].grade}")
         
 
 # --- HIGHEST SCORE -----------------------------
@@ -173,8 +173,14 @@ int highestScore(studentType* array, const int& numStudents)
 }
 """
 # function to print highest test score
-def highestScore(array, num_students):
-    pass
+def highestScore(array, num_students) -> int:
+    max = array[0].test_score
+    
+    for i in range(1,num_students):
+        if(array[i].test_score > max):
+            max = array[i].test_score
+    
+    return max
 
 # --- STUDENT SCORE -----------------------------
 """
