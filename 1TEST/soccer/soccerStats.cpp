@@ -19,6 +19,8 @@
  * To run (2 args):
  *      ./soccerStats <input file>
  * 
+ * [INPUT FILE STRUCTURE]:
+ * first_name last_name position games goals shots minutes
  * 
  * [EXIT/TERMINATING CODES]:
  * 0 - program successfully completed a full execution
@@ -29,6 +31,7 @@
 */
 
 #include <iostream>
+#include <fstream>
 #include <iomanip>
 using namespace std;
 
@@ -140,7 +143,7 @@ void printData(player team[], const int& n)
         if(team[i].shots == 0) // this is to avoid dividing by 0
             cout << right << setw(8) << "0.0%" << endl;
         else
-            cout << right << setw(7) << team[i].goals*100 / team[i].shots; << "%" << endl;
+            cout << right << setw(7) << team[i].goals*100 / team[i].shots << "%" << endl;
     }
 }
 
