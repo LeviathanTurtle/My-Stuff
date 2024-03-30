@@ -7,7 +7,8 @@
  *
  *
  * [DESCRIPTION]:
- *
+ * This program calculates and outputs information pertaining to coffee sales based on an input 
+ * file. 
  *
  *
  * [COMPILE/RUN]:
