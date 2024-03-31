@@ -60,8 +60,8 @@ void userGuess(string word, string& guessWord, string& used, int& incorrect)
     }
 }
 """
-def userGuess(word, guess_word, used, incorrect):
-    guess = input("Guess a letter: ")
+def userGuess(word, guess_word, used, incorrect) -> int:
+    guess = input("\n\nGuess a letter: ")
     
     # check if the user has used this letter
     #while checkMatch(guess,used):
@@ -74,20 +74,25 @@ def userGuess(word, guess_word, used, incorrect):
     #if checkMatch(guess,word):
     if guess in word:
         # update guessWord with correct guessed letters
-        print(guess, " is in the word")
+        print(guess,"is in the word")
         
         for i in range(len(word)):
             if(word[i] == guess):
                 guess_word[i] = guess
+        # update used letters
+        used.append(guess)
             
     # letter is not in word
     else:
         # add to mistake counter if incorrect
-        print(guess," is not in the word")
+        print(guess,"is not in the word")
         # update used words string/array
+        #used = used + guess + " "
         used.append(guess)
         # increment incorrect number of guesses
         incorrect += 1
+    
+    return incorrect
 
 # --- CHECK MATCH -------------------------------
 """
@@ -155,20 +160,23 @@ with open(sys.argv[1],'r') as input_file:
         evol += "_";
 """
 # mistakes user has made
+#incorrect = 0
 incorrect = 0
 # string of used letters, starts empty
-used = ""
+#used = ""
+used = []
 # word with guessed letters, starts empty
-evol = ""
+#evol = ""
 # initialize to blanks
-for _ in range(len(word)):
-    evol += "_"
+#for _ in range(len(word)):
+#    evol += "_"
+evol = ["_"] * len(word)
 
 # --- TITLE -------------------------------------
 """
     cout << setw(15) << "Hangman" << endl << endl;
 """
-print(f"{'Hangman':<15}\n")
+print(f"{'Hangman':>15}\n")
 
 # --- MAIN LOOP -------------------------------------------------------------------------
 # --- PRINT BLANKS ------------------------------
@@ -195,16 +203,9 @@ while incorrect < MAX_MISTAKES:
         cout << "Used letters: " << used << endl;
     """
     # show user remaining mistakes
-    print(f"Remaining guesses: {MAX_MISTAKES-incorrect}")
+    print("Remaining guesses: ",MAX_MISTAKES-incorrect)
     # show user guessed words
-    print(f"Used letters: {used}")
-    
-# --- ADD GUESSED LETTERS -----------------------
-    """
-        userGuess(word,evol,used,incorrect);
-    """
-    # add guessed letters to string
-    userGuess(word,evol,used,incorrect)
+    print("Used letters: ",used)
 
 # --- USER GUESSED WORD -------------------------
     """
@@ -215,8 +216,15 @@ while incorrect < MAX_MISTAKES:
     """
     # if the user correctly guessed the word, output to reflect
     if incorrect < MAX_MISTAKES and evol == word:
-        print(f"\nCongratulations, you win! The word was {word}")
+        print("\nCongratulations, you win! The word was ",word)
         exit(0)
+    
+# --- ADD GUESSED LETTERS -----------------------
+    """
+        userGuess(word,evol,used,incorrect);
+    """
+    # add guessed letters to string
+    incorrect = userGuess(word,evol,used,incorrect)
     
 # --- USER LOST ---------------------------------
     """
