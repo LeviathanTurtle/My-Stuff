@@ -101,7 +101,7 @@ def loadData(filename, array, count) -> int:
     with open(filename, 'r') as file:
         # check file was able to be opened
         if not file:
-            print(f"error: file unable to be opened or created (provided name: {filename}).")
+            sys.stderr.write(f"error: file unable to be opened or created (provided name: {filename}).")
             exit(2)
         
         # get first player + stats
@@ -182,8 +182,8 @@ int main (int argc, char* argv[])
 """
 # check that CLI args are used correctly
 if len(sys.argv) != 2:
-    print("Usage: python3 soccerStats.py <input file>")
-    sys.exit(1)
+    sys.stderr.write("Usage: python3 soccerStats.py <input file>")
+    exit(1)
 
 # --- LOAD AND PRINT ----------------------------
 """

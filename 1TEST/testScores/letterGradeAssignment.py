@@ -214,8 +214,8 @@ int main(int argc, char* argv[])
     }
 """
 if len(sys.argv) < 3:
-    print("Usage: python3 letterGradeAssignment.py <number of students> <data file>")
-    sys.exit(1)
+    sys.stderr.write("Usage: python3 letterGradeAssignment.py <number of students> <data file>")
+    exit(1)
 
 # --- SETUP VARS --------------------------------
 """

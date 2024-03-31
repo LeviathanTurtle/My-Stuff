@@ -182,7 +182,7 @@ int main (int argc, char* argv[])
 """
 # check CLI args are used correctly
 if len(sys.argv) != 3:
-    print("Usage: python3 personalSales.py <input file> <output file>")
+    sys.stderr.write("Usage: python3 personalSales.py <input file> <output file>")
     exit(1)
 
 # --- INPUT + OUTPUT ----------------------------

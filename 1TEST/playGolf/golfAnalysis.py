@@ -116,7 +116,7 @@ int main(int argc, char* argv[])
 """
 # check CLI args
 if len(sys.argv) != 4:
-    print("Usage: python3 golfAnalysis.py <number of players> <number of holes> <input file>")
+    sys.stderr.write("Usage: python3 golfAnalysis.py <number of players> <number of holes> <input file>")
     exit(1)
 
 # in order of file
