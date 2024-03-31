@@ -61,7 +61,7 @@ void userGuess(string word, string& guessWord, string& used, int& incorrect)
 }
 """
 def userGuess(word, guess_word, used, incorrect) -> int:
-    guess = input("\n\nGuess a letter: ")
+    guess = input("\nGuess a letter: ")
     
     # check if the user has used this letter
     #while checkMatch(guess,used):
@@ -192,7 +192,7 @@ print(f"{'Hangman':>15}\n")
 while incorrect < MAX_MISTAKES:
     # print blanks for word
     for i in range(len(word)):
-        print(f"{evol[i]} ", end="")
+        print(f"{evol[i]} ",end="")
     # extra space
     print()
 
@@ -203,32 +203,26 @@ while incorrect < MAX_MISTAKES:
         cout << "Used letters: " << used << endl;
     """
     # show user remaining mistakes
-    print("Remaining guesses: ",MAX_MISTAKES-incorrect)
+    print("Remaining guesses:",MAX_MISTAKES-incorrect)
     # show user guessed words
-    print("Used letters: ",used)
+    print("Used letters:",used)
 
-# --- USER GUESSED WORD -------------------------
-    """
-    if(incorrect < MAX_MISTAKES && evol.compare(word)==0) {
-            cout << "\nCongratulations, you win! The word was " << word << endl;
-            return 0;
-        }
-    """
-    # if the user correctly guessed the word, output to reflect
-    if incorrect < MAX_MISTAKES and evol == word:
-        print("\nCongratulations, you win! The word was ",word)
-        exit(0)
-    
 # --- ADD GUESSED LETTERS -----------------------
     """
         userGuess(word,evol,used,incorrect);
     """
     # add guessed letters to string
     incorrect = userGuess(word,evol,used,incorrect)
-    
-# --- USER LOST ---------------------------------
+
+# --- CHECK MISTAKES ----------------------------
     """
-        if (incorrect == MAX_MISTAKES) {
+    if(incorrect < MAX_MISTAKES && evol.compare(word)==0) {
+            cout << "\nCongratulations, you win! The word was " << word << endl;
+            return 0;
+        }
+    NOTE: this was moved here to keep things consistent
+    
+    if (incorrect == MAX_MISTAKES) {
             cout << "\nYou lose. The word was " << word << endl;
             return 0;
         }
@@ -237,8 +231,12 @@ while incorrect < MAX_MISTAKES:
     return 0;
 }
     """
-    # if user makes 10 mistakes, show word and quit program
-    if incorrect == MAX_MISTAKES:
-        print(f"\nYou lose. The word was {word}")
+    evol_str = ''.join(evol)
+    # if the user correctly guessed the word, output to reflect
+    if incorrect < MAX_MISTAKES and evol_str == word:
+        print("\nCongratulations, you win! The word was",word)
         exit(0)
-
+    # if user makes 10 mistakes, show word and quit program
+    elif incorrect == MAX_MISTAKES:
+        print("\nYou lose. The word was",word)
+        exit(0)
