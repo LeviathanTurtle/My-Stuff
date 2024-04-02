@@ -1,4 +1,4 @@
-/*
+/* ARRAY MEASUREMENTS OF CENTER
  * William Wadsworth
  * CSC1710
  * Created: 11.5.2020
