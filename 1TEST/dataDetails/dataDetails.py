@@ -109,50 +109,146 @@ def printArray():
 # --- SORT ARRAY --------------------------------
 """
 void sortArray(double[], const int&);
+void sortArray(double numArray[], const int& size)
+{
+	int hold;
 
+	for (int pass = 1; pass < size; pass++)
+		for (int i = 0; i < size - pass; i++)
+			if (numArray[i] > numArray[i+1]) {
+				hold = numArray[i];
+				numArray[i] = numArray[i+1];
+				numArray[i+1] = hold;
+			}
+}
 """
-def sortArray():
-    pass
+# this function takes an array and its size as parameters and then sorts the array.
+def sortArray(num_array, size):
+    # temp variable for swap
+    hold: float
+    
+    for i in range(1,size):
+        for j in range(0,size-i):
+            # is the current value larger than the next?
+            if num_array[i] > num_array[i+1]:
+                # swap numbers
+                num_array[i], num_array[i+1] = num_array[i+1], num_array[i]
 
 # --- MEDIAN ------------------------------------
 """
 double median(double[], const int&);
+double median(double array[], const int& size)
+{
+	double med;
+	
+	if (size % 2 != 0) {
+		med = array[size/2];
+		cout << "nums[" << size/2 << "] = ";
+	}
+	else {
+		cout << "(nums[" << size/2 << "] + nums[" << (size/2)-1 << "]) / 2 = ";
+		med = (array[size/2] + array[(size/2)-1]) / 2;
+	}
 
+	return med;
+}
 """
-def median() -> float:
-    pass
+# this function takes an array and its size as parameters. The function will then calculate and
+# return the median value along with its location in the array. The function assumes the array is
+# already sorted.
+def median(array, size) -> float:
+    med: float
+    
+    # if the size is odd, pick the middle value
+    if size%2 != 0:
+        #print(f"nums[{size/2}] = ")
+        med = array[size/2]
+    # if the size is even, average the two middle values
+    else:
+        #print(f"(nums[{size/2}] + nums[{(size/2)-1}]) / 2 = ")
+        med = (array[size/2] + array[(size/2)-1]) / 2
+    
+    return med
 
 # --- AVERAGE -----------------------------------
 """
 double average(double[], const int&);
+double average(double array[], const int& size)
+{
+	double sum = 0;
 
+	for(int i=0; i<size; i++)
+		sum += array[i];
+
+	return sum/size;
+}
 """
-def average() -> float:
-    pass
+# this function takes an array and its size as parameters. The function will then calculate and
+# return the average of the values in the array.
+def average(array, size) -> float:
+    sum = 0
+    
+    for i in range(size):
+        sum += array[i]
+    
+    return sum/size
 
 # --- MINIMUM -----------------------------------
 """
 double minimum(double[]);
+double minimum(double array[])
+{
+	cout << "nums[0] = ";
 
+	return array[0];
+}
 """
-def minimum() -> float:
-    pass
+# this function takes an array and its size as parameters. The function will then return the lowest
+# value and its location in the array. The function assumes the array is already sorted.
+def minimum(array) -> float:
+    #print("nums[0] = ")
+    return array[0]
 
 # --- MAXIMUM -----------------------------------
 """
 double maximum(double[], const int&);
+double maximum(double array[], const int& size)
+{
+	cout << "nums[" << size-1 << "] = ";
 
+	return array[size-1];
+}
 """
-def maximum() -> float:
-    pass
+# this function takes an array and its size as parameters. The function will then return the
+# largest value and its location in the array. The function assumes the array is already sorted.
+def maximum(array, size) -> float:
+    #print(f"nums[{size-1}] = ")
+    return array[size-1]
 
 # --- SEARCH ARRAY ------------------------------
 """
 int searchArray(double[], const int&, const int&);
+int searchArray(double array[], const int& searchItem, const int& size)
+{
+	int matches = 0;
 
+	for(int i=0; i<size; i++)
+		if (array[i] == searchItem)
+			matches++;
+
+	return matches;
+}
 """
-def searchArray() -> float:
-    pass
+# this function takes an array, the size of the array, and a number. The function will search the
+# array for said number and return the number of occurrences. 
+def searchArray(array, search_item, size) -> float:
+    matches = 0
+    
+    for i in range(size):
+        if array[i] == search_item:
+            matches += 1
+    
+    return matches
 
 # --- MAIN ------------------------------------------------------------------------------
 # --- CHECK CLI ARGS ----------------------------
@@ -214,7 +310,7 @@ size = 0
 	loadArray(nums,argv[1],size);
 """
 # read in values from file
-loadArray(nums,sys.argv[1],size)
+nums, size = loadArray(sys.argv[1],size)
 
 # --- PRE + POST SORT ---------------------------
 """
@@ -268,95 +364,3 @@ num_search = float(input("Enter a number: "))
 # show how many occurrences 
 print(f"Number of occurences of the float {num_search}: {searchArray(nums,num_search,size)}")
 
-
-
-
-
-
-
-
-// this function takes an array and its size as parameters and then sorts the 
-// array.
-void sortArray(double numArray[], const int& size)
-{
-	// temp variable for swap
-	int hold;
-
-	for (int pass = 1; pass < size; pass++)
-		for (int i = 0; i < size - pass; i++)
-			// is the current value larger than the next?
-			if (numArray[i] > numArray[i+1]) {
-				// swap numbers
-				hold = numArray[i];
-				numArray[i] = numArray[i+1];
-				numArray[i+1] = hold;
-			}
-}
-
-// this function takes an array and its size as parameters. The function will 
-// then calculate and return the median value along with its location in the 
-// array. The function assumes the array is already sorted.
-double median(double array[], const int& size)
-{
-	double med;
-	
-	// if the size is odd, pick the middle value
-	if (size % 2 != 0) {
-		med = array[size/2];
-		cout << "nums[" << size/2 << "] = ";
-	}
-	// if the size is even, average the two middle values
-	else {
-		cout << "(nums[" << size/2 << "] + nums[" << (size/2)-1 << "]) / 2 = ";
-		med = (array[size/2] + array[(size/2)-1]) / 2;
-	}
-
-	return med;
-}
-
-// this function takes an array and its size as parameters. The function will
-// then calculate and return the average of the values in the array.
-double average(double array[], const int& size)
-{
-	double sum = 0;
-
-	for(int i=0; i<size; i++)
-		sum += array[i];
-
-	return sum/size;
-}
-
-// this function takes an array and its size as parameters. The function will 
-// then return the lowest value and its location in the array. The function
-// assumes the array is already sorted.
-double minimum(double array[])
-{
-	cout << "nums[0] = ";
-
-	return array[0];
-}
-
-// this function takes an array and its size as parameters. The function will 
-// then return the largest value and its location in the array. The function
-// assumes the array is already sorted.
-double maximum(double array[], const int& size)
-{
-	//double max;
-	cout << "nums[" << size-1 << "] = ";
-
-	return array[size-1];
-}
-
-// this function takes an array, the size of the array, and a number. The 
-// function will search the array for said number and return the number of 
-// occurrences. 
-int searchArray(double array[], const int& searchItem, const int& size)
-{
-	int matches = 0;
-
-	for(int i=0; i<size; i++)
-		if (array[i] == searchItem)
-			matches++;
-
-	return matches;
-}
