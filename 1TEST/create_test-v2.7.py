@@ -66,9 +66,11 @@ bool DEBUG = false;
 char alphabet[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 """
 import sys         # argv
+import subprocess  # executing bash commands
 
 # boolean for debug output (detailed execution)
 DEBUG = False
+MATRIX = False
 # charcter bank for strings
 ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
@@ -76,260 +78,67 @@ ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 # --- EXECUTE COMMAND ---------------------------
 """
 int executeCommand(const string&);
-
-"""
-
-
-# --- LOAD MATRIX -------------------------------
-"""
-void loadMatrix(const int&, const int&, const char*);
-
-"""
-
-
-# --- LOAD FILE ---------------------------------
-"""
-void loadFile(const int&, const int&, const char*);
-
-"""
-
-
-
-
-# --- MAIN ------------------------------------------------------------------------------
-# --- CHECK CLI ARGS ----------------------------
-"""
-int main(int argc, char* argv[])
-{
-    if(argc < 4 || argc > 6) {
-        cerr << "error: must have 4, 5, or 6 arguments: exe, -d flag (optional)"
-             << ", -m flag (optional), number of cases, range of values, "
-             << "datatype. only " << argc << " arguments were provided." << endl;
-        return 1; // return 1 (stdout) vs. return 2 (stderr)?
-    }
-"""
-# check if I/O redirection is used correctly (must be 4, 5, or 6 flags) 4 required flags, +2
-# optional (6)
-if len(sys.argv) < 4 or len(sys.argv) > 6:
-    sys.stderr.write(f"""error: invalid arguments, {len(sys.argv)} provided.
-                     Usage: python3 create_test-<version>.py [-d] [-m] <number of cases> <range> <type>""")
-
-# --- INTRODUCTION ------------------------------
-"""
-    cout << "This program generates a test file (./TestFiles) where the "
-         << "user specifies the number of values, range, and type\n";
-"""
-print("""This program generates a test file (./TestFiles) where the user specifies the number of
-      values, range, and type\n""")
-
-# --- CONFIRMATION ------------------------------
-"""
-    cout << "Do you want to run this program? [Y/n]: ";
-    char confirmation;
-    cin >> confirmation;
-
-    if(confirmation == 'n') {
-        cout << "terminating...\n";
-        exit(0);
-    }
-"""
-confirmation = input("Do you want to run this program? [Y/n]: ")
-# if declined, terminate
-if confirmation == 'n':
-    print("terminating...\n")
-    exit(0)
-    # using 0 for exit because it is successful - user specified would normally use >0 if for error
-
-# --- VAR SETUP ---------------------------------
-"""
-    int N, T;
-"""
-# number of cases, range of values created here because if -m is present, then the values in argv
-# shift
-t: int
-n: int
-
-# --- LOGIC BASED ON CLI ARGS -----------------------------------------------------------
-"""
-    if(strcmp(argv[1],"-d") == 0 || strcmp(argv[2],"-d") == 0) {
-        // -d IS PRESENT
-        DEBUG = true;
-
-        // same contingency here
-        if(strcmp(argv[1],"-m") == 0 || strcmp(argv[2],"-m") == 0) {
-            // BOTH -d AND -m FLAGS ARE PRESENT: N = argv[3]
-
-            // convert CLI arguments to ints, atoi (notes)
-            // char* -> int
-            N = atoi(argv[3]);
-            T = atoi(argv[4]);
-
-            // CHECK N
-            if(N <= 0) {
-                cerr << "error: matrix dimension must be > 0 (provided size: " << N << ").\n";
-                exit(2);
-            }
-            // CHECK T
-            // range of numerical values, so must be > 0
-            // can ignore whatever T is if we are processing characters
-            if(T <= 0 && strcmp(argv[5],"CHAR") != 0) {
-                cerr << "error: range of values must be > 0 (provided length: " << T << ").\n";
-                exit(2);
-            }
-
-            // construct matrix test file
-            loadMatrix(N,T,argv[5]);
-        }
-        """
-# if -d specified, enable debug output first comparison is how flags should be ordered, second is
-# contingency for if the user swaps -d and -m
-      
-        
-        
-
-        else {
-            // ONLY -d IS PRESENT: N = argv[2]
-            N = atoi(argv[2]);
-            T = atoi(argv[3]);
-
-            // CHECK N
-            if(N <= 0) {
-                cerr << "error: amount of data must be > 0 (provided length: " << N << ").\n";
-                exit(2);
-            }
-            // CHECK T
-            // if the type is not a char, then ignore (char does not need length)
-            if(strcmp(argv[4],"CHAR") != 0)
-                // includes strings, so special case -1 must pass check
-                if(T == 0 || T < -1) {
-                    cerr << "error: range of values must not equal 0 or be less "
-                         << "than -1 (provided length: " << T << ").\n";
-                    exit(2);
-                }
-
-            // load test file
-            loadFile(N,T,argv[4]);
-        }
-    }
-    else {
-        // -d IS NOT PRESENT
-
-        // since -d is not present, only one flag to check
-        if(strcmp(argv[1],"-m") == 0) {
-            // ONLY -m IS PRESENT: N = argv[2]
-
-            N = atoi(argv[2]);
-            T = atoi(argv[3]);
-
-            // CHECK N
-            if(N <= 0) {
-                cerr << "error: matrix dimension must be > 0 (provided size: " << N << ").\n";
-                exit(2);
-            }
-            // CHECK T
-            // range of numerical values, so must be > 0
-            // can ignore whatever T is if we are processing characters
-            if(T <= 0 && strcmp(argv[4],"CHAR") != 0) {
-                cerr << "error: range of values must be > 0 (provided length: " << T << ").\n";
-                exit(2);
-            }
-
-            // construct matrix test file
-            loadMatrix(N,T,argv[4]);
-        }
-        else {
-            // NO FLAGS ARE PRESENT: N = argv[1]
-
-            N = atoi(argv[1]);
-            T = atoi(argv[2]);
-
-            // CHECK N
-            if(N <= 0) {
-                cerr << "error: amount of data must be > 0 (provided length: " << N << ").\n";
-                exit(2);
-            }
-            // CHECK T
-            // if the type is not a char, then ignore (char does not need length)
-            if(strcmp(argv[3],"CHAR") != 0)
-                // includes strings, so special case -1 must pass check
-                if(T == 0 || T < -1) {
-                    cerr << "error: range of values must not equal 0 or be less "
-                         << "than -1 (provided length: " << T << ").\n";
-                    exit(2);
-                }
-
-            // load test file
-            loadFile(N,T,argv[3]);
-        }
-    }
-
-
-    // terminate program
-    return 0;
-}
-
-
-
-// the function takes a single argument (the shell command) and opens a pipe
-// to execute said command
-/*
- * pre-condition: the command must be an initialized string in main
- *
- * post-condition: the function has opened a pipe, executed a command, and
- *                 returns the output of said command, which should be an int
-*/
-
-// we are using CONST to ensure command is not altered, and passing by
-// reference to avoid making a duplicate variable in memory. This approach will
-// be repeated later
 int executeCommand(const string& command)
 {
-    // DEBUG
     if(DEBUG)
         cout << "\nbeginning method: executeCommand\n";
     
-    // REMOVE _ AFTER UPLOADING (_popen() -> popen())
-    // open a pipe (notes) to execute command
-    
-    //                         (notes)
-    //                            V
     FILE* pipe = popen(command.c_str(), "r");
-    //        open command in read mode   ^ 
 
-    // if pipe opening was unsuccessful, throw error
     if(!pipe) {
-        //throw runtime_error("popen() failed");
         cerr << "failed to open pipe (popen() failed)).\n";
         exit(3);
     }
 
     int result; // variable for command result
 
-    // read integer from command output
-    //    |      specify only integer should be read
-    //    |          |      store in result
-    //    V          V       V
     if(fscanf(pipe, "%d", &result) != 1) {
-        //                    (notes) ^
-        //throw runtime_error("Failed to read integer from command output");
         cerr << "failed to read integer from command output.\n";
         exit(4);
     }
 
-
-    // REMOVE _ AFTER UPLOADING (_pclose() -> pclose())
-    // close the pipe, return command result
     pclose(pipe);
 
-    // DEBUG
     if(DEBUG)
         cout << "\nend method: executeCommand\n";
 
     return result;
 }
+"""
+# the function takes a single argument (the shell command) and opens a pipe to execute said command
+# pre-condition: the command must be an initialized string in main
+# 
+# post-condition: the function has opened a pipe, executed a command, and
+#                 returns the output of said command, which should be an int
+def executeCommand() -> int:
+    if DEBUG:
+        print("\nbeginning method: executeCommand\n")
+        
+    try:
+        # execute the bash command
+        result = subprocess.check_output(["ls","TestFiles/matrix-test*", "|", "wc", "-l"], universal_newlines=True, stderr=subprocess.PIPE, shell=True)
+        
+        # convert to int
+        #count = int(result.strip())
+        
+        if DEBUG:
+            print("\nend method: executeCommand\n")
+        
+        #return count
+        return int(result.strip())
+    
+    # handle errors if any
+    except subprocess.CalledProcessError as e:
+        print("Error executing command:", e)
+        
+        if DEBUG:
+            print("\nend method: executeCommand\n")
+            
+        return None
 
-
-
+# --- LOAD MATRIX -------------------------------
+"""
+void loadMatrix(const int&, const int&, const char*);
 // this function creates a file and writes to it the matrix dimension N. If the
 // matrix is not square (i.e. N != M), then M is also output. The next N lines
 // are M <numerical datatype>s or characters separated by a space. 
@@ -490,6 +299,256 @@ void loadMatrix(const int& N, const int& T, const char* datatype)
     if(DEBUG)
         cout << "\nend method: loadMatrix\n";
 }
+"""
+def loadMatrix():
+    pass
+
+# --- LOAD FILE ---------------------------------
+"""
+void loadFile(const int&, const int&, const char*);
+
+"""
+def loadFile():
+    pass
+
+# --- MAIN ------------------------------------------------------------------------------
+# --- CHECK CLI ARGS ----------------------------
+"""
+int main(int argc, char* argv[])
+{
+    if(argc < 4 || argc > 6) {
+        cerr << "error: must have 4, 5, or 6 arguments: exe, -d flag (optional)"
+             << ", -m flag (optional), number of cases, range of values, "
+             << "datatype. only " << argc << " arguments were provided." << endl;
+        return 1; // return 1 (stdout) vs. return 2 (stderr)?
+    }
+"""
+# check if I/O redirection is used correctly (must be 4, 5, or 6 flags) 4 required flags, +2
+# optional (6)
+if len(sys.argv) < 4 or len(sys.argv) > 6:
+    sys.stderr.write(f"""error: invalid arguments, {len(sys.argv)} provided.
+                     Usage: python3 create_test-<version>.py [-d] [-m] <number of cases> <range> <type>""")
+
+# --- INTRODUCTION ------------------------------
+"""
+    cout << "This program generates a test file (./TestFiles) where the "
+         << "user specifies the number of values, range, and type\n";
+"""
+print("""This program generates a test file (./TestFiles) where the user specifies the number of
+      values, range, and type\n""")
+
+# --- CONFIRMATION ------------------------------
+"""
+    cout << "Do you want to run this program? [Y/n]: ";
+    char confirmation;
+    cin >> confirmation;
+
+    if(confirmation == 'n') {
+        cout << "terminating...\n";
+        exit(0);
+    }
+"""
+confirmation = input("Do you want to run this program? [Y/n]: ")
+# if declined, terminate
+if confirmation == 'n':
+    print("terminating...\n")
+    exit(0)
+    # using 0 for exit because it is successful - user specified would normally use >0 if for error
+
+# --- VAR SETUP ---------------------------------
+"""
+    int N, T;
+"""
+# number of cases, range of values created here because if -m is present, then the values in argv
+# shift
+t: int
+n: int
+
+# --- LOGIC BASED ON CLI ARGS -----------------------------------------------------------
+# --- DEBUG FLAG --------------------------------
+"""
+    if(strcmp(argv[1],"-d") == 0 || strcmp(argv[2],"-d") == 0) {
+        DEBUG = true;
+
+        if(strcmp(argv[1],"-m") == 0 || strcmp(argv[2],"-m") == 0) {
+
+            N = atoi(argv[3]);
+            T = atoi(argv[4]);
+
+            if(N <= 0) {
+                cerr << "error: matrix dimension must be > 0 (provided size: " << N << ").\n";
+                exit(2);
+            }
+
+            if(T <= 0 && strcmp(argv[5],"CHAR") != 0) {
+                cerr << "error: range of values must be > 0 (provided length: " << T << ").\n";
+                exit(2);
+            }
+
+            loadMatrix(N,T,argv[5]);
+        }
+        """
+# if -d specified, enable debug output first comparison is how flags should be ordered, second is
+# contingency for if the user swaps -d and -m
+if sys.argv[1] == '-d' or sys.argv[2] == '-d':
+    # d IS PRESENT
+    DEBUG = True
+    
+    # same contingency here
+    if sys.argv[1] == '-m' or sys.argv[2] == '-m':
+        # BOTH -d AND -m FLAGS ARE PRESENT: N = argv[3]
+        MATRIX = True
+        
+        # convert CLI arguments to ints, atoi (notes)
+        n = int(sys.argv[3])
+        t = int(sys.argv[4])
+        
+        # CHECK N
+        if n <= 0:
+            sys.stderr.write(f"error: matrix dimension must be > 0 (provided size: {n}).\n")
+            exit(2)
+        # CHECK T
+        # range of numerical values, so must be > 0
+        # can ignore whatever T is if we are processing characters
+        if t <= 0 and sys.argv[5] != "CHAR":
+            sys.stderr.write(f"error: range of values must be > 0 (provided length: {t}).\n")
+            exit(2)
+        
+        # construct matrix test file
+        loadMatrix(n,t,sys.argv[5])
+        
+# ---  --------------------------------
+        """
+        else {
+            N = atoi(argv[2]);
+            T = atoi(argv[3]);
+
+            if(N <= 0) {
+                cerr << "error: amount of data must be > 0 (provided length: " << N << ").\n";
+                exit(2);
+            }
+
+            if(strcmp(argv[4],"CHAR") != 0)
+                if(T == 0 || T < -1) {
+                    cerr << "error: range of values must not equal 0 or be less "
+                         << "than -1 (provided length: " << T << ").\n";
+                    exit(2);
+                }
+
+            loadFile(N,T,argv[4]);
+        }
+    }
+    """
+    else:
+        # ONLY -d IS PRESENT: N = argv[2]
+        n = int(sys.argv[2])
+        t = int(sys.argv[3])
+        
+        # CHECK N
+        if n <= 0:
+            sys.stderr.write(f"error: matrix dimension must be > 0 (provided length: {n}).\n")
+            exit(2)
+        # CHECK T
+        # if the type is not a char, then ignore (char does not need length)
+        if sys.argv[4] != "CHAR":
+            # includes strings, so special case -1 must pass check
+            if t == 0 or t < -1:
+                sys.stderr.write(f"error: range of values must not equal 0 or be less than -1 (provided length: {t}).\n")
+                exit(2)
+        
+        # load test file
+        loadFile(n,t,sys.argv[4])
+    
+# ---  --------------------------------
+    """
+    else {
+        if(strcmp(argv[1],"-m") == 0) {
+            N = atoi(argv[2]);
+            T = atoi(argv[3]);
+
+            if(N <= 0) {
+                cerr << "error: matrix dimension must be > 0 (provided size: " << N << ").\n";
+                exit(2);
+            }
+        
+            if(T <= 0 && strcmp(argv[4],"CHAR") != 0) {
+                cerr << "error: range of values must be > 0 (provided length: " << T << ").\n";
+                exit(2);
+            }
+
+            loadMatrix(N,T,argv[4]);
+        }
+        """
+else:
+    # d IS NOT PRESENT
+    
+    # since -d is not present, only one flag to check
+    if sys.argv[1] == 'm':
+        # ONLY -m IS PRESENT: N = argv[2]
+        MATRIX = True
+        
+        n = int(sys.argv[2])
+        t = int(sys.argv[3])
+    
+        # CHECK N
+        if n <= 0:
+            sys.stderr.write(f"error: matrix dimension must be > 0 (provided size: {n}).\n")
+            exit(2)
+        # CHECK T
+        # range of numerical values, so must be > 0
+        # can ignore whatever T is if we are processing characters
+        if t <= 0 and sys.argv[5] != "CHAR":
+            sys.stderr.write(f"error: range of values must be > 0 (provided length: {t}).\n")
+            exit(2)
+        
+        # construct matrix test file
+        loadMatrix(n,t,sys.argv[4])
+        
+# ---  -------------------------------- 
+        """
+        else {
+            N = atoi(argv[1]);
+            T = atoi(argv[2]);
+
+            if(N <= 0) {
+                cerr << "error: amount of data must be > 0 (provided length: " << N << ").\n";
+                exit(2);
+            }
+
+            if(strcmp(argv[3],"CHAR") != 0)
+                if(T == 0 || T < -1) {
+                    cerr << "error: range of values must not equal 0 or be less "
+                         << "than -1 (provided length: " << T << ").\n";
+                    exit(2);
+                }
+
+            loadFile(N,T,argv[3]);
+        }
+    }
+    
+    return 0;
+}
+    """
+    else:
+        n = int(sys.argv[1])
+        t = int(sys.argv[2])
+        
+        # CHECK N
+        if n <= 0:
+            sys.stderr.write(f"error: matrix dimension must be > 0 (provided length: {n}).\n")
+            exit(2)
+        # CHECK T
+        # if the type is not a char, then ignore (char does not need length)
+        if sys.argv[4] != "CHAR":
+            # includes strings, so special case -1 must pass check
+            if t == 0 or t < -1:
+                sys.stderr.write(f"error: range of values must not equal 0 or be less than -1 (provided length: {t}).\n")
+                exit(2)
+
+        # load test file
+        loadFile(n,t,sys.argv[3])
+
+
 
 
 // this function creates a file and first writes to it the amount of data in
