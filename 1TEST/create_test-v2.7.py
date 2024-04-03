@@ -1,74 +1,60 @@
-/* CREATE A TEST FILE OF INTEGERS, DOUBLES, FLOATS, CHARACTERS, OR STRINGS
- * WILLIAM WADSWORTH
- * Created: 10.5.2023
- * Doctored: 10.7.2023*
- * 
- * CSC-4510
- * ~/csc4510/prog3-sort/Source/create_test.cpp
- * 
- * 
- * [DESCRIPTION]:
- * This program generates a test file of random datatypes (stored in TestFiles
- * of current directory) where the user specifies the number of values [number
- * of cases], range of values used [range], and the datatype [type]. Valid data
- * types are: integers, doubles, floats, characters, and strings. All data
- * types can be used with matrix construction except strings. Using these
- * values, the program will create and write to a file. The size of the data N
- * (how many values in the file) is first number and is separated by a new
- * line, while the next N values (data) are separated by a space. If the
- * optional -m flag is present, the program will output the data in matrix
- * form: first the dimensions, then the data. Matrix output is limited to
- * numerical datatypes and characters.
- * Revision hitory and notes are at the bottom.
- * 
- * 
- * [COMPILE/RUN]:
- * To compile:
- *     g++ create_test.cpp -Wall -o create_test
- *
- * To run (4 min, 6 max args):
- *     ./create_test [-d] [-m] <number of cases> <range> <type> 
- *
- * [-d]              - optional, enable debug options (detailed execution)
- * [-m]              - optional, specify if program is to generate matrices
- * <number of cases> - how many entries in the file
- * <range>           - range of values to be used
- * <type>            - can be: INT, DOUBLE, FLOAT, CHAR, STRING
- * 
- * 
- * [NOTES]:
- * A few (notes) are in comments. This is to show that I had to research 
- * something or ask ChatGPT. The topics with associated links where I found the
- * information are below the code.
- * 
- * Also, this program assumes any existing test files are properly numbered
- * based on the number of files in the directory (test1, test2, etc.). It WILL
- * append to a test file if, for example, there are 2 test files, but are named
- * 'testX' and 'test3'.
- * 
- * For generating strings, if you do not want uniform string length, use the
- * value -1 for the range. Otherwise, it will generate a word of the length you
- * specify for the range. For character generation, T is ignored, so input any
- * integer value. 
- * 
- * 
- * [EXIT/TERMINATING CODES]:
- * 0 - the user specified 'n' when prompted if information was correct or the
- *     program successfully ran through a complete execution
- * 
- * 1 - execution arguments were used incorrectly
- * 
- * 2 - invalid matrix dimension(s), number of values, or range of values
- * 
- * 3 - pipe failed to open
- * 
- * 4 - failed to read integer from command output
- * 
- * 5 - file failed to opened or created
- * 
- * 6 - invalid data type was used
-*/
+# CREATE A TEST FILE OF INTEGERS, DOUBLES, FLOATS, CHARACTERS, OR STRINGS -- V.PY
+# William Wadsworth
+# CSC1710
+# Created: 10.5.2023
+# Doctored: 10.7.2023*
+# Python-ized: 4.2.2024
+# 
+# [DESCRIPTION]:
+# This program generates a test file of random datatypes (stored in TestFiles of current directory)
+# where the user specifies the number of values [number of cases], range of values used [range],
+# and the datatype [type]. Valid data types are: integers, doubles, floats, characters, and
+# strings. All data types can be used with matrix construction except strings. Using these values,
+# the program will create and write to a file. The size of the data N (how many values in the file)
+# is first number and is separated by a new line, while the next N values (data) are separated by a
+# space. If the optional -m flag is present, the program will output the data in matrix form: first
+# the dimensions, then the data. Matrix output is limited to numerical datatypes and characters.
+# Revision hitory and notes are at the bottom.
+# 
+# [USAGE]:
+# python3 create_test-<version>.py [-d] [-m] <number of cases> <range> <type>
+# 
+# [-d]              - optional, enable debug options (detailed execution)
+# [-m]              - optional, specify if program is to generate matrices
+# <number of cases> - how many entries in the file
+# <range>           - range of values to be used
+# <type>            - can be: INT, DOUBLE, FLOAT, CHAR, STRING
+# 
+# [NOTES]:
+# A few (notes) are in comments. This is to show that I had to research something or ask ChatGPT.
+# The topics with associated links where I found the information are below the code.
+#  
+# Also, this program assumes any existing test files are properly numbered based on the number of
+# files in the directory (test1, test2, etc.). It WILL append to a test file if, for example, there
+# are 2 test files, but are named 'testX' and 'test3'.
+# 
+# For generating strings, if you do not want uniform string length, use the value -1 for the range.
+# Otherwise, it will generate a word of the length you specify for the range. For character
+# generation, T is ignored, so input any integer value.
+# 
+# [EXIT/TERMINATING CODES]:
+# 0 - the user specified 'n' when prompted if information was correct or the
+#     program successfully ran through a complete execution
+# 
+# 1 - execution arguments were used incorrectly
+# 
+# 2 - invalid matrix dimension(s), number of values, or range of values
+# 
+# 3 - pipe failed to open
+# 
+# 4 - failed to read integer from command output
+# 
+# 5 - file failed to opened or created
+# 
+# 6 - invalid data type was used
 
+# --- IMPORTS + GLOBAL VARS -------------------------------------------------------------
+"""
 #include <iostream>     // in/out
 #include <cstring>      // strcmp()
 #include <string>       // atoi(), to_string()
@@ -76,65 +62,95 @@
 #include <cstdlib>      // popen(), pclose()
 using namespace std;
 
+bool DEBUG = false;
+char alphabet[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+"""
+import sys         # argv
 
-// function prototypes
-//                  CLI command
+# boolean for debug output (detailed execution)
+DEBUG = False
+# charcter bank for strings
+ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+# --- FUNCTIONS -------------------------------------------------------------------------
+# --- EXECUTE COMMAND ---------------------------
+"""
 int executeCommand(const string&);
-//                   N           T        datatype
+
+"""
+
+
+# --- LOAD MATRIX -------------------------------
+"""
 void loadMatrix(const int&, const int&, const char*);
-//                 N           T        datatype
+
+"""
+
+
+# --- LOAD FILE ---------------------------------
+"""
 void loadFile(const int&, const int&, const char*);
 
-
-// global variables
-// boolean for debug output (detailed execution)
-bool DEBUG = false;
-// charcter bank for strings
-char alphabet[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+"""
 
 
-// maybe use printf instead of cout?
+
+
+# --- MAIN ------------------------------------------------------------------------------
+# --- CHECK CLI ARGS ----------------------------
+"""
 int main(int argc, char* argv[])
 {
-    // check if I/O redirection is used correctly (must be 4, 5, or 6 flags)
-    // 4 required flags, +2 optional (6)
-    //if(argc != 4 && argc != 5 && argc != 6) {
     if(argc < 4 || argc > 6) {
         cerr << "error: must have 4, 5, or 6 arguments: exe, -d flag (optional)"
              << ", -m flag (optional), number of cases, range of values, "
              << "datatype. only " << argc << " arguments were provided." << endl;
         return 1; // return 1 (stdout) vs. return 2 (stderr)?
     }
+"""
+# check if I/O redirection is used correctly (must be 4, 5, or 6 flags) 4 required flags, +2
+# optional (6)
+if len(sys.argv) < 4 or len(sys.argv) > 6:
+    sys.stderr.write(f"""error: invalid arguments, {len(sys.argv)} provided.
+                     Usage: python3 create_test-<version>.py [-d] [-m] <number of cases> <range> <type>""")
 
-
-    // introduction
+# --- INTRODUCTION ------------------------------
+"""
     cout << "This program generates a test file (./TestFiles) where the "
          << "user specifies the number of values, range, and type\n";
+"""
+print("""This program generates a test file (./TestFiles) where the user specifies the number of
+      values, range, and type\n""")
 
-
-    // confirm
+# --- CONFIRMATION ------------------------------
+"""
     cout << "Do you want to run this program? [Y/n]: ";
     char confirmation;
     cin >> confirmation;
-    // if declined, terminate
+
     if(confirmation == 'n') {
         cout << "terminating...\n";
         exit(0);
     }
-    // using 0 for exit because it is successful - user specified
-    // would normally use >0 if for error
-    
+"""
+confirmation = input("Do you want to run this program? [Y/n]: ")
+# if declined, terminate
+if confirmation == 'n':
+    print("terminating...\n")
+    exit(0)
+    # using 0 for exit because it is successful - user specified would normally use >0 if for error
 
-    // number of cases, range of values
-    // created here because if -m is present, then the values in argv shift
+# --- VAR SETUP ---------------------------------
+"""
     int N, T;
+"""
+# number of cases, range of values created here because if -m is present, then the values in argv
+# shift
+t: int
+n: int
 
-
-    // should this be cleaned up? can it?
-
-    // if -d specified, enable debug output
-    // first comparison is how flags should be ordered, second is contingency
-    // for if the user swaps -d and -m
+# --- LOGIC BASED ON CLI ARGS -----------------------------------------------------------
+"""
     if(strcmp(argv[1],"-d") == 0 || strcmp(argv[2],"-d") == 0) {
         // -d IS PRESENT
         DEBUG = true;
@@ -164,6 +180,13 @@ int main(int argc, char* argv[])
             // construct matrix test file
             loadMatrix(N,T,argv[5]);
         }
+        """
+# if -d specified, enable debug output first comparison is how flags should be ordered, second is
+# contingency for if the user swaps -d and -m
+      
+        
+        
+
         else {
             // ONLY -d IS PRESENT: N = argv[2]
             N = atoi(argv[2]);

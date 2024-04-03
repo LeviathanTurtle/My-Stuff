@@ -3,7 +3,7 @@
 # CSC1710
 # Created: 1.10.2020
 # Python-ized: 3.11.2024
-#  
+# 
 # This program creates a temperature conversion chart based on a degree given
 # in Fahrenheit, incrementing by a value imput by the user.
 
