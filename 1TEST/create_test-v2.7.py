@@ -139,23 +139,11 @@ def executeCommand() -> int:
 # --- LOAD MATRIX -------------------------------
 """
 void loadMatrix(const int&, const int&, const char*);
-// this function creates a file and writes to it the matrix dimension N. If the
-// matrix is not square (i.e. N != M), then M is also output. The next N lines
-// are M <numerical datatype>s or characters separated by a space. 
-/*
- * pre-condition: N and T must be defined and initialized to an integer value,
- *                and datatype must be initialized to a string or char*
- *
- * post-condition: nothing in main has changed. the function created an output
- *                 file and wrote to it the matrix dimensions and values
-*/
 void loadMatrix(const int& N, const int& T, const char* datatype)
 {
-    // DEBUG
     if(DEBUG)
         cout << "\nbeginning method: loadMatrix\n";
     
-    // prompt for M
     int M;
     cout << "enter second matrix dimension: ";
     cin >> M;
@@ -295,13 +283,81 @@ void loadMatrix(const int& N, const int& T, const char* datatype)
         cin >> conf;
     }
 
-    // DEBUG
     if(DEBUG)
         cout << "\nend method: loadMatrix\n";
 }
 """
-def loadMatrix():
-    pass
+# this function creates a file and writes to it the matrix dimension N. If the matrix is not square
+# (i.e. N != M), then M is also output. The next N lines are M <numerical datatype>s or characters
+# separated by a space. 
+# 
+# pre-condition: N and T must be defined and initialized to an integer value,
+#                and datatype must be initialized to a string or char*
+#
+# post-condition: nothing in main has changed. the function created an output
+#                 file and wrote to it the matrix dimensions and values
+def loadMatrix(n: int, t: int, datatype: str):
+    if DEBUG:
+        print("\nbeginning method: loadMatrix\n")
+        
+    # prompt for M
+    m = int(input("enter second matrix dimension: "))
+    # CHECK M
+    if m <= 0:
+        sys.stderr.write(f"error: matrix dimension must be > 0 (provided size: {m}).\n")
+        exit(2)
+    
+    # CONFIRMATION
+    print(f"\nYou have chosen to construct:\nmatrix: {n}x{m}")
+    
+    # check if user wants to create an identity matrix
+    ident = input("\nWould you like this matrix to be the identity? [Y/n]: ")
+    # assume true, will override if false
+    is_identity = True
+    if ident == 'n':
+        is_identity = False
+        print("\nmax value:",t)
+        print("\ntype:",datatype)
+    
+    conf = input("\nConfirm? [Y/n]: ")
+    
+    # --- MAIN LOOP -----------------------------
+    if conf == 'Y':
+        # more detailed documentation found in loadFile function, the approach is the same here but
+        # altered to be in matrix form
+        
+        if DEBUG:
+            print("\nloadMatrix: beginning file write\n")
+            
+        test_file_num = executeCommand()+1
+        with open(f"matrix-test{test_file_num}", 'w') as file:
+            # if the file cannot be created, terminate
+            try:
+                # write number of cases N to file if N = M, then the matrix is square, and only one
+                # dimension will be output. otherwise, output both dimensions
+                if n == m:
+                    file.write(f"{n}\n")
+                else:
+                    file.write(f"{n} {m}\n")
+                    
+                    
+                    
+                    
+            
+            except IOError:
+                sys.stderr.write(f"Failed to create output file (name used: matrix-test{test_file_num}).")
+                exit(5)
+    
+    elif conf == 'n':
+        print("You have chosen to not load the matrix. Quitting...\n")
+        exit(0) # not quite accurate
+    
+    # this does not work how I think it will, edit later
+    else:
+        conf = input("input not valid, respond with 'Y' or 'n': ")
+        
+    if DEBUG:
+        print("\nend method: loadMatrix\n")
 
 # --- LOAD FILE ---------------------------------
 """
