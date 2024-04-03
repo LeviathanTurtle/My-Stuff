@@ -67,6 +67,8 @@ char alphabet[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 """
 import sys         # argv
 import subprocess  # executing bash commands
+import random      # random number gen
+import shutil      # moving files
 
 # boolean for debug output (detailed execution)
 DEBUG = False
@@ -147,21 +149,18 @@ void loadMatrix(const int& N, const int& T, const char* datatype)
     int M;
     cout << "enter second matrix dimension: ";
     cin >> M;
-    // CHECK M
+
     if(M <= 0) {
         cerr << "error: matrix dimension must be > 0 (provided size: " << M << ").\n";
         exit(2);
     }
     
-    //  CONFIRMATION
     cout << "\nYou have chosen to construct:\n" << "matrix: " << N << "x" << M;
 
-    // check if user wants to create an identity matrix
     char ident;
     cout << "\nWould you like this matrix to be the identity? [Y/n]: ";
     cin >> ident;
 
-    // assume true, will override if false
     bool isIdentity = true;
     switch(ident) {
         case 'n':
@@ -175,40 +174,24 @@ void loadMatrix(const int& N, const int& T, const char* datatype)
     char conf;
     cin >> conf;
 
-    // alphabet for random string/char generation
-    //char alphabet[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    // promote to global?
-
     if(conf == 'Y') {
-        // more detailed documentation found in loadFile function, the approach
-        // is the same here but altered to be in matrix form
-
-        // DEBUG
         if(DEBUG)
             cout << "\nloadMatrix: beginning file write\n";
-
-        
 
         int testFileNum = executeCommand("ls TestFiles/matrix-test* | wc -l")+1;
         ofstream outputFile ("matrix-test"+to_string(testFileNum));
         
-        // if the file cannot be created, terminate
         if(!outputFile) {
             cerr << "Failed to create output file (name used: matrix-test"
                  << testFileNum << ")." << endl;
             exit(5);
         }
 
-        // write number of cases N to file
-        // if N = M, then the matrix is square, and only one dimension will be
-        // output. otherwise, output both dimensions
         if(N == M)
             outputFile << N << endl;
         else
             outputFile << N << " " << M << endl;
 
-        
-        // create identity
         if(isIdentity) {
             if(N==M) {
                 for(int i=0; i<N; i++) {
@@ -226,50 +209,41 @@ void loadMatrix(const int& N, const int& T, const char* datatype)
             }
         }
 
-
-        // integer
         if(strcmp(datatype,"INT") == 0)
             for(int i=0; i<N; i++) {
                 for(int j=0; j<M; j++)
                     outputFile << rand()%T << " ";
                 outputFile << endl;
             }
-        // double
         else if(strcmp(datatype,"DOUBLE") == 0)
             for(int i=0; i<N; i++) {
                 for(int j=0; j<M; j++)
                     outputFile << (double)(rand()%T)/(double)(rand()%T) << " "; // REFINE THIS
                 outputFile << endl;
             }
-        // float
         else if(strcmp(datatype,"FLOAT") == 0)
             for(int i=0; i<N; i++) {
                 for(int j=0; j<M; j++)
                     outputFile << (float)(rand()%T)/(float)(rand()%T) << " "; // REFINE THIS
                 outputFile << endl;
             }
-        // char
         else if(strcmp(datatype,"CHAR") == 0)
             for(int i=0; i<N; i++) {
                 for(int j=0; j<M; j++)
                     outputFile << alphabet[rand()%sizeof(alphabet)] << " ";
                 outputFile << endl;
             }
-        // user did not specify a valid data type (for this program)
         else {
             cerr << "error: not a valid type for this program, must be INT, "
                  << "DOUBLE, FLOAT, CHAR, or STRING" << endl;
             exit(6);
         }
 
-        // close file
         outputFile.close();
 
-        // move file to appropriate directory
         string moveFile = "mv matrix-test"+to_string(testFileNum)+" TestFiles";
         system(moveFile.c_str());
 
-        // DEBUG
         if(DEBUG)
             cout << "\nloadMatrix: end file write\n";
     }
@@ -277,7 +251,6 @@ void loadMatrix(const int& N, const int& T, const char* datatype)
         cout << "You have chosen to quit the program. Quitting...\n\n";
         exit(0); // not quite accurate
     }
-    // this does not work how I think it will, edit later
     else {
         cout << "input not valid, respond with 'Y' or 'n': ";
         cin >> conf;
@@ -320,6 +293,9 @@ def loadMatrix(n: int, t: int, datatype: str):
         print("\ntype:",datatype)
     
     conf = input("\nConfirm? [Y/n]: ")
+    # check confirmation
+    while conf != 'Y' and conf != 'n':
+        conf = input("error: please provide [Y/n]: ")
     
     # --- MAIN LOOP -----------------------------
     if conf == 'Y':
@@ -340,21 +316,67 @@ def loadMatrix(n: int, t: int, datatype: str):
                 else:
                     file.write(f"{n} {m}\n")
                     
+                # create identity
+                if is_identity:
+                    if n==m:
+                        for i in range(n):
+                            for j in range(m):
+                                if i==j:
+                                    file.write("1 ")
+                                else:
+                                    file.write("0 ")
+                            file.write("\n")
+                    else:
+                        sys.stderr.write("error: identity matrices must be equal (matrix must be square).\n")
+                        exit(2)
+                
+                # integer gen
+                if datatype == "INT" or datatype == "int":
+                    for _ in range(n):
+                        for _ in range(m):
+                            file.write(str(random.randint(0,t-1)) + " ")
+                        file.write("\n")
+                # float gen
+                elif datatype == "FLOAT" or datatype == 'float':
+                    for _ in range(n):
+                        for _ in range(m):
+                            file.write(str(random.uniform(0,t)) + " ")
+                        file.write("\n")
+                # char gen
+                elif datatype == "CHAR" or datatype == "char":
+                    for _ in range(n):
+                        for _ in range(m):
+                            file.write(random.choice(ALPHABET) + " ")
+                        file.write("\n")
+                # string gen
+                elif datatype == "STRING" or datatype == "string":
+                    # define path to 'word bank'
+                    dictionary_path = "../Dictionaries/words-alpha.txt"
                     
+                    # read dictionary
+                    with open(dictionary_path, "r") as dict_file:
+                        possible_strings = [line.strip() for line in dict_file]
                     
-                    
+                    for _ in range(n):
+                        for _ in range(m):
+                            file.write(random.choice(possible_strings) + " ")
+                        file.write("\n")
+                # user did not specify a valid data type (for this program)
+                else:
+                    sys.stderr.write("error: not a valid type for this program, must be INT, DOUBLE, FLOAT, CHAR, or STRING")
+                    exit(6)
             
             except IOError:
                 sys.stderr.write(f"Failed to create output file (name used: matrix-test{test_file_num}).")
                 exit(5)
     
-    elif conf == 'n':
+    else:
         print("You have chosen to not load the matrix. Quitting...\n")
         exit(0) # not quite accurate
-    
-    # this does not work how I think it will, edit later
-    else:
-        conf = input("input not valid, respond with 'Y' or 'n': ")
+        
+    # move file to appropriate directory -- out of main logic to avoid moving the file while it is
+    # open
+    shutil.move(f"matrix-test{test_file_num}", "../TestFiles")
         
     if DEBUG:
         print("\nend method: loadMatrix\n")
@@ -607,6 +629,19 @@ else:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 // this function creates a file and first writes to it the amount of data in
 // the file N. The next line consists N <numerical datatype>s or characters 
 // separated by a space. Strings are generated at a random length and separated
@@ -764,6 +799,7 @@ void loadFile(const int& N, const int& T, const char* datatype)
  * 
  * Updated: 3.20.2024 -- added option to create identity matrix. TODO: export 
  *                       a few things to new functions.
+ * Updated: 4.03.2024 -- translated to Python and added string generation.
 */
 
 
