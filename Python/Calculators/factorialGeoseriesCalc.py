@@ -6,6 +6,8 @@
 # Python-ized: 3.19.2024
 #  
 # This program performs a factorial or geoseries calculation based on a number given from input.
+# 
+# Usage: python3 factorialGeoseriesCalc.py
 
 
 # --- IMPORTS ---------------------------------------------------------------------------
@@ -84,9 +86,9 @@ double geoseries (double a, int t)
 """
 # note default of r=0.5
 def geoseries(a: float, t: int, r=0.5) -> float:
-    sum = 0
+    sum = 0.0
     
-    for count in range(0,t):
+    for _ in range(t):
         sum += a
         a *= r
         
@@ -131,12 +133,12 @@ while(inp != "factorial" and inp != "dfactorial" and inp != "geometric"):
 """
 if(inp == "factorial"):
     # parameters for input, store in variable
-    print("\nInteger must be between -1,000 and 1,000\n")
+    print("\nInteger must be between 0 and 1,000\n")
     
     endPoint = int(input("Enter an integer to the nearest whole for factorial calculation: "))
     # input validation
-    while(endPoint < -1000 or endPoint > 1000):
-        endPoint = int(input("Not valid, integer must be between -1,000 and 1,000: "))
+    while(endPoint < 0 or endPoint > 1000):
+        endPoint = int(input("Not valid, integer must be between 0 and 1,000: "))
     
     # ouput calculation
     print(f"{endPoint}! = {factorial(endPoint)}")
@@ -158,12 +160,12 @@ if(inp == "factorial"):
     """
 elif(inp == "dfactorial"):
     # parameters for input, store in variable
-    print("\nInteger must be between -1,000 and 1,000\n")
+    print("\nInteger must be between 0 and 1,000\n")
     
-    endPoint = int(input("Enter an integer to the nearest whole for double factorial calculation: "))
+    endPoint = int(input("Enter an odd integer to the nearest whole for double factorial calculation: "))
     # input validation
-    while(endPoint % 2 == 0 or endPoint < -1000 or endPoint > 1000):
-        endPoint = int(input("Not valid, integer must be odd and between -1,000 and 1,000: "))
+    while(endPoint % 2 == 0 or endPoint < 0 or endPoint > 1000):
+        endPoint = int(input("Not valid, integer must be odd and between 0 and 1,000: "))
     
     # output calculation
     print(f"{endPoint}!! = {dfactorial(endPoint)}")
@@ -192,8 +194,12 @@ else:
     print("Sum of Geometric series")
     
     a = float(input("What is your first term: "))    
-    t = float(input("How many terms would you like to take the sum of: "))
-    r = float(input("Enter your common ratio of choice (leave blank for 0.5): "))
+    t = int(input("How many terms would you like to take the sum of: "))
+    # this is to avoid converting an empty string to a float
+    try:
+        r = float(input("Enter your common ratio of choice (leave blank for 0.5): "))
+    except ValueError:
+        r = 0.5
     
-    print(f"Sum of {t} terms, a = {a}, r = 0.5, is {geoseries(a,t,r)}")
+    print(f"Sum of {t} terms, a = {a}, r = {r}, is {geoseries(a,t,r)}")
 
