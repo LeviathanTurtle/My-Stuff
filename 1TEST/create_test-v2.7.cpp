@@ -64,7 +64,7 @@
  * 
  * 4 - failed to read integer from command output
  * 
- * 5 - file failed to opened or created
+ * 5 - file failed to be opened or created
  * 
  * 6 - invalid data type was used
 */
@@ -507,7 +507,7 @@ void loadFile(const int& N, const int& T, const char* datatype)
         // do not want to create a file with a duplicate name. 
 
         // For example, if the command returns 2 (meaning 2 files are in the
-        // TestFiles directory), then a file will be created named "test3". 
+        // TestFiles directory), then a file will be created named "test3".
         int testFileNum = executeCommand("ls TestFiles/test* | wc -l")+1;
         // Note: system() could have been used, but I wanted to try using pipes
 

@@ -1,4 +1,4 @@
-# CREATE A TEST FILE OF INTEGERS, DOUBLES, FLOATS, CHARACTERS, OR STRINGS -- V.PY
+# CREATE A TEST FILE OF INTEGERS, FLOATS, CHARACTERS, OR STRINGS -- V.PY
 # William Wadsworth
 # CSC1710
 # Created: 10.5.2023
@@ -33,7 +33,9 @@
 # files in the directory (test1, test2, etc.). It WILL append to a test file if, for example, there
 # are 2 test files, but are named 'testX' and 'test3'.
 # 
-# For generating strings, if you do not want uniform string length, use the value -1 for the range.
+# For generating strings, if you want to use random words from a 'word bank,' use the value -1 for the range. If you 
+# want a uniform string length, use the value -2 for the range.
+# If you  
 # Otherwise, it will generate a word of the length you specify for the range. For character
 # generation, T is ignored, so input any integer value.
 # 
@@ -45,13 +47,11 @@
 # 
 # 2 - invalid matrix dimension(s), number of values, or range of values
 # 
-# 3 - pipe failed to open
+# 3 - failed to read integer from command output
 # 
-# 4 - failed to read integer from command output
+# 4 - file failed to be opened or created
 # 
-# 5 - file failed to opened or created
-# 
-# 6 - invalid data type was used
+# 5 - invalid data type was used
 
 # --- IMPORTS + GLOBAL VARS -------------------------------------------------------------
 """
@@ -110,15 +110,15 @@ int executeCommand(const string& command)
 # the function takes a single argument (the shell command) and opens a pipe to execute said command
 # pre-condition: the command must be an initialized string in main
 # 
-# post-condition: the function has opened a pipe, executed a command, and
-#                 returns the output of said command, which should be an int
-def executeCommand() -> int:
+# post-condition: the function has opened a pipe, executed a command, and returns the output of
+#                 said command, which should be an int
+def executeCommand(test_lib) -> int:
     if DEBUG:
         print("\nbeginning method: executeCommand\n")
         
     try:
         # execute the bash command
-        result = subprocess.check_output(["ls","TestFiles/matrix-test*", "|", "wc", "-l"], universal_newlines=True, stderr=subprocess.PIPE, shell=True)
+        result = subprocess.check_output(["ls",test_lib, "|", "wc", "-l"], universal_newlines=True, stderr=subprocess.PIPE, shell=True)
         
         # convert to int
         #count = int(result.strip())
@@ -264,11 +264,11 @@ void loadMatrix(const int& N, const int& T, const char* datatype)
 # (i.e. N != M), then M is also output. The next N lines are M <numerical datatype>s or characters
 # separated by a space. 
 # 
-# pre-condition: N and T must be defined and initialized to an integer value,
-#                and datatype must be initialized to a string or char*
+# pre-condition: N and T must be defined and initialized to an integer value, and datatype must be
+#                initialized to a string or char*
 #
-# post-condition: nothing in main has changed. the function created an output
-#                 file and wrote to it the matrix dimensions and values
+# post-condition: nothing in main has changed. the function created an output file and wrote to it
+#                 the matrix dimensions and values
 def loadMatrix(n: int, t: int, datatype: str):
     if DEBUG:
         print("\nbeginning method: loadMatrix\n")
@@ -305,7 +305,7 @@ def loadMatrix(n: int, t: int, datatype: str):
         if DEBUG:
             print("\nloadMatrix: beginning file write\n")
             
-        test_file_num = executeCommand()+1
+        test_file_num = executeCommand("../TestFiles/matrix-test*")+1
         with open(f"matrix-test{test_file_num}", 'w') as file:
             # if the file cannot be created, terminate
             try:
@@ -364,11 +364,11 @@ def loadMatrix(n: int, t: int, datatype: str):
                 # user did not specify a valid data type (for this program)
                 else:
                     sys.stderr.write("error: not a valid type for this program, must be INT, DOUBLE, FLOAT, CHAR, or STRING")
-                    exit(6)
+                    exit(5)
             
             except IOError:
                 sys.stderr.write(f"Failed to create output file (name used: matrix-test{test_file_num}).")
-                exit(5)
+                exit(4)
     
     else:
         print("You have chosen to not load the matrix. Quitting...\n")
@@ -384,10 +384,167 @@ def loadMatrix(n: int, t: int, datatype: str):
 # --- LOAD FILE ---------------------------------
 """
 void loadFile(const int&, const int&, const char*);
+void loadFile(const int& N, const int& T, const char* datatype)
+{
+    if(DEBUG)
+        cout << "\nbeginning method: loadFile\n";
+    
+    cout << "\nYou have chosen:\n" << "number of values: " << N;
+    cout << "\nmax value: " << T;
+    cout << "\n\nConfirm [Y/n]: ";
+    char conf;
+    cin >> conf;
+    
+    if(conf == 'Y') {
+        int testFileNum = executeCommand("ls TestFiles/test* | wc -l")+1;
 
+        ofstream outputFile ("test"+to_string(testFileNum));
+
+        if(!outputFile) {
+            cerr << "Failed to create output file (name used: test"
+                 << testFileNum << ")." << endl;
+            exit(5);
+        }
+
+        outputFile << N << endl;
+
+        if(strcmp(datatype,"INT") == 0)
+            for(int i=0; i<N; i++)
+                outputFile << rand()%T << " "; // change " " to \n or endl if  
+        else if(strcmp(datatype,"DOUBLE") == 0)// by newline, may update later
+            for(int i=0; i<N; i++)
+                outputFile << (double)(rand()%T)/(double)(rand()%T) << " "; // REFINE THIS
+        else if(strcmp(datatype,"FLOAT") == 0)
+            for(int i=0; i<N; i++)
+                outputFile << (float)(rand()%T)/(float)(rand()%T) << " "; // REFINE THIS
+        else if(strcmp(datatype,"CHAR") == 0)
+            for(int i=0; i<N; i++)
+                outputFile << alphabet[rand()%sizeof(alphabet)] << " ";
+        else if(strcmp(datatype,"STRING") == 0) {
+            if(T == -1) {
+                for(int i=0; i<N; i++) {
+                    for(size_t j=0; j<rand()%sizeof(alphabet); j++)
+                        outputFile << alphabet[rand()%sizeof(alphabet)];
+                    outputFile << endl;
+                }
+            }
+            else {
+                for(int i=0; i<N; i++) {
+                    for(int j=0; j<T; j++)
+                        outputFile << alphabet[rand()%sizeof(alphabet)];
+                    outputFile << endl;
+                }
+            }
+        }
+        else {
+            cerr << "error: not a valid type for this program, must be INT, "
+                 << "DOUBLE, or FLOAT" << endl;
+            exit(6);
+        }
+        
+        outputFile.close();
+
+        string moveFile = "mv test"+to_string(testFileNum)+" TestFiles";
+        system(moveFile.c_str());
+    }
+    else if(conf == 'n') {
+        cout << "You have chosen to quit the program. Quitting...\n\n";
+        exit(0); // not quite accurate
+    }
+    else {
+        cout << "input not valid, respond with 'Y' or 'n': ";
+        cin >> conf;
+    }
+
+    if(DEBUG)
+        cout << "\nend method: loadFile\n";
+}
 """
-def loadFile():
-    pass
+# this function creates a file and first writes to it the amount of data in the file N. The next
+# line consists N <numerical datatype>s or characters separated by a space. Strings are generated
+# at a random length and separated by a new line.
+# pre-condition: N and T must be defined and initialized to an integer value, and datatype must be
+#                initialized to a string or char*
+# 
+# post-condition: nothing in main has changed. the function created an output file and wrote to it
+#                 the amount of data and each data value
+def loadFile(n,t,datatype):
+    if DEBUG:
+        print("\nbeginning method: loadFile\n")
+        
+    # confirmation
+    print("\nYou have chosen:\nnumber of values:",n,"\nmax value:",t)
+    conf = input("\n\nConfirm [Y/n]: ")
+    # check confirmation
+    while conf != 'Y' and conf != 'n':
+        conf = input("error: please provide [Y/n]: ")
+    
+    # this is what the user wants to do
+    if conf == 'Y':
+        # create a file for output with corresponding test number
+
+        # the CLI command in the executeCommand() function will return the number of files in
+        # "./TestFiles". This number will be used to create the next test file with the
+        # corresponding number, which is why we add 1 since we do not want to create a file with a
+        # duplicate name. 
+
+        # For example, if the command returns 2 (meaning 2 files are in the TestFiles directory),
+        # then a file will be created named "test3".
+        test_file_num = executeCommand("../TestFiles/test*")+1
+        # check if none for exit
+        if type(test_file_num) == None:
+            print("error: unable to progress without command output")
+            exit(3)
+        
+        try:
+            with open("test"+str(test_file_num)) as file:
+                # write number of cases to file
+                file.write(n,"\n")
+                
+                # integer
+                if datatype == "INT" or datatype == "int":
+                    for _ in range(n):
+                        file.write(str(random.randint(0,t-1)) + " ") # change " " to \n if data 
+                # float                                              # needs to be separated by
+                elif datatype == "FLOAT" or datatype == "float":     # newline, may update later
+                    for _ in range(n):
+                        file.write(str(random.uniform(0,t)) + " ")
+                # char
+                elif datatype == "CHAR" or datatype == "char":
+                    for _ in range(n):
+                        file.write(str(random.choice(ALPHABET)) + " ")
+                # string
+                elif datatype == "STRING" or datatype == "string":
+                    # variable string length
+                    if t == -1:
+                        pass
+                    # uniform string length
+                    elif t == -2:
+                        pass
+                    # strings from 'word bank'
+                    else:
+                        pass
+                
+                else:
+                    sys.stderr.write("error: not a valid type for this program, must be INT, DOUBLE, or FLOAT\n")
+                    exit(5)
+            
+        except IOError:
+            sys.stderr.write(f"Failed to create output file (name used: test{test_file_num}).\n")
+            exit(4)
+        
+        
+        
+    else:
+        print("You have chosen to not load the file. Quitting...\n")
+        exit(0) # not quite accurate
+    
+    # use CLI to move generated file to appropriate directory
+    shutil.move(f"test{test_file_num}", "../TestFiles")
+    # could remove this if directory included in file creation command
+        
+    if DEBUG:
+        print("\nend method: loadFile\n")
 
 # --- MAIN ------------------------------------------------------------------------------
 # --- CHECK CLI ARGS ----------------------------
@@ -628,158 +785,6 @@ else:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// this function creates a file and first writes to it the amount of data in
-// the file N. The next line consists N <numerical datatype>s or characters 
-// separated by a space. Strings are generated at a random length and separated
-// by a new line.
-/*
- * pre-condition: N and T must be defined and initialized to an integer value,
- *                and datatype must be initialized to a string or char*
- * 
- * post-condition: nothing in main has changed. the function created an output
- *                 file and wrote to it the amount of data and each data value
-*/
-void loadFile(const int& N, const int& T, const char* datatype)
-{
-    // DEBUG
-    if(DEBUG)
-        cout << "\nbeginning method: loadFile\n";
-    
-    //  CONFIRMATION
-    cout << "\nYou have chosen:\n" << "number of values: " << N;
-    cout << "\nmax value: " << T;
-    cout << "\n\nConfirm [Y/n]: ";
-    char conf;
-    cin >> conf;
-
-    // alphabet for random string/char generation
-    char alphabet[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    // promote to global?
-    
-    // this is what the user wants to do
-    if(conf == 'Y') {
-        // create a file for output with corresponding test number
-
-        // the CLI command (passed as an argument) will return the number of files
-        // in "./TestFiles". This number will be used to create the next 
-        // test file with the corresponding number, which is why we add 1 since we
-        // do not want to create a file with a duplicate name. 
-
-        // For example, if the command returns 2 (meaning 2 files are in the
-        // TestFiles directory), then a file will be created named "test3". 
-        int testFileNum = executeCommand("ls TestFiles/test* | wc -l")+1;
-        // Note: system() could have been used, but I wanted to try using pipes
-
-        // use to_string to convert commandOutput to a string, append to "test"
-        // without this, the compiler thinks it's adding two numbers (strings/chars
-        // can be used with integer operations in C/C++)
-        ofstream outputFile ("test"+to_string(testFileNum));
-
-        // if the file cannot be created, terminate
-        if(!outputFile) {
-            cerr << "Failed to create output file (name used: test"
-                 << testFileNum << ")." << endl;
-            exit(5);
-        }
-
-        // write number of cases N to file
-        outputFile << N << endl;
-
-        // integer
-        // using strcmp to get around comparing char* and string warning (-Wall)
-        //if(argv[3] == "INT")
-        if(strcmp(datatype,"INT") == 0)
-            for(int i=0; i<N; i++)
-                outputFile << rand()%T << " "; // change " " to \n or endl if  
-        // double                              // data needs to be separated 
-        else if(strcmp(datatype,"DOUBLE") == 0)// by newline, may update later
-            for(int i=0; i<N; i++)
-                outputFile << (double)(rand()%T)/(double)(rand()%T) << " "; // REFINE THIS
-        // float
-        else if(strcmp(datatype,"FLOAT") == 0)
-            for(int i=0; i<N; i++)
-                outputFile << (float)(rand()%T)/(float)(rand()%T) << " "; // REFINE THIS
-        // char
-        else if(strcmp(datatype,"CHAR") == 0)
-            for(int i=0; i<N; i++)
-                outputFile << alphabet[rand()%sizeof(alphabet)] << " ";
-        // string
-        else if(strcmp(datatype,"STRING") == 0) {
-            // variable string length
-            if(T == -1) {
-                // print N words
-                for(int i=0; i<N; i++) {
-                    // get random char
-                    for(size_t j=0; j<rand()%sizeof(alphabet); j++)
-                        outputFile << alphabet[rand()%sizeof(alphabet)];
-                    // output new line instead of space, end of the word
-                    outputFile << endl;
-                }
-            }
-            // uniform string length
-            else {
-                // print N words
-                for(int i=0; i<N; i++) {
-                    // get random char
-                    // using size_t to avoid warning with -Wall (notes)
-                    for(int j=0; j<T; j++)
-                        outputFile << alphabet[rand()%sizeof(alphabet)];
-                    // output new line instead of space, end of the word
-                    outputFile << endl;
-                }
-            }
-            // VARIABLE LENGTH
-            // MAJOR VARIABLE LENGTH
-            // UNIFORM
-        }
-        // user did not specify a valid data type (for this program)
-        else {
-            cerr << "error: not a valid type for this program, must be INT, "
-                 << "DOUBLE, or FLOAT" << endl;
-            exit(6);
-        }
-        
-
-        // close file
-        outputFile.close();
-
-
-        // use CLI to move generated file to appropriate directory
-        // ORIGINAL:
-        //     system("mv test"+to_string(testFileNum)+" TestFiles");
-        // ChatGPT corrected this
-        string moveFile = "mv test"+to_string(testFileNum)+" TestFiles";
-        system(moveFile.c_str());
-        // could remove this if directory included in file creation command
-    }
-    else if(conf == 'n') {
-        cout << "You have chosen to quit the program. Quitting...\n\n";
-        exit(0); // not quite accurate
-    }
-    // this does not work how I think it will, edit later
-    else {
-        cout << "input not valid, respond with 'Y' or 'n': ";
-        cin >> conf;
-    }
-
-    // DEBUG
-    if(DEBUG)
-        cout << "\nend method: loadFile\n";
-}
 
 
 /* REVISION HISTORY
