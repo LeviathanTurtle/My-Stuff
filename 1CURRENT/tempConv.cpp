@@ -23,6 +23,11 @@ int main ()
     cout << "Do you want to run this program? [Y/n]: ";
     char confirmation;
     cin >> confirmation;
+    // check confirmation
+    while(confirmation != 'Y' && confirmation != 'n') {
+        cout << "Please enter [Y/n]: ";
+        cin >> confirmation;
+    }
     // if declined, terminate
     if(confirmation == 'n') {
         cout << "terminating...\n";
@@ -42,8 +47,8 @@ int main ()
     cin >> sdegree;
 
     // input validation
-    while (sdegree < -1000) {
-        cout << "Not valid, degree must be > -1000: ";
+    while (sdegree < -1000 || sdegree > 1000) {
+        cout << "Not valid, degree must be > -1000 and < 1000: ";
         cin >> sdegree;
     }
 
@@ -58,7 +63,7 @@ int main ()
 
     // input validation
     while (ldegree < sdegree || ldegree > 1000) {
-        cout << "Not valid, degree must be < 1000: ";
+        cout << "Not valid, degree must be > your smallest degree and < 1000: ";
         cin >> ldegree;
     }
 
