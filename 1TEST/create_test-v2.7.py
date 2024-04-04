@@ -819,7 +819,7 @@ else:
 # Updated: 4.03.2024 -- translated to Python and added string generation.
 
 
-# BACKGROUND ON BASH COMMANDS IN THIS PROGRAM
+# BACKGROUND ON BASH COMMANDS IN THIS PROGRAM -- C++
 #
 # THE IDEA IS TO EXECUTE A BASH COMMAND TO HELP CREATE THE PROPER TEST FILE NAME
 # This was my original approach:
@@ -846,48 +846,6 @@ else:
 # FULL LIST OF THINGS REFERENCED, RESEARCHED, OR TAKEN FROM CHATGPT
 #
 # 
-# to_string() -> taken from ChatGPT, researched at:
-# https://en.cppreference.com/w/cpp/string/basic_string/to_stringhowever
-# 
-# 
-# implementation of bash commands in a program -> taken from ChatGPT
-# 
-# 
-# general pipe understanding:
-# https://www.man7.org/linux/man-pages/man2/pipe.2.html
-# https://stackoverflow.com/questions/4812891/fork-and-pipes-in-c
-# 
-# 
-# c_str():
-# "Returns a pointer to an array that contains a null-terminated sequence of characters (i.e., a
-# C-string) representing the current value of the string object." In other words, convert to a
-# string.
-# https://cplusplus.com/reference/string/string/c_str/
-# 
-# 
-# fscanf return value:
-# "On success, the function returns the number of items of the argument list successfully filled.
-# This count can match the expected number of items or be less (even zero) due to a matching
-# failure, a reading error, or the reach of the end-of-file." 
-# We want the function to return 1 item: the number of files. Therefore, the 'number of items
-# successfully filled' should be 1. So if the function returns a value other than that (1),
-# something went wrong.
-# https://cplusplus.com/reference/cstdio/fscanf/
-# 
-#
-# convert CLI arguments to ints (atoi, stoi) -> from ChatGPT
-# 
-# 
-# atoi -> ASCII to integer
-# stoi -> string to integer
-# https://stackoverflow.com/questions/37838417/what-do-atoi-atol-and-stoi-stand-for
-# 
-# 
-# random string generation:
-# https://stackoverflow.com/questions/47977829/generate-a-random-string-in-c11
-# 
-# 
-# size_t -> from ChatGPT
-# "The warning occurs because the type of word.length() is size_t, which is an unsigned integer
-# type, and the loop variable i is of type int, which is signed"
+# random.stuff
+# https://docs.python.org/3/library/random.html
  
