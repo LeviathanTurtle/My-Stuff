@@ -38,9 +38,12 @@ Fahrenheit, incrementing by a value you choose.\nAll values must be rounded to t
     }
 """
 confirmation = input("Do you want to run this program? [Y/n]: ")
+# check confirmation
+while confirmation != 'Y' and confirmation != 'n':
+    confirmation = input("Please enter [Y/n]: ")
 # if declined, terminate
-if confirmation.lower() == 'n':
-    print('terminating...\n')
+if confirmation == 'n':
+    print('terminating...')
     exit(0)
 
 # --- SET UP OUTPUT -----------------------------
@@ -63,7 +66,7 @@ if confirmation.lower() == 'n':
 """
 sdegree = int(input("Give your starting (smallest) Fahrenheit degree [-1000 < this_degree < 1000]: "))
 # input validation
-while(sdegree <= -1000 or sdegree >= 1000):
+while(sdegree < -1000 or sdegree > 1000):
     sdegree = int(input("Not valid, degree limitations: [-1000 < this_degree < 1000]: "))
 
 # --- LARGEST DEGREE --------------------------------------------------------------------
@@ -80,7 +83,7 @@ while(sdegree <= -1000 or sdegree >= 1000):
 """
 ldegree = int(input("Give your ending (largest) Fahrenheit degree [smallest_degree < this_degree < 1000]: "))
 # input validation
-while(ldegree <= sdegree or ldegree >= 1000):
+while(ldegree <= sdegree or ldegree > 1000):
     ldegree = int(input("Not valid, degree limitations: [smallest_degree < this_degree < 1000]: "))
 
 # --- INCREMENT -------------------------------------------------------------------------
