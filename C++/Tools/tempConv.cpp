@@ -6,6 +6,10 @@
  * 
  * This program creates a temperature conversion chart based on a degree given
  * in Fahrenheit, incrementing by a value imput by the user.
+ * 
+ * Usage: 
+ * To compile: g++ tempConv.cpp -Wall -o <exe name>
+ * To run: ./<exe name>
 */
 
 #include <iostream>

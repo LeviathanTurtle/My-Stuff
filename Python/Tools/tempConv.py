@@ -6,6 +6,8 @@
 # 
 # This program creates a temperature conversion chart based on a degree given
 # in Fahrenheit, incrementing by a value imput by the user.
+# 
+# Usage: python3 tempConv.py
 
 
 # --- IMPORTS ---------------------------------------------------------------------------
