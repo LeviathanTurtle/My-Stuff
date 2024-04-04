@@ -33,10 +33,9 @@
 # files in the directory (test1, test2, etc.). It WILL append to a test file if, for example, there
 # are 2 test files, but are named 'testX' and 'test3'.
 # 
-# For generating strings, if you want to use random words from a 'word bank,' use the value -1 for the range. If you 
-# want a uniform string length, use the value -2 for the range.
-# If you  
-# Otherwise, it will generate a word of the length you specify for the range. For character
+# For generating strings, if you want to use random words from a 'word bank,' use the value -1 for
+# the range. If you want a uniform string length, use the value -2 for the range. Otherwise, it
+# will generate a string of characters of the length you specify for the range. For character
 # generation, T is ignored, so input any integer value.
 # 
 # [EXIT/TERMINATING CODES]:
@@ -515,15 +514,33 @@ def loadFile(n,t,datatype):
                         file.write(str(random.choice(ALPHABET)) + " ")
                 # string
                 elif datatype == "STRING" or datatype == "string":
-                    # variable string length
+                    # word bank
                     if t == -1:
-                        pass
+                        # define path to 'word bank'
+                        dictionary_path = "../Dictionaries/words-alpha.txt"
+                        
+                        # read dictionary
+                        with open(dictionary_path, "r") as dict_file:
+                            possible_strings = [line.strip() for line in dict_file]
+                        
+                        for _ in range(n):
+                            file.write(random.choice(possible_strings) + " ")
                     # uniform string length
                     elif t == -2:
-                        pass
-                    # strings from 'word bank'
+                        t = int(input("Enter the length of the strings you want: "))
+                        
+                        # print n words
+                        for _ in range(n):
+                            # get random char
+                            for _ in range(t):
+                                file.write(ALPHABET[random.randint(len(ALPHABET))] + " ")
+                    # variable string length
                     else:
-                        pass
+                        # print n words
+                        for _ in range(n):
+                            # get random char
+                            for _ in range(random.randint(len(ALPHABET))):
+                                file.write(ALPHABET[random.randint(len(ALPHABET))] + " ")
                 
                 else:
                     sys.stderr.write("error: not a valid type for this program, must be INT, DOUBLE, or FLOAT\n")
@@ -532,8 +549,6 @@ def loadFile(n,t,datatype):
         except IOError:
             sys.stderr.write(f"Failed to create output file (name used: test{test_file_num}).\n")
             exit(4)
-        
-        
         
     else:
         print("You have chosen to not load the file. Quitting...\n")
@@ -785,102 +800,94 @@ else:
 
 
 
+# REVISION HISTORY
+# Updated: 10.23.2023 -- added optional flag -m to specify matrix construction, offloaded bulk of
+#                        program to functions (made it more modular), updated documentation, added
+#                        function prototypes, updated confirmation checks, included filename in
+#                        error for file creation checks, updated argument count error to show a
+#                        more helpful message.
+# 
+# Updated: 10.24.2023 -- added random character and string generation, added optional debug flag
+#                        -d, various output messages if in debugging mode, updated documentation,
+#                        added range of values check.
+#
+# Updated: 10.31.2023 -- promoted alphabet and DEBUG flag to global variables
+# 
+# Updated: 3.20.2024 -- added option to create identity matrix. TODO: export a few things to new
+#                       functions.
+# 
+# Updated: 4.03.2024 -- translated to Python and added string generation.
 
 
-/* REVISION HISTORY
- * Updated: 10.23.2023 -- added optional flag -m to specify matrix construction,
- *                        offloaded bulk of program to functions (made it more
- *                        modular), updated documentation, added function
- *                        prototypes, updated confirmation checks, included
- *                        filename in error for file creation checks, updated 
- *                        argument count error to show a more helpful message.
- * 
- * Updated: 10.24.2023 -- added random character and string generation, added
- *                        optional debug flag -d, various output messages if in
- *                        debugging mode, updated documentation, added range of
- *                        values check.
- *
- * Updated: 10.31.2023 -- promoted alphabet and DEBUG flag to global variables
- * 
- * Updated: 3.20.2024 -- added option to create identity matrix. TODO: export 
- *                       a few things to new functions.
- * Updated: 4.03.2024 -- translated to Python and added string generation.
-*/
+# BACKGROUND ON BASH COMMANDS IN THIS PROGRAM
+#
+# THE IDEA IS TO EXECUTE A BASH COMMAND TO HELP CREATE THE PROPER TEST FILE NAME
+# This was my original approach:
+#
+#      string filenum = argv[4];   <- argv[4] is the command
+#      ofstream outfile ("test"+filenum);
+#
+# after errors (and noticing it would create the wrong named file), it became:
+# 
+#      string filenum = argv[4];
+#      int number = stoi(filenum)+1;
+#      ofstream outfile ("test"+to_string(number));
+# 
+# after executing, the following error came:
+# 
+#      terminate called after throwing an instance of 'std::invalid_argument'
+#      what(): stoi
+#      Aborted (core dumped).
+# 
+# after some research, I learned this is when stoi() fails to convert string to integer. I asked
+# ChatGPT for a solution, and I used what it gave me.
 
 
-/* BACKGROUND ON BASH COMMANDS IN THIS PROGRAM
- *
- * THE IDEA IS TO EXECUTE A BASH COMMAND TO HELP CREATE THE PROPER TEST FILE NAME
- * This was my original approach:
- *
- *      string filenum = argv[4];   <- argv[4] is the command
- *      ofstream outfile ("test"+filenum);
- *
- * after errors (and noticing it would create the wrong named file), it became:
- * 
- *      string filenum = argv[4];
- *      int number = stoi(filenum)+1;
- *      ofstream outfile ("test"+to_string(number));
- * 
- * after executing, the following error came:
- * 
- *      terminate called after throwing an instance of 'std::invalid_argument'
- *      what(): stoi
- *      Aborted (core dumped).
- * 
- * after some research, I learned this is when stoi() fails to convert string
- * to integer. I asked ChatGPT for a solution, and I used what it gave me.
-*/
-
-
-/* FULL LIST OF THINGS REFERENCED, RESEARCHED, OR TAKEN FROM CHATGPT
- *
- * 
- * to_string() -> taken from ChatGPT, researched at:
- * https://en.cppreference.com/w/cpp/string/basic_string/to_stringhowever
- * 
- * 
- * implementation of bash commands in a program -> taken from ChatGPT
- * 
- * 
- * general pipe understanding:
- * https://www.man7.org/linux/man-pages/man2/pipe.2.html
- * https://stackoverflow.com/questions/4812891/fork-and-pipes-in-c
- * 
- * 
- * c_str():
- * "Returns a pointer to an array that contains a null-terminated sequence of
- * characters (i.e., a C-string) representing the current value of the string
- * object." In other words, convert to a string.
- * https://cplusplus.com/reference/string/string/c_str/
- * 
- * 
- * fscanf return value:
- * "On success, the function returns the number of items of the argument list
- * successfully filled. This count can match the expected number of items or be
- * less (even zero) due to a matching failure, a reading error, or the reach of
- * the end-of-file." 
- * We want the function to return 1 item: the number of files. Therefore, the 
- * 'number of items successfully filled' should be 1. So if the function
- * returns a value other than that (1), something went wrong.
- * https://cplusplus.com/reference/cstdio/fscanf/
- * 
- * 
- * convert CLI arguments to ints (atoi, stoi) -> from ChatGPT
- * 
- * 
- * atoi -> ASCII to integer
- * stoi -> string to integer
- * https://stackoverflow.com/questions/37838417/what-do-atoi-atol-and-stoi-stand-for
- * 
- * 
- * random string generation:
- * https://stackoverflow.com/questions/47977829/generate-a-random-string-in-c11
- * 
- * 
- * size_t -> from ChatGPT
- * "The warning occurs because the type of word.length() is size_t, which is an
- * unsigned integer type, and the loop variable i is of type int, which is
- * signed"
-*/
-
+# FULL LIST OF THINGS REFERENCED, RESEARCHED, OR TAKEN FROM CHATGPT
+#
+# 
+# to_string() -> taken from ChatGPT, researched at:
+# https://en.cppreference.com/w/cpp/string/basic_string/to_stringhowever
+# 
+# 
+# implementation of bash commands in a program -> taken from ChatGPT
+# 
+# 
+# general pipe understanding:
+# https://www.man7.org/linux/man-pages/man2/pipe.2.html
+# https://stackoverflow.com/questions/4812891/fork-and-pipes-in-c
+# 
+# 
+# c_str():
+# "Returns a pointer to an array that contains a null-terminated sequence of characters (i.e., a
+# C-string) representing the current value of the string object." In other words, convert to a
+# string.
+# https://cplusplus.com/reference/string/string/c_str/
+# 
+# 
+# fscanf return value:
+# "On success, the function returns the number of items of the argument list successfully filled.
+# This count can match the expected number of items or be less (even zero) due to a matching
+# failure, a reading error, or the reach of the end-of-file." 
+# We want the function to return 1 item: the number of files. Therefore, the 'number of items
+# successfully filled' should be 1. So if the function returns a value other than that (1),
+# something went wrong.
+# https://cplusplus.com/reference/cstdio/fscanf/
+# 
+#
+# convert CLI arguments to ints (atoi, stoi) -> from ChatGPT
+# 
+# 
+# atoi -> ASCII to integer
+# stoi -> string to integer
+# https://stackoverflow.com/questions/37838417/what-do-atoi-atol-and-stoi-stand-for
+# 
+# 
+# random string generation:
+# https://stackoverflow.com/questions/47977829/generate-a-random-string-in-c11
+# 
+# 
+# size_t -> from ChatGPT
+# "The warning occurs because the type of word.length() is size_t, which is an unsigned integer
+# type, and the loop variable i is of type int, which is signed"
+ 
