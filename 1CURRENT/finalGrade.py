@@ -1,11 +1,15 @@
-# TEMPERATURE CONVERSION CHART -- V.PY
+# FINAL GRADE CALCULATOR -- V.PY
 # William Wadsworth
-# CSC1710
-# Created: 
+# Created: at some point
+# Doctored: at some other point
 # Python-ized: 3.18.2024
+# CSC 1710 or 1720 idk but probably 10
+# arbitrary location
 #  
-# This program 
-
+# This program calculates a final grade based on 4 labs, 3 quizzes, and one program and test grade.
+# The percentages are fixed, but can be adjusted in the code below.
+#
+# Usage: python3 finalGrade.py
 
 # --- IMPORTS ---------------------------------------------------------------------------
 """
@@ -36,6 +40,7 @@ lab1 = float(input("Enter your first lab grade: "))
 lab2 = float(input("Enter your second lab grade: "))
 lab3 = float(input("Enter your third lab grade: "))
 lab4 = float(input("Enter your fourth lab grade: "))
+print("\n")
 
 # --- QUIZZES -----------------------------------
 """
@@ -54,6 +59,7 @@ lab4 = float(input("Enter your fourth lab grade: "))
 quiz1 = float(input("Enter your first quiz grade: "))
 quiz2 = float(input("Enter your second quiz grade: "))
 quiz3 = float(input("Enter your third quiz grade: "))
+print("\n")
 
 # --- PROGRAM -----------------------------------
 """
@@ -63,6 +69,7 @@ quiz3 = float(input("Enter your third quiz grade: "))
     cin >> prog;
 """
 prog = float(input("Enter your program grade: "))
+print("\n")
 
 # --- TEST --------------------------------------
 """
@@ -72,6 +79,7 @@ prog = float(input("Enter your program grade: "))
     cin >> test;
 """
 test = float(input("Enter your test grade: "))
+print("\n")
 
 # --- CALCULATION -------------------------------
 """

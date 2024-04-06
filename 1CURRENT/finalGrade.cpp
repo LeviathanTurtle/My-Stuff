@@ -1,9 +1,24 @@
+/* FINAL GRADE CALCULATOR
+ * William Wadsworth
+ * Created: at some point
+ * Doctored: at some other point
+ * CSC 1710 or 1720 idk but probably 10
+ * arbitrary location
+ * 
+ * This program calculates a final grade based on 4 labs, 3 quizzes, and one program and test
+ * grade. The percentages are fixed, but can be adjusted in the code below.
+ * 
+ * Usage:
+ * To compile: g++ finalGrade.cpp -Wall -o <exe name>
+ * To run: ./<exe name>
+*/
 
 #include <iostream>
 
 using namespace std;
 
-int lab3a()
+// lab 3a
+int main()
 {
     //define lab variables
     double lab1, lab2, lab3, lab4;
@@ -37,6 +52,7 @@ int lab3a()
     cout << "Enter your third quiz grade: ";
     cin >> quiz3;
 
+    cout << endl;
     //define program variable
     double prog;
 
@@ -44,6 +60,7 @@ int lab3a()
     cout << "Enter your program grade: ";
     cin >> prog;
 
+    cout << endl;
     //define test variable
     double test;
 
@@ -58,8 +75,11 @@ int lab3a()
     //final calculation
     double fin = (.1*avgquiz + .1*avglab + .3*prog + .3*test)/.8;
     cout << "Your final grade is " << fin << "%" << endl;
+
+    return 0;
 }
 
+/* older (worse) versions
 int test()
 {
     //lab variables
@@ -139,4 +159,4 @@ int lab3b()
     double fin = (.1*avgquiz + .1*avglab + .3*prog + .3*test)/.8;
     cout << "Your final grade is " << fin << "%" << endl;
 }
-
+*/
