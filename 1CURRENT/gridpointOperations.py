@@ -10,8 +10,7 @@
 # perform. In the context of ellipsoids, this program assumes you are working with a circle.
 # 
 # [USAGE]:
-# To run:
-#     python3 gridpointOperations.py
+# To run: python3 gridpointOperations.py
 
 
 # --- IMPORTS ---------------------------------------------------------------------------

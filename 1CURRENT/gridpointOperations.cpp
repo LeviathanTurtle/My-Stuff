@@ -5,18 +5,13 @@
  * CSC 1710
  * ~/csc1710/lab10/wadsworthlab10.cpp
  *
- *
  * [DESCRIPTION]:
  * This function prompts the user for two coordinate points, and the operation
  * the user would like to perform.
  *
- *
  * [COMPILE/RUN]:
- * To compile:
- *     g++ gridpointOperations -Wall -o gridpointOperations
- *
- * To run:
- *     ./gridpointOperations
+ * To compile: g++ gridpointOperations -Wall -o gridpointOperations
+ * To run: ./gridpointOperations
 */
 
 
