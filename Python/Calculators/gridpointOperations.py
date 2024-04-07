@@ -43,11 +43,15 @@ double distance(double t, double y)
 */
 """
 # functions return calculated value depending on operation
-def distance(q, w, e, r) -> float:
-    return sqrt((e-q)**2 + (r-w)**2)
+def distance(q, w, e = None, r = None) -> float:
+    #if type(e) == None and type(r) == None:
+    if e == None and r == None:
+        return sqrt(q**2 + w**2)
+    else:
+        return sqrt((e-q)**2 + (r-w)**2)
 
-def distance(t, y) -> float:
-    return sqrt(t**2 + y**2)
+#def distance(t, y) -> float:
+#    return sqrt(t**2 + y**2)
 
 # --- RADIUS ------------------------------------
 """
