@@ -8,6 +8,8 @@
 # Interest is compounded monthly. All monetary values must be rounded to the nearest hundredth.
 # All percentage values must be rounded to the nearest thousandth and be in decimal form. All year
 # values must be rounded to the nearest whole.
+# 
+# Usage: python3 investTable.py
 
 
 # --- IMPORTS ---------------------------------------------------------------------------

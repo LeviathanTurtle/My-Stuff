@@ -1,10 +1,18 @@
-/*
-    William Wadsworth
-    CSC1710
-    10/14/20
-    ~/csc1710/prog2/prog2.cpp
-    Investment calculator
-    B-level, +15%
+/* INVESTMENT CALCULATOR
+ * William Wadsworth
+ * Created: 10.14.2020
+ * Doctored: at some point (maybe)
+ * CSC 1710
+ * ~/csc1710/prog2/prog2.cpp
+ * 
+ * This program creates an investment table based on your input. Interest is compounded monthly.
+ * All monetary values must be rounded to the nearest hundredth. All percentage values must be
+ * rounded to the nearest thousandth and be in decimal form. All year values must be rounded to the
+ * nearest whole.
+ * 
+ * Usage: 
+ * To compile: g++ investTable.cpp -Wall -o <exe name>
+ * To run: ./<exe name>
 */
 
 #include <iostream>
