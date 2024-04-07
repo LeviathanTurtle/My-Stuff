@@ -9,8 +9,7 @@
 # This program provides simple four-functions on two integers given by user input.
 # 
 # [USAGE]:
-# To run:
-#     python3 fourFunction.py
+# To run: python3 fourFunction.py
 
 
 # --- IMPORTS ---------------------------------------------------------------------------

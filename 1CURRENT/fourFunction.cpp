@@ -1,23 +1,16 @@
 /* 4-FUNCTION CALCULATOR
-
  * William Wadsworth
  * Created: 8.27.2020
  * Doctored: 10.12.2023
  * CSC1710-02
  * ~/csc1710/lab2/lab2.cpp
  * 
- * 
  * [SUMMARY]:
  * 4-function basic calculator
  * 
- * 
  * [USE]:
- * To compile:
- *     g++ fourFunction.cpp -Wall -o fourFunction
- * 
- * To run:
- *     ./fourFunction
- * 
+ * To compile: g++ fourFunction.cpp -Wall -o fourFunction
+ * To run: ./fourFunction
 */
 
 #include <iostream>
