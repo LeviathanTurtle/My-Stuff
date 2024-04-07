@@ -137,7 +137,7 @@ x2, y2 = map(float, input("Input your second point: ").split())
    cout << "What operation would you like to do: ";
    cin >> inp;
 
-   while (inp != "distance" || inp != "radius" || inp != "circumference" || inp != "area") {
+   while (inp != "distance" && inp != "radius" && inp != "circumference" && inp != "area") {
       cout << "Not valid: ";
       cin >> inp;
    }
