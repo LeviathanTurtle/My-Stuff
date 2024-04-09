@@ -47,7 +47,7 @@ values must be rounded to the nearest whole.''')
         cin >> p;
     }
 """
-p = int(input("What is your principal amount: $"))
+p = int(input("\nWhat is your principal amount: $"))
 # input validation
 while(p < 0):
     p = int(input("error: must be at least 0: $"))
@@ -118,7 +118,7 @@ while(d < 0):
     cout << "Calculating ..." << endl; 
 """
 inp = input("Does the interest rate change per year? [Yes/No]: ")
-if(inp == "Yes"):
+if(inp == "Yes" or inp == "yes"):
     cr = int(input("By how much (e.g. +[input]% per year): "))
 print("Calculating...\n")
 
@@ -168,8 +168,8 @@ if(inp == "Yes"):
     print("----------------------------------------------------------")
     
     for t in range(1,y+1):
-        A = p + (p*apr*t) + (t*d)
-        print(f"{t:>7} {t*d:>14} {A:>20}")
+        a = p + (p*apr*t) + (t*d)
+        print(f"{t:>6} {t*d:>14.2f} {a:>20.2f}")
         if (t % 12 == 0):
             apr += cr
 # table for constant interest
@@ -179,8 +179,8 @@ else:
     print("----------------------------------------------------------")
 
     for t in range(1,y+1):
-        A = p + (p * apr * t) + (t * d)
-        print(f"{t:>7} {t*d:>14} {A:>20}")
+        a = p + (p * apr * t) + (t * d)
+        print(f"{t:>6} {t*d:>14.2f} {a:>20.2f}")
 
 print("------------------------------------------------------")
-print(f"Your capital gain will be ${A-p:.2f} in {y//12} years")
+print(f"Your capital gain will be ${a-p:.2f} in {y//12} years")

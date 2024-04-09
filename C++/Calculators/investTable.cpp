@@ -88,7 +88,7 @@ int main ()
 
     int cr;
     string inp;
-    cout << "Does the interest change per year? ";
+    cout << "Does the interest change per year? [yes/no]: ";
     cin >> inp;
     if (inp == "yes") {
         cout << "By how much (e.g. +[input]% per year): ";
