@@ -97,3 +97,41 @@ Assigned to: Dylan Hudson
 Status: Completed (3.21.2024)
 Comments: Added four respective data members initialized to None, and update after flight has 
           landed.
+
+---------------------------------------------------------------------------------------------------
+
+Date: 
+ID: 
+Severity: 
+Priority: 
+Description: 
+Steps to reproduce: 1. 
+Assigned to: 
+
+Status: 
+Comments: 
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------
+
+Date: 
+ID: 
+Severity: 
+Priority: 
+Description: 
+Steps to reproduce: 1. 
+Assigned to: 
+
+Status: 
+Comments: 
+
