@@ -100,6 +100,21 @@ Comments: Added four respective data members initialized to None, and update aft
 
 ---------------------------------------------------------------------------------------------------
 
+Date: 4.7.2024
+ID: CA-007
+Severity: Severe
+Priority: High
+Description: Simulation not generating output.
+Steps to reproduce: 1. Run simulation.
+                    2. Wait for simulation to finish.
+                    3. Observe the reports folder is empty.
+Assigned to: Anthony Cox
+
+Status: Completed (4.8.2024)
+Comments: Folder was mis-named, renamed to correct name.
+
+---------------------------------------------------------------------------------------------------
+
 Date: 
 ID: 
 Severity: 
