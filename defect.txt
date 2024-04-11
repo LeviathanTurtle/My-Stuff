@@ -6,8 +6,23 @@ Description: Defect log for team Foobar
 
 ---------------------------------------------------------------------------------------------------
 
-Date: 2.1.2024
+Date: 1.23.2024
 ID: CA-001
+Severity: Severe
+Priority: High
+Description: Script to calculate flight demand is wildly inflated.
+Steps to reproduce: 1. Run script to calculate flight demand.
+                    2. Perform flight demand calculations by hand.
+                    3. Observe difference in script output and manual calculations.
+Assigned to: Will Wadsworth, Anthony Cox
+
+Status: Completed (1.26.2024)
+Comments: A developer was using incorrect base data.
+
+---------------------------------------------------------------------------------------------------
+
+Date: 2.1.2024
+ID: CA-002
 Severity: Severe
 Priority: High
 Description: Scripts (flight_demand.csv, flight_fuel_capacity.csv, and flight_profit_loss.csv) 
@@ -25,7 +40,7 @@ Comments: Converted distance in flight_demand.csv, flight_fuel_capacity.csv, and
 ---------------------------------------------------------------------------------------------------
 
 Date: 2.6.2024
-ID: CA-002
+ID: CA-003
 Severity: Moderate
 Priority: Medium
 Description: Script to create the database does not complete execution.
@@ -40,7 +55,7 @@ Comments: Incorrect usage of the dockers and incorrect IP used in the script.
 ---------------------------------------------------------------------------------------------------
 
 Date: 2.18.2024
-ID: CA-003
+ID: CA-004
 Severity: Severe
 Priority: High
 Description: Docker application crashes due to ports.
@@ -55,7 +70,7 @@ Comments: Updated application port exposed by docker from 8000 to 32000 because 
 ---------------------------------------------------------------------------------------------------
 
 Date: 2.19.2024
-ID: CA-004
+ID: CA-005
 Severity: Minimal
 Priority: Low
 Description: Aircraft class constructor can be provided impossible fuel levels.
@@ -69,7 +84,7 @@ Comments: Updated class constructor to include error checking.
 ---------------------------------------------------------------------------------------------------
 
 Date: 3.20.2024
-ID: CA-005
+ID: CA-006
 Severity: Moderate
 Priority: Low
 Description: Route module does not accurately track flight demand for a given flight.
@@ -85,7 +100,7 @@ Comments: Separated flight demand variable into two: current, daily demand. Scri
 ---------------------------------------------------------------------------------------------------
 
 Date: 3.20.2024
-ID: CA-006
+ID: CA-007
 Severity: Moderate
 Priority: Low
 Description: Flight module does not include expected/actual arrival times.
@@ -100,8 +115,24 @@ Comments: Added four respective data members initialized to None, and update aft
 
 ---------------------------------------------------------------------------------------------------
 
-Date: 4.7.2024
-ID: CA-007
+Date: 4.1.2024
+ID: CA-008
+Severity: Moderate
+Priority: Low
+Description: Simulation takes forever to calculate.
+Steps to reproduce: 1. Run simulation.
+                    2. Wait.
+                    3. Simulation is still running after 700 minutes.
+Assigned to: Anthony Cox
+
+Status: Completed (4.9.2024)
+Comments: For lambda functions, instead of creating a filter object and then casting it to a
+          list object, create only a single list via conditional construction.
+
+---------------------------------------------------------------------------------------------------
+
+Date: 4.8.2024
+ID: CA-009
 Severity: Severe
 Priority: High
 Description: Simulation not generating output.
@@ -110,21 +141,56 @@ Steps to reproduce: 1. Run simulation.
                     3. Observe the reports folder is empty.
 Assigned to: Anthony Cox
 
-Status: Completed (4.8.2024)
+Status: Completed (4.9.2024)
 Comments: Folder was mis-named, renamed to correct name.
 
 ---------------------------------------------------------------------------------------------------
 
-Date: 
-ID: 
-Severity: 
-Priority: 
-Description: 
-Steps to reproduce: 1. 
-Assigned to: 
+Date: 4.8.2024
+ID: CA-010
+Severity: Moderate
+Priority: Low
+Description: Incorrect departure time displayed in flight details.
+Steps to reproduce: 1. Search for a flight.
+                    2. Select a flight.
+                    3. Displayed departure time does not match the scheduled departure time.
+Assigned to: Corey Lawrence, Anthony Cox
 
-Status: 
+Status: Completed (4.12.2024)
+Comments: Updated the flight details retrieval function to display the correct departure time.
+
+---------------------------------------------------------------------------------------------------
+
+Date: 4.10.2024
+ID: CA-011
+Severity: Minimal
+Priority: Low
+Description: Passenger cannot purchase ticket if special characters are used in name fields.
+Steps to reproduce: 1. Load Comfort Airlines website.
+                    2. Login using a special character in the name field.
+                    3. Ticket lists do not load.
+Assigned to: Corey Lawrence
+
+Status: Open
 Comments: 
+
+---------------------------------------------------------------------------------------------------
+
+Date: 4.10.2024
+ID: CA-012
+Severity: Severe
+Priority: High
+Description: Error occurs when attempting to cancel a flight reservation.
+Steps to reproduce: 1. Load Comfort Airlines website.
+                    2. Login.
+                    3. Search for and purchase a flight.
+                    4. Navigate to your trips, select your ticket, and click 'Cancel flight.'
+                    5. Page reloads.
+Assigned to: Corey Lawrence
+
+Status: Open
+Comments: 
+
 
 
 
