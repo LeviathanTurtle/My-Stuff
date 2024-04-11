@@ -54,6 +54,22 @@ Comments: Incorrect usage of the dockers and incorrect IP used in the script.
 
 ---------------------------------------------------------------------------------------------------
 
+Date: 2.17.2024
+ID: CA-005
+Severity: Moderate
+Priority: Medium
+Description: Aircraft object not initializing properly, causing TypeError exceptions during
+             simulation startup.
+Steps to reproduce: 1. Run simulation.
+                    2. Initialize an aircraft.
+                    3. Simulation crashes with a TypeError returned.
+Assigned to: Anthony Cox, Will Wadsworth
+
+Status: Completed (2.20.2024)
+Comments: Added type-checking to Aircraft class constructor.
+
+---------------------------------------------------------------------------------------------------
+
 Date: 2.18.2024
 ID: CA-004
 Severity: Severe
@@ -80,6 +96,37 @@ Assigned to: Anthony Cox, Will Wadsworth
 
 Status: Completed (2.20.2024)
 Comments: Updated class constructor to include error checking.
+
+---------------------------------------------------------------------------------------------------
+
+Date: 2.19.2024
+ID: CA-0
+Severity: Moderate
+Priority: High
+Description: Aircraft maintenance object not triggering maintenance tasks.
+Steps to reproduce: 1. Run simulation.
+                    2. Wait for simulation to finish.
+                    3. Aircraft maintenance hours are way above 200.
+Assigned to: Anthony Cox, Will Wadsworth
+
+Status: Completed (2.21.2024)
+Comments: There was no check for maintenance hours, added.
+
+---------------------------------------------------------------------------------------------------
+
+Date: 2.22.2024
+ID: CA-006
+Severity: Severe
+Priority: Medium
+Description: Route object storing NULL destinations, leading to incorrect flight paths in the
+             simulation.
+Steps to reproduce: 1. Run simulation.
+                    2. Wait for simulation to finish.
+                    3. Simulation output lists NULL destination for some flights.
+Assigned to: Parker Blue, Zach Christopher
+
+Status: Completed (2.25.2024)
+Comments: Added TypeError checking and NULL exception handling in class constructor.
 
 ---------------------------------------------------------------------------------------------------
 
@@ -190,6 +237,28 @@ Assigned to: Corey Lawrence
 
 Status: Open
 Comments: 
+
+---------------------------------------------------------------------------------------------------
+
+Date: 4.11.2024
+ID: CA-013
+Severity: Minimal
+Priority: Low
+Description: Simulation output lists flight number as tail number.
+Steps to reproduce: 1. Run simulation.
+                    2. Wait for simulation to finish.
+                    3. Aircraft tail number shows aircraft flight number.
+Assigned to: Anthony Cox, Parker Blue
+
+Status: Open
+Comments: 
+
+
+
+
+
+
+
 
 
 
