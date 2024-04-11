@@ -296,7 +296,7 @@ Steps to reproduce: 1. Load Comfort Airlines website.
 Assigned to: Corey Lawrence
 
 Status: Open
-Comments: 
+Comments: Created when timteable is imported and added then, so only displayed once instead at one time.
 
 ---------------------------------------------------------------------------------------------------
 
