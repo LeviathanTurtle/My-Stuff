@@ -63,23 +63,17 @@ export async function main(ns) {
     for (let i = 0; i < servers0Port4gb.length; ++i) {
         const serv = servers0Port4gb[i];
 
-        //ns.scp("early-hack-template.js", serv);
-        //if (ns.scp("early-hack-template.js", serv)) {
-        //  ns.tprint("did that thang 0-4");
-        //}
         await copyFiles(ns, "early-hack-template.js", serv)
 
         //ns.tprint("test-servers0Port4gb");
         ns.nuke(serv);
         //ns.tprint("end-test-servers0Port4gb\n");
 
-        //await ns.sleep(1000); // sleep for 1 second
-        //await delay(1000); // wait for 1 second
-        ns.tprint(`Launching script(s) 'early-hack-template.js' on server '${serv}' with 1 thread`);
+        ns.tprint(`Launching script 'early-hack-template.js' on server '${serv}' with 1 thread`);
         ns.exec("early-hack-template.js", serv);
     }
 
-    ns.tprint("Sleeping...");
+    ns.tprint("Sleeping before next portion...");
     await ns.sleep(5000);
     ns.tprint("Beginning main loop - 0 port 16 gb");
     // Copy our scripts onto each server that requires 0 ports and 16 GB
@@ -90,36 +84,25 @@ export async function main(ns) {
         // calculate max threads
         const threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
 
-        //ns.scp("weaken-template.js", serv);
-        //ns.scp("hack-template.js", serv);
-        //ns.scp("grow-template.js", serv);
-        //ns.tprint("about to do that thang 0-16");
-        //if (ns.scp(files, serv)) {
-        //  ns.tprint("did that thang 0-16");
-        //}
-        await copyFiles(ns, files, serv)
+        await copyFiles(ns, files, serv);
         //ns.tprint(`test: files done copied to ${serv} and will run on ${threads} threads.`);
 
         //ns.tprint("test-servers0Port16gb");
-        ns.tprint(`Nuking ${serv} in 5 seconds...`);
+        ns.tprint(`Nuking ${serv} in 5s...`);
         await ns.sleep(5000);
         ns.nuke(serv);
         //ns.tprint("end-test-servers0Port16gb\n");
 
-        //await ns.sleep(1000); // sleep for 1 second
-        //await delay(1000); // wait for 1 second
-        //ns.exec("weaken-template.js", serv, 2);
-        //await ns.sleep(1000); // sleep for 1 second
-        //await delay(1000); // wait for 1 second
-        //ns.exec("hack-template.js", serv, 2);
-        //await ns.sleep(1000); // sleep for 1 second
-        //await delay(1000); // wait for 1 second
-        //ns.exec("grow-template.js", serv, 2);
-        ns.tprint(`Launching script(s) '${files}' on server '${serv}' with ${threads} threads`);
-        for (let j = 0; j < files.length; ++j) {
-          ns.exec(files[j], serv, threads);
-          await ns.sleep(1000); // sleep for 1 second
-        }
+        ns.tprint(`Launching scripts '${files}' on server '${serv}' with ${threads} threads in 5s`);
+        await ns.sleep(5000);
+
+        //for (let j = 0; j < files.length; ++j) {
+        //  ns.exec(files[j], serv, threads);
+        //  await ns.sleep(1000); // sleep for 1 second
+        //}
+        await execFiles(ns, files, serv, threads);
+        ns.tprint(`${files} running on ${serv}. Sleeping for 5s`);
+        await ns.sleep(5000);
     }
 
     /*
@@ -270,3 +253,24 @@ async function copyFiles(ns, files, target) {
     });
 }
 
+async function execFiles(ns, files, target, threads) {
+    return new Promise(resolve => {
+        const executeFile = async (fileIndex) => {
+            if (fileIndex >= files.length) {
+                resolve(true); // All files executed successfully
+                return;
+            }
+            
+            const file = files[fileIndex];
+            if (ns.exec(file, target, threads)) {
+                ns.tprint(`File ${file} running on ${target}`);
+                setTimeout(() => executeFile(fileIndex + 1), 1000); // Execute next file after 1 second
+            } else {
+                ns.tprint(`Failed to start file ${file} on server ${target}`);
+                setTimeout(() => executeFile(fileIndex), 1000); // Retry current file after 1 second
+            }
+        };
+
+        executeFile(0); // Start executing files from the beginning of the array
+    });
+}
