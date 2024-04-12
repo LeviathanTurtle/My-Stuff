@@ -12,7 +12,7 @@
 // 256 GB : 
 
 export async function main(ns) {
-    // list of main files to use
+    // array of main files to copy and use
     const files = ["weaken-template.js", "hack-template.js", "grow-template.js"];
     //ns.tprint(`TEST: ns.getHostName = ${ns.getHostname()}`);
 
@@ -62,19 +62,12 @@ export async function main(ns) {
     // run the scripts.
     for (let i = 0; i < servers0Port4gb.length; ++i) {
         const serv = servers0Port4gb[i];
-        // calculate max threads
-        const threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ns.getScriptRam("early-hack-template.js"));
 
         //ns.scp("early-hack-template.js", serv);
         //if (ns.scp("early-hack-template.js", serv)) {
         //  ns.tprint("did that thang 0-4");
         //}
-        if (await copyFiles(ns, "early-hack-template.js", serv)) {
-          ns.tprint("did that thang 0-4");
-        } else {
-          ns.tprint("did not do that thang 0-4");
-        }
-        ns.scp(files, serv)
+        await copyFiles(ns, "early-hack-template.js", serv)
 
         //ns.tprint("test-servers0Port4gb");
         ns.nuke(serv);
@@ -82,11 +75,13 @@ export async function main(ns) {
 
         //await ns.sleep(1000); // sleep for 1 second
         //await delay(1000); // wait for 1 second
-        ns.tprint(`Launching script 'early-hack-template.js' on server '${serv}' with ${threads} threads`);
-        ns.exec("early-hack-template.js", serv, threads);
+        ns.tprint(`Launching script(s) 'early-hack-template.js' on server '${serv}' with 1 thread`);
+        ns.exec("early-hack-template.js", serv);
     }
 
-    ns.tprint("\n\nBeginning main loop - 0 port 16 gb");
+    ns.tprint("Sleeping...");
+    await ns.sleep(5000);
+    ns.tprint("Beginning main loop - 0 port 16 gb");
     // Copy our scripts onto each server that requires 0 ports and 16 GB
     // to gain root access. Then use nuke() to gain admin access and
     // run the scripts.
@@ -102,13 +97,12 @@ export async function main(ns) {
         //if (ns.scp(files, serv)) {
         //  ns.tprint("did that thang 0-16");
         //}
-        if (await copyFiles(ns, files, serv)) {
-          ns.tprint("did that thang 0-16");
-        } else {
-          ns.tprint("did not do that thang 0-16");
-        }
+        await copyFiles(ns, files, serv)
+        //ns.tprint(`test: files done copied to ${serv} and will run on ${threads} threads.`);
 
         //ns.tprint("test-servers0Port16gb");
+        ns.tprint(`Nuking ${serv} in 5 seconds...`);
+        await ns.sleep(5000);
         ns.nuke(serv);
         //ns.tprint("end-test-servers0Port16gb\n");
 
@@ -121,8 +115,11 @@ export async function main(ns) {
         //await ns.sleep(1000); // sleep for 1 second
         //await delay(1000); // wait for 1 second
         //ns.exec("grow-template.js", serv, 2);
-        ns.tprint(`Launching script 'early-hack-template.js' on server '${serv}' with ${threads} threads`);
-        ns.exec(files, serv, threads);
+        ns.tprint(`Launching script(s) '${files}' on server '${serv}' with ${threads} threads`);
+        for (let j = 0; j < files.length; ++j) {
+          ns.exec(files[j], serv, threads);
+          await ns.sleep(1000); // sleep for 1 second
+        }
     }
 
     /*
@@ -131,7 +128,9 @@ export async function main(ns) {
     //    await ns.sleep(60000);
     //}
 
-    ns.tprint("\n\nBeginning main loop - 1 port 32 gb");
+    ns.tprint("Sleeping...");
+    await ns.sleep(5000);
+    ns.tprint("Beginning main loop - 1 port 32 gb");
     // Copy our scripts onto each server that requires 1 port and 32 GB
     // to gain root access. Then use brutessh() and nuke()
     // to gain admin access and run the scripts.
@@ -162,7 +161,9 @@ export async function main(ns) {
         await ns.sleep(60000);
     }
 
-    ns.tprint("\n\nBeginning main loop - 2 port 32 gb");
+    ns.tprint("Sleeping...");
+    await ns.sleep(5000);
+    ns.tprint("Beginning main loop - 2 port 32 gb");
     // Copy our scripts onto each server that requires 2 ports and 32 GB
     // to gain root access. Then use brutessh() and nuke() and ftpcrack()
     // to gain admin access and run the scripts.
@@ -189,7 +190,9 @@ export async function main(ns) {
         ns.exec("grow-template.js", serv, 5);
     }
 
-    ns.tprint("\n\nBeginning main loop - 2 port 64 gb");
+    ns.tprint("Sleeping...");
+    await ns.sleep(5000);
+    ns.tprint("Beginning main loop - 2 port 64 gb");
     // Copy our scripts onto each server that requires 2 ports and 64 GB
     // to gain root access. Then use brutessh() and nuke() and ftpcrack()
     // to gain admin access and run the scripts.
@@ -216,7 +219,9 @@ export async function main(ns) {
         ns.exec("grow-template.js", serv, 11);
     }
 
-    ns.tprint("\n\nBeginning main loop - 2 port 128 gb");
+    ns.tprint("Sleeping...");
+    await ns.sleep(5000);
+    ns.tprint("Beginning main loop - 2 port 128 gb");
     // Copy our scripts onto each server that requires 2 ports and 128 GB
     // to gain root access. Then use brutessh() and nuke() and ftpcrack()
     // to gain admin access and run the scripts.
@@ -244,6 +249,7 @@ export async function main(ns) {
     }
 
     */
+    ns.tprint("DONE.");
 }
 
 // from ChatGPT
