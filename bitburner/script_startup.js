@@ -21,7 +21,8 @@ export async function main(ns) {
 
   // Array of all servers that don't need any ports opened
   // to gain root access.
-  const servers0Port = ["n00dles",          // 4 GB
+  const servers0Port = ["home",             // 128 GB
+                        "n00dles",          // 4 GB
                         "foodnstuff",       // 16 GB
                         "sigma-cosmetics",  // 16 GB
                         "joesguns",         // 16 GB
