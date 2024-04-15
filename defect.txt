@@ -313,3 +313,18 @@ Assigned to: Parker Blue, Anthony Cox
 Status: Completed (4.11.2024)
 Comments: 
 
+---------------------------------------------------------------------------------------------------
+
+Date: 4.15.2024
+ID: CA-021
+Severity: Moderate
+Priority: High
+Description: Simulation not flying to Paris.
+Steps to reproduce: 1. Run simulation
+                    2. Wait for simulation to finish.
+                    3. In flights.csv report file, a Paris flight is not found.
+Assigned to: Anthony Cox
+
+Status: Open
+Comments: 
+
