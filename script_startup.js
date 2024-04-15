@@ -35,14 +35,14 @@ export async function main(ns) {
 //                              "nectar-net",
                               "hong-fang-tea",
                               "harakiri-sushi"];
-/*
+
     // Array of all servers that only need 1 port opened
     // to gain root access. These have 32 GB of RAM
     const servers1Port32gb = [//"max-hardware",
 //                              "neo-net",
 //                              "zer0",
                               "iron-gym"];
-    
+/*    
     // Array of all servers that only need 2 ports opened
     // to gain root access. These have 32 GB of RAM
     const servers2Port32gb = ["phantasy",
@@ -56,6 +56,13 @@ export async function main(ns) {
     // to gain root access. These have 128 GB of RAM
     const servers2Port128gb = ["avmnite-02h"];
 */
+
+
+    // start with cleaning servers
+    //ns.exec("clean.js","home");
+
+
+
     ns.tprint("Beginning main loop - 0 port 4 gb");
     // Copy our scripts onto each server that requires 0 ports and 4 GB
     // to gain root access. Then use nuke() to gain admin access and
@@ -65,13 +72,13 @@ export async function main(ns) {
 
         await copyFiles(ns, "early-hack-template.js", serv)
 
-        //ns.tprint("test-servers0Port4gb");
         ns.nuke(serv);
-        //ns.tprint("end-test-servers0Port4gb\n");
 
         ns.tprint(`Launching script 'early-hack-template.js' on server '${serv}' with 1 thread`);
         ns.exec("early-hack-template.js", serv);
     }
+
+
 
     ns.tprint("Sleeping before next portion...");
     await ns.sleep(5000);
@@ -87,14 +94,17 @@ export async function main(ns) {
         await copyFiles(ns, files, serv);
         //ns.tprint(`test: files done copied to ${serv} and will run on ${threads} threads.`);
 
-        //ns.tprint("test-servers0Port16gb");
-        ns.tprint(`Nuking ${serv} in 5s...`);
-        await ns.sleep(5000);
-        ns.nuke(serv);
-        //ns.tprint("end-test-servers0Port16gb\n");
+        // check for current hack level vs. server
+        while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
+          await ns.sleep(60000);
+        }
 
-        ns.tprint(`Launching scripts '${files}' on server '${serv}' with ${threads} threads in 5s`);
-        await ns.sleep(5000);
+        ns.tprint(`Nuking ${serv} in 3s...`);
+        await ns.sleep(3000);
+        ns.nuke(serv);
+
+        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 3s`);
+        await ns.sleep(3000);
 
         //for (let j = 0; j < files.length; ++j) {
         //  ns.exec(files[j], serv, threads);
@@ -105,13 +115,16 @@ export async function main(ns) {
         await ns.sleep(5000);
     }
 
-    /*
-    // Wait until we acquire the "BruteSSH.exe" program
-    //while (!ns.fileExists("BruteSSH.exe", "home")) {
-    //    await ns.sleep(60000);
-    //}
 
-    ns.tprint("Sleeping...");
+    
+    // Wait until we acquire the "BruteSSH.exe" program
+    while (!ns.fileExists("BruteSSH.exe", "home")) {
+        await ns.sleep(60000);
+    }
+
+
+
+    ns.tprint("Sleeping before next portion...");
     await ns.sleep(5000);
     ns.tprint("Beginning main loop - 1 port 32 gb");
     // Copy our scripts onto each server that requires 1 port and 32 GB
@@ -119,126 +132,161 @@ export async function main(ns) {
     // to gain admin access and run the scripts.
     for (let i = 0; i < servers1Port32gb.length; ++i) {
         const serv = servers1Port32gb[i];
+        // calculate max threads
+        const threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
 
-        //ns.scp("weaken-template.js", serv);
-        //ns.scp("hack-template.js", serv);
-        //ns.scp("grow-template.js", serv);
-        ns.scp(files, serv);
+        await copyFiles(ns, files, serv);
+        //ns.tprint(`test: files done copied to ${serv} and will run on ${threads} threads.`);
 
-        ns.tprint("test-servers1Port32gb");
+        // check for current hack level vs. server
+        while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
+          await ns.sleep(60000);
+        }
+
+        ns.tprint(`BruteSSH-ing ${serv} in 3s...`);
+        await ns.sleep(3000);
         ns.brutessh(serv);
+        ns.tprint(`Nuking ${serv} in 3s...`);
+        await ns.sleep(3000);
         ns.nuke(serv);
-        //ns.exec("backdoor", serv);
-        ns.tprint("end-test-servers1Port32gb\n");
 
-        await ns.sleep(1000); // sleep for 1 second
-        ns.exec("weaken-template.js", serv, 5);
-        await ns.sleep(1000); // sleep for 1 second
-        ns.exec("hack-template.js", serv, 5);
-        await ns.sleep(1000); // sleep for 1 second
-        ns.exec("grow-template.js", serv, 5);
+        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 3s`);
+        await ns.sleep(3000);
+
+        await execFiles(ns, files, serv, threads);
+        ns.tprint(`${files} running on ${serv}. Sleeping for 5s`);
+        await ns.sleep(5000);
     }
-    
+
+
+/*    
     // Wait until we acquire the "FTPCrack.exe" program
     while (!ns.fileExists("FTPCrack.exe", "home")) {
         await ns.sleep(60000);
     }
 
-    ns.tprint("Sleeping...");
+
+
+    ns.tprint("Sleeping before next portion...");
     await ns.sleep(5000);
     ns.tprint("Beginning main loop - 2 port 32 gb");
     // Copy our scripts onto each server that requires 2 ports and 32 GB
     // to gain root access. Then use brutessh() and nuke() and ftpcrack()
     // to gain admin access and run the scripts.
     for (let i = 0; i < servers2Port32gb.length; ++i) {
-        const serv = servers2Port32gb[i];
+        const serv = servers1Port32gb[i];
+        // calculate max threads
+        const threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
 
-        //ns.scp("weaken-template.js", serv);
-        //ns.scp("hack-template.js", serv);
-        //ns.scp("grow-template.js", serv);
-        ns.scp(files, serv);
+        await copyFiles(ns, files, serv);
+        //ns.tprint(`test: files done copied to ${serv} and will run on ${threads} threads.`);
 
-        ns.tprint("test-servers2Port32gb");
+        // check for current hack level vs. server
+        while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
+          await ns.sleep(60000);
+        }
+
+        ns.tprint(`BruteSSH-ing ${serv} in 3s...`);
+        await ns.sleep(3000);
         ns.brutessh(serv);
+        ns.tprint(`FTPCrack-ing ${serv} in 3s...`);
+        await ns.sleep(3000);
         ns.ftpcrack(serv);
+        ns.tprint(`Nuking ${serv} in 3s...`);
+        await ns.sleep(3000);
         ns.nuke(serv);
-        //ns.exec("backdoor", serv);
-        ns.tprint("end-test-servers2Port32gb\n");
 
-        await ns.sleep(1000); // sleep for 1 second
-        ns.exec("weaken-template.js", serv, 5);
-        await ns.sleep(1000); // sleep for 1 second
-        ns.exec("hack-template.js", serv, 5);
-        await ns.sleep(1000); // sleep for 1 second
-        ns.exec("grow-template.js", serv, 5);
+        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 3s`);
+        await ns.sleep(3000);
+
+        await execFiles(ns, files, serv, threads);
+        ns.tprint(`${files} running on ${serv}. Sleeping for 5s`);
+        await ns.sleep(5000);
     }
 
-    ns.tprint("Sleeping...");
+
+
+    ns.tprint("Sleeping before next portion...");
     await ns.sleep(5000);
     ns.tprint("Beginning main loop - 2 port 64 gb");
     // Copy our scripts onto each server that requires 2 ports and 64 GB
     // to gain root access. Then use brutessh() and nuke() and ftpcrack()
     // to gain admin access and run the scripts.
     for (let i = 0; i < servers2Port64gb.length; ++i) {
-        const serv = servers2Port64gb[i];
+        const serv = servers1Port32gb[i];
+        // calculate max threads
+        const threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
 
-        //ns.scp("weaken-template.js", serv);
-        //ns.scp("hack-template.js", serv);
-        //ns.scp("grow-template.js", serv);
-        ns.scp(files, serv);
+        await copyFiles(ns, files, serv);
+        //ns.tprint(`test: files done copied to ${serv} and will run on ${threads} threads.`);
 
-        ns.tprint("test-servers2Port64gb");
+        // check for current hack level vs. server
+        while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
+          await ns.sleep(60000);
+        }
+
+        ns.tprint(`BruteSSH-ing ${serv} in 3s...`);
+        await ns.sleep(3000);
         ns.brutessh(serv);
+        ns.tprint(`FTPCrack-ing ${serv} in 3s...`);
+        await ns.sleep(3000);
         ns.ftpcrack(serv);
+        ns.tprint(`Nuking ${serv} in 3s...`);
+        await ns.sleep(3000);
         ns.nuke(serv);
-        //ns.exec("backdoor", serv);
-        ns.tprint("end-test-servers2Port32gb\n");
 
-        await ns.sleep(1000); // sleep for 1 second
-        ns.exec("weaken-template.js", serv, 11);
-        await ns.sleep(1000); // sleep for 1 second
-        ns.exec("hack-template.js", serv, 11);
-        await ns.sleep(1000); // sleep for 1 second
-        ns.exec("grow-template.js", serv, 11);
+        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 3s`);
+        await ns.sleep(3000);
+
+        await execFiles(ns, files, serv, threads);
+        ns.tprint(`${files} running on ${serv}. Sleeping for 5s`);
+        await ns.sleep(5000);
     }
 
-    ns.tprint("Sleeping...");
+
+
+    ns.tprint("Sleeping before next portion...");
     await ns.sleep(5000);
     ns.tprint("Beginning main loop - 2 port 128 gb");
     // Copy our scripts onto each server that requires 2 ports and 128 GB
     // to gain root access. Then use brutessh() and nuke() and ftpcrack()
     // to gain admin access and run the scripts.
     for (let i = 0; i < servers2Port128gb.length; ++i) {
-        const serv = servers2Port128gb[i];
+        const serv = servers1Port32gb[i];
+        // calculate max threads
+        const threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
 
-        //ns.scp("weaken-template.js", serv);
-        //ns.scp("hack-template.js", serv);
-        //ns.scp("grow-template.js", serv);
-        ns.scp(files, serv);
+        await copyFiles(ns, files, serv);
+        //ns.tprint(`test: files done copied to ${serv} and will run on ${threads} threads.`);
 
-        ns.tprint("test-servers2Port128gb");
+        // check for current hack level vs. server
+        while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
+          await ns.sleep(60000);
+        }
+
+        ns.tprint(`BruteSSH-ing ${serv} in 3s...`);
+        await ns.sleep(3000);
         ns.brutessh(serv);
+        ns.tprint(`FTPCrack-ing ${serv} in 3s...`);
+        await ns.sleep(3000);
         ns.ftpcrack(serv);
+        ns.tprint(`Nuking ${serv} in 3s...`);
+        await ns.sleep(3000);
         ns.nuke(serv);
-        //ns.exec("backdoor", serv);
-        ns.tprint("end-test-servers2Port128gb\n");
 
-        await ns.sleep(1000); // sleep for 1 second
-        ns.exec("weaken-template.js", serv, 22);
-        await ns.sleep(1000); // sleep for 1 second
-        ns.exec("hack-template.js", serv, 22);
-        await ns.sleep(1000); // sleep for 1 second
-        ns.exec("grow-template.js", serv, 22);
+        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 3s`);
+        await ns.sleep(3000);
+
+        await execFiles(ns, files, serv, threads);
+        ns.tprint(`${files} running on ${serv}. Sleeping for 5s`);
+        await ns.sleep(5000);
     }
+*/
 
-    */
     ns.tprint("DONE.");
 }
 
-// from ChatGPT
-//function delay(ms) {
-//  return new Promise(resolve => setTimeout(resolve, ms));
-//}
+
 
 // from ChatGPT
 async function copyFiles(ns, files, target) {
@@ -253,6 +301,9 @@ async function copyFiles(ns, files, target) {
     });
 }
 
+
+
+// from ChatGPT
 async function execFiles(ns, files, target, threads) {
     return new Promise(resolve => {
         const executeFile = async (fileIndex) => {
