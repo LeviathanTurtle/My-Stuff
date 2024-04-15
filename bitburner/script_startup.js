@@ -34,8 +34,8 @@ export async function main(ns) {
   const servers1Port = ["max-hardware",     // 32 GB
                         "neo-net",          // 32 GB
                         "zer0",             // 32 GB
-                        "iron-gym",         // 32 GB
-                        "CSEC"];            // 8 GB
+                        "iron-gym"];         // 32 GB
+//                          "CSEC"];            // 8 GB
   
   // Array of all servers that only need 2 ports opened
   // to gain root access.
@@ -148,7 +148,7 @@ export async function main(ns) {
               //  await ns.sleep(1000); // sleep for 1 second
               //}
               await execFiles(ns, files, serv, threads);
-              ns.tprint(`${files} successfully running on ${serv}\n\n`);
+              ns.tprint(`All files successfully running on ${serv}\n\n`);
               //await ns.sleep(5000);
               affect_server_count++;
           }
@@ -164,6 +164,7 @@ export async function main(ns) {
   // IF VARIANT
   if (!ns.fileExists("BruteSSH.exe", "home")) {
       ns.tprint("File BruteSSH.exe does not exist.");
+      ns.tprint(`Affected servers: ${affect_server_count}`);
       return;
   }
 
@@ -219,7 +220,7 @@ export async function main(ns) {
         await ns.sleep(3000);
 
         await execFiles(ns, files, serv, threads);
-        ns.tprint(`${files} successfully running on ${serv}\n\n`);
+        ns.tprint(`All files successfully running on ${serv}\n\n`);
         //await ns.sleep(5000);
         affect_server_count++;
       }
@@ -234,6 +235,7 @@ export async function main(ns) {
   // IF VARIANT
   if (!ns.fileExists("FTPCrack.exe", "home")) {
       ns.tprint("File FTPCrack.exe does not exist.");
+      ns.tprint(`Affected servers: ${affect_server_count}`);
       return;
   }
 
@@ -283,7 +285,7 @@ export async function main(ns) {
         await ns.sleep(3000);
 
         await execFiles(ns, files, serv, threads);
-        ns.tprint(`${files} successfully running on ${serv}\n\n`);
+        ns.tprint(`All files successfully running on ${serv}\n\n`);
         //await ns.sleep(5000);
         affect_server_count++;
       }
@@ -298,6 +300,7 @@ export async function main(ns) {
   // IF VARIANT
   if (!ns.fileExists("RelaySMTP.exe", "home")) {
       ns.tprint("File RelaySMTP.exe does not exist.");
+      ns.tprint(`Affected servers: ${affect_server_count}`);
       return;
   }
 
@@ -347,7 +350,7 @@ export async function main(ns) {
         await ns.sleep(3000);
 
         await execFiles(ns, files, serv, threads);
-        ns.tprint(`${files} successfully running on ${serv}\n\n`);
+        ns.tprint(`All files successfully running on ${serv}\n\n`);
         //await ns.sleep(5000);
         affect_server_count++;
       }
@@ -362,6 +365,7 @@ export async function main(ns) {
   // IF VARIANT
   if (!ns.fileExists("HTTPWorm.exe", "home")) {
       ns.tprint("File HTTPWorm.exe does not exist.");
+      ns.tprint(`Affected servers: ${affect_server_count}`);
       return;
   }
 
@@ -411,7 +415,7 @@ export async function main(ns) {
         await ns.sleep(3000);
 
         await execFiles(ns, files, serv, threads);
-        ns.tprint(`${files} successfully running on ${serv}\n\n`);
+        ns.tprint(`All files successfully running on ${serv}\n\n`);
         //await ns.sleep(5000);
         affect_server_count++;
       }
@@ -426,6 +430,7 @@ export async function main(ns) {
   // IF VARIANT
   if (!ns.fileExists("SQLInject.exe", "home")) {
       ns.tprint("File SQLInject.exe does not exist.");
+      ns.tprint(`Affected servers: ${affect_server_count}`);
       return;
   }
 
@@ -475,7 +480,7 @@ export async function main(ns) {
         await ns.sleep(3000);
 
         await execFiles(ns, files, serv, threads);
-        ns.tprint(`${files} successfully running on ${serv}\n\n`);
+        ns.tprint(`All files successfully running on ${serv}\n\n`);
         //await ns.sleep(5000);
         affect_server_count++;
       }
