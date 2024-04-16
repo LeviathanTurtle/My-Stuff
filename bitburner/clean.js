@@ -12,7 +12,7 @@ export async function main(ns) {
                    "neo-net",
                    "zer0",
                    "iron-gym",
-                   "CSEC",
+//                    "CSEC",
                    "phantasy",
                    "omega-net",
                    "silver-helix",

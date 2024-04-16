@@ -21,8 +21,7 @@ export async function main(ns) {
 
   // Array of all servers that don't need any ports opened
   // to gain root access.
-  const servers0Port = ["home",             // 128 GB
-                        "n00dles",          // 4 GB
+  const servers0Port = ["n00dles",          // 4 GB
                         "foodnstuff",       // 16 GB
                         "sigma-cosmetics",  // 16 GB
                         "joesguns",         // 16 GB
@@ -83,11 +82,15 @@ export async function main(ns) {
       const serv = servers0Port[i];
       // calculate max threads
       let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      if (threads == 0) {
+      if (threads <= 0) {
         threads = 1;
       }
       // bool to determine if the current server is hackable
       let pass = true;
+
+      // announce this portion
+      ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
+      await ns.sleep(2000);
 
       // check for current hack level vs. server
       if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
@@ -97,15 +100,11 @@ export async function main(ns) {
       // WHILE OPTION FOR SLEEPING INSTEAD
       //while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
       //  await ns.sleep(60000);
-      //}        
+      //}
 
       if (pass) {
         switch (serv) {
             case "n00dles":
-              // announce this portion
-              ns.tprint(`Next server: ${serv}. Beginning in 3s...`);
-              await ns.sleep(3000);
-
               //await copyFiles(ns, "early-hack-template.js", serv);
               ns.scp("early-hack-template.js",serv);
 
@@ -122,10 +121,6 @@ export async function main(ns) {
               break;
             
             default:
-              // announce this portion
-              ns.tprint(`Next server: ${serv}. Beginning in 5s...`);
-              await ns.sleep(5000);
-
               //await copyFiles(ns, files, serv);
               if (ns.scp(files,serv)) {
                 ns.tprint(`copied files to ${serv}`);
@@ -141,8 +136,8 @@ export async function main(ns) {
                 await access(ns,serv,ns.getServerNumPortsRequired(serv));
               }
 
-              ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 3s...`);
-              await ns.sleep(3000);
+              ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 1s...`);
+              await ns.sleep(1000);
 
               //for (let j = 0; j < files.length; ++j) {
               //  ns.exec(files[j], serv, threads);
@@ -179,11 +174,15 @@ export async function main(ns) {
       const serv = servers1Port[i];
       // calculate max threads
       let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      if (threads == 0) {
+      if (threads <= 0) {
         threads = 1;
       }
       // bool to determine if the current server is hackable
       let pass = true;
+
+      // announce this portion
+      ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
+      await ns.sleep(2000);
 
       // check for current hack level vs. server
       if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
@@ -196,10 +195,6 @@ export async function main(ns) {
       //}
 
       if (pass) {
-        // announce this portion
-        ns.tprint(`Next server: ${serv}. Beginning in 5s...`);
-        await ns.sleep(5000);
-
         if (ns.scp(files,serv)) {
           ns.tprint(`copied files to ${serv}`);
         } else {
@@ -217,8 +212,8 @@ export async function main(ns) {
           await access(ns,serv,ns.getServerNumPortsRequired(serv));
         }
 
-        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 3s...`);
-        await ns.sleep(3000);
+        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 1s...`);
+        await ns.sleep(1000);
 
         await execFiles(ns, files, serv, threads);
         ns.tprint(`All files successfully running on ${serv}\n\n`);
@@ -250,11 +245,15 @@ export async function main(ns) {
       const serv = servers2Port[i];
       // calculate max threads
       let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      if (threads == 0) {
+      if (threads <= 0) {
         threads = 1;
       }
       // bool to determine if the current server is hackable
       let pass = true;
+
+      // announce this portion
+      ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
+      await ns.sleep(2000);
 
       // check for current hack level vs. server
       if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
@@ -267,10 +266,6 @@ export async function main(ns) {
       //}
 
       if (pass) {
-        // announce this portion
-        ns.tprint(`Next server: ${serv}. Beginning in 5s...`);
-        await ns.sleep(5000);
-
         if (ns.scp(files,serv)) {
           ns.tprint(`copied files to ${serv}`);
         } else {
@@ -282,8 +277,8 @@ export async function main(ns) {
           await access(ns,serv,ns.getServerNumPortsRequired(serv));
         }
 
-        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 3s`);
-        await ns.sleep(3000);
+        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 1s`);
+        await ns.sleep(1000);
 
         await execFiles(ns, files, serv, threads);
         ns.tprint(`All files successfully running on ${serv}\n\n`);
@@ -315,11 +310,15 @@ export async function main(ns) {
       const serv = servers3Port[i];
       // calculate max threads
       let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      if (threads == 0) {
+      if (threads <= 0) {
         threads = 1;
       }
       // bool to determine if the current server is hackable
       let pass = true;
+
+      // announce this portion
+      ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
+      await ns.sleep(2000);
 
       // check for current hack level vs. server
       if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
@@ -332,10 +331,6 @@ export async function main(ns) {
       //}
 
       if (pass) {
-        // announce this portion
-        ns.tprint(`Next server: ${serv}. Beginning in 5s...`);
-        await ns.sleep(5000);
-
         if (ns.scp(files,serv)) {
           ns.tprint(`copied files to ${serv}`);
         } else {
@@ -347,8 +342,8 @@ export async function main(ns) {
           await access(ns,serv,ns.getServerNumPortsRequired(serv));
         }
 
-        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 3s`);
-        await ns.sleep(3000);
+        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 1s`);
+        await ns.sleep(1000);
 
         await execFiles(ns, files, serv, threads);
         ns.tprint(`All files successfully running on ${serv}\n\n`);
@@ -380,11 +375,15 @@ export async function main(ns) {
       const serv = servers4Port[i];
       // calculate max threads
       let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      if (threads == 0) {
+      if (threads <= 0) {
         threads = 1;
       }
       // bool to determine if the current server is hackable
       let pass = true;
+
+      // announce this portion
+      ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
+      await ns.sleep(2000);
 
       // check for current hack level vs. server
       if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
@@ -397,10 +396,6 @@ export async function main(ns) {
       //}
 
       if (pass) {
-        // announce this portion
-        ns.tprint(`Next server: ${serv}. Beginning in 5s...`);
-        await ns.sleep(5000);
-
         if (ns.scp(files,serv)) {
           ns.tprint(`copied files to ${serv}`);
         } else {
@@ -412,8 +407,8 @@ export async function main(ns) {
           await access(ns,serv,ns.getServerNumPortsRequired(serv));
         }
 
-        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 3s`);
-        await ns.sleep(3000);
+        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 1s`);
+        await ns.sleep(1000);
 
         await execFiles(ns, files, serv, threads);
         ns.tprint(`All files successfully running on ${serv}\n\n`);
@@ -445,11 +440,15 @@ export async function main(ns) {
       const serv = servers5Port[i];
       // calculate max threads
       let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      if (threads == 0) {
+      if (threads <= 0) {
         threads = 1;
       }
       // bool to determine if the current server is hackable
       let pass = true;
+
+      // announce this portion
+      ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
+      await ns.sleep(2000);
 
       // check for current hack level vs. server
       if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
@@ -462,10 +461,6 @@ export async function main(ns) {
       //}
 
       if (pass) {
-        // announce this portion
-        ns.tprint(`Next server: ${serv}. Beginning in 5s...`);
-        await ns.sleep(5000);
-
         if (ns.scp(files,serv)) {
           ns.tprint(`copied files to ${serv}`);
         } else {
@@ -477,8 +472,8 @@ export async function main(ns) {
           await access(ns,serv,ns.getServerNumPortsRequired(serv));
         }
 
-        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 3s`);
-        await ns.sleep(3000);
+        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 1s`);
+        await ns.sleep(1000);
 
         await execFiles(ns, files, serv, threads);
         ns.tprint(`All files successfully running on ${serv}\n\n`);
@@ -492,21 +487,6 @@ export async function main(ns) {
   return;
 }
 
-
-/*
-// from ChatGPT
-async function copyFiles(ns, files, target) {
-  return new Promise(resolve => {
-      if (ns.scp(files, target)) {
-          ns.tprint("copied file(s) to ", target);
-          resolve(true);
-      } else {
-          ns.tprint(`scp failed to copy file(s) ${files} to server ${target}`);
-          setTimeout(() => resolve(copyFiles(ns, files, target)), 1000); // Retry after 1 second
-      }
-  });
-}
-*/
 
 
 // from ChatGPT
