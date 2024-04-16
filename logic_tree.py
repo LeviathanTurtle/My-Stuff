@@ -1,0 +1,67 @@
+import networkx as nx
+from networkx.drawing.nx_agraph import write_dot, graphviz_layout
+import matplotlib.pyplot as plt
+
+# Create a directed graph
+G = nx.DiGraph()
+
+# Add nodes and edges representing the logic flow
+G.add_node("Start")
+G.add_node("Check Time")
+G.add_node("Check Day")
+G.add_node("Eliminate Passengers")
+G.add_node("Spawn Passengers")
+G.add_node("Check Aircraft")
+G.add_node("Aircraft Available")
+G.add_node("Aircraft Maintenance")
+G.add_node("Check Hub")
+G.add_node("Schedule Aircraft")
+G.add_node("Reserve Maintenance Spot")
+G.add_node("Start Maintenance Timer")
+G.add_node("Schedule Most Profitable Flight")
+G.add_node("Land Aircraft")
+G.add_node("Set Aircraft Available")
+G.add_node("Assign Gate")
+G.add_node("Set Waiting at Tarmac")
+G.add_node("Append to Tarmac Queue")
+G.add_node("Depart Aircraft")
+G.add_node("Set In Flight")
+G.add_node("Deboard Passengers")
+G.add_node("Check Maintenance")
+G.add_node("Start Maintenance Wait Timer")
+G.add_node("Deassign Gate")
+G.add_node("Assign Gate to Next Aircraft")
+G.add_node("Start Deboarding Timer")
+G.add_node("Remove from Tarmac Queue")
+G.add_node("Mark Gate as Available")
+G.add_node("End")
+
+G.add_edge("Start", "Check Time")
+G.add_edge("Check Time", "Check Day")
+G.add_edge("Check Day", "Eliminate Passengers")
+G.add_edge("Check Day", "Spawn Passengers")
+G.add_edge("Check Time", "Check Aircraft")
+G.add_edge("Check Aircraft", "Aircraft Available")
+G.add_edge("Aircraft Available", "Aircraft Maintenance")
+G.add_edge("Aircraft Maintenance", "Check Hub")
+G.add_edge("Check Hub", "Reserve Maintenance Spot")
+G.add_edge("Check Hub", "Schedule Aircraft")
+G.add_edge("Reserve Maintenance Spot", "Start Maintenance Timer")
+G.add_edge("Schedule Aircraft", "Reserve Maintenance Spot")
+G.add_edge("Start Maintenance Timer", "End")
+G.add_edge("Schedule Aircraft", "End")
+G.add_edge("Aircraft Maintenance", "End")
+G.add_edge("Aircraft Available", "End")
+G.add_edge("Check Day", "End")
+G.add_edge("Eliminate Passengers", "End")
+G.add_edge("Spawn Passengers", "End")
+G.add_edge("Check Time", "End")
+
+# Generate graph layout
+pos = graphviz_layout(G, prog="dot")
+
+# Draw the graph
+plt.figure(figsize=(14, 10))
+nx.draw(G, pos, with_labels=True, node_size=3000, node_color="skyblue", font_size=10, arrowsize=20)
+plt.title("Logic Tree")
+plt.show()
