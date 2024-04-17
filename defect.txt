@@ -145,16 +145,17 @@ Status: Completed (2.25.2024)
 Comments: Added TypeError checking and NULL exception handling in class constructor.
 
 ---------------------------------------------------------------------------------------------------
-AHAHAHAHAHAHA
-Date: 
+
+Date: 3.10.2024
 ID: CA-010
 Severity: Moderate
 Priority: Medium
 Description: Flight scheduling object not considering airport curfew times.
-Steps to reproduce: 1. 
+Steps to reproduce: 1. Run simulation.
+                    2. Generated output includes arrival times between 1 AM and 5 AM.
 Assigned to: Parker Blue, Zach Christopher
 
-Status: Completed (.2024)
+Status: Completed (3.14.2024)
 Comments: 
 
 ---------------------------------------------------------------------------------------------------
