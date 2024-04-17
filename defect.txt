@@ -357,5 +357,6 @@ Steps to reproduce: 1. Run simulation
 Assigned to: Anthony Cox
 
 Status: Completed (4.17.2024)
-Comments: Daily demand (constant) was being decremented instead of current demand.
+Comments: Daily demand (constant) in scheduler module was being decremented instead of
+          current demand.
 
