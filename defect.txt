@@ -343,3 +343,19 @@ Assigned to: Corey Lawrence
 Status: Open
 Comments: 
 
+---------------------------------------------------------------------------------------------------
+
+Date: 4.17.2024
+ID: CA-023
+Severity: Severe
+Priority: High
+Description: Future passengers (depending on route) were missing, affecting sales.
+Steps to reproduce: 1. Run simulation
+                    2. Wait for simulation to finish.
+                    3. Flights towards the end of the simulation did not have enough passengers,
+                       when they should have.
+Assigned to: Anthony Cox
+
+Status: Completed (4.17.2024)
+Comments: Daily demand (constant) was being decremented instead of current demand.
+
