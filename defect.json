@@ -1,13 +1,6 @@
 {
   "Team": "Foobar",
-  "Teammates": [
-    "Anthony Cox",
-    "Corey Lawrence",
-    "Dylan Hudson",
-    "Parker Blue",
-    "Will Wadsworth",
-    "Zach Christopher"
-  ],
+  "Teammates": "Anthony Cox, Corey Lawrence, Dylan Hudson, Parker Blue, Will Wadsworth, Zach Christopher",
   "Description": "Defect log for team Foobar",
   "Defects": [
     {
@@ -16,14 +9,9 @@
       "Severity": "Moderate",
       "Priority": "Medium",
       "Description": "Shortest path algorithm used to determine flight routes not reliably using the true shortest paths.",
-      "Steps_to_reproduce": [
-        "Run shortest path algorithm on airports.",
-        "Calculate distances by hand.",
-        "Algorithm output distances do not align with manual calculations."
-      ],
-      "Assigned_to": "Zach Christopher",
-      "Status": "Completed",
-      "Completion_date": "1.17.2024",
+      "Steps to reproduce": "1. Run shortest path algorithm on airports. 2. Calculate distances by hand. 3. Algorithm output distances do not align with manual calculations.",
+      "Assigned to": "Zach Christopher",
+      "Status": "Completed (1.17.2024)",
       "Comments": "Algorithm logic was not correct."
     },
     {
@@ -32,14 +20,9 @@
       "Severity": "Severe",
       "Priority": "High",
       "Description": "Script to calculate flight demand is wildly inflated.",
-      "Steps_to_reproduce": [
-        "Run script to calculate flight demand.",
-        "Perform flight demand calculations by hand.",
-        "Observe difference in script output and manual calculations."
-      ],
-      "Assigned_to": "Anthony Cox, Will Wadsworth",
-      "Status": "Completed",
-      "Completion_date": "1.26.2024",
+      "Steps to reproduce": "1. Run script to calculate flight demand. 2. Perform flight demand calculations by hand. 3. Observe difference in script output and manual calculations.",
+      "Assigned to": "Anthony Cox, Will Wadsworth",
+      "Status": "Completed (1.26.2024)",
       "Comments": "A developer was using incorrect base data."
     },
     {
@@ -48,14 +31,9 @@
       "Severity": "Severe",
       "Priority": "High",
       "Description": "Scripts (flight_demand.csv, flight_fuel_capacity.csv, and flight_profit_loss.csv) calculate inaccurate data.",
-      "Steps_to_reproduce": [
-        "Run scripts.",
-        "Run calculations manually.",
-        "Observe difference."
-      ],
-      "Assigned_to": "Parker Blue",
-      "Status": "Completed",
-      "Completion_date": "2.6.2024",
+      "Steps to reproduce": "1. Run scripts. 2. Run calculations manually. 3. Observe difference.",
+      "Assigned to": "Parker Blue",
+      "Status": "Completed (2.6.2024)",
       "Comments": "Converted distance in flight_demand.csv, flight_fuel_capacity.csv, and flight_profit_loss.csv to weighted distance. Added percent full for possible number of plane per day."
     },
     {
@@ -64,14 +42,9 @@
       "Severity": "Moderate",
       "Priority": "Medium",
       "Description": "Script to create the database does not complete execution.",
-      "Steps_to_reproduce": [
-        "Run create_db.py script.",
-        "Wait.",
-        "Program fails execution, noting it was unable to connect to the docker."
-      ],
-      "Assigned_to": "Dylan Hudson, Will Wadsworth",
-      "Status": "Completed",
-      "Completion_date": "2.8.2024",
+      "Steps to reproduce": "1. Run create_db.py script. 2. Wait. 3. Program fails execution, noting it was unable to connect to the docker.",
+      "Assigned to": "Dylan Hudson, Will Wadsworth",
+      "Status": "Completed (2.8.2024)",
       "Comments": "Incorrect usage of the dockers and incorrect IP used in the script."
     },
     {
@@ -80,14 +53,9 @@
       "Severity": "Moderate",
       "Priority": "Medium",
       "Description": "Aircraft object not initializing properly, causing TypeError exceptions during simulation startup.",
-      "Steps_to_reproduce": [
-        "Run simulation.",
-        "Initialize an aircraft.",
-        "Simulation crashes with a TypeError returned."
-      ],
-      "Assigned_to": "Anthony Cox, Will Wadsworth",
-      "Status": "Completed",
-      "Completion_date": "2.20.2024",
+      "Steps to reproduce": "1. Run simulation. 2. Initialize an aircraft. 3. Simulation crashes with a TypeError returned.",
+      "Assigned to": "Anthony Cox, Will Wadsworth",
+      "Status": "Completed (2.20.2024)",
       "Comments": "Added type-checking to Aircraft class constructor."
     },
     {
@@ -96,13 +64,9 @@
       "Severity": "Severe",
       "Priority": "High",
       "Description": "Docker application crashes due to ports.",
-      "Steps_to_reproduce": [
-        "Start Docker application.",
-        "Docker application crashes."
-      ],
-      "Assigned_to": "Anthony Cox",
-      "Status": "Completed",
-      "Completion_date": "2.19.2024",
+      "Steps to reproduce": "1. Start Docker application. 2. Docker application crashes.",
+      "Assigned to": "Anthony Cox",
+      "Status": "Completed (2.19.2024)",
       "Comments": "Updated application port exposed by docker from 8000 to 32000 because 8000 is reserved by Apple on Macs, which causes the application to crash."
     },
     {
@@ -111,12 +75,9 @@
       "Severity": "Minimal",
       "Priority": "Low",
       "Description": "Aircraft class constructor can be provided impossible fuel levels.",
-      "Steps_to_reproduce": [
-        "Initialize an aircraft with a fuel level less than 0 or greater than its capacity."
-      ],
-      "Assigned_to": "Anthony Cox, Will Wadsworth",
-      "Status": "Completed",
-      "Completion_date": "2.20.2024",
+      "Steps to reproduce": "1. Initialize an aircraft with a fuel level less than 0 or greater than its capacity.",
+      "Assigned to": "Anthony Cox, Will Wadsworth",
+      "Status": "Completed (2.20.2024)",
       "Comments": "Updated class constructor to include error checking."
     },
     {
@@ -125,14 +86,9 @@
       "Severity": "Moderate",
       "Priority": "High",
       "Description": "Aircraft maintenance object not triggering maintenance tasks.",
-      "Steps_to_reproduce": [
-        "Run simulation.",
-        "Wait for simulation to finish.",
-        "Aircraft maintenance hours are way above 200."
-      ],
-      "Assigned_to": "Anthony Cox, Will Wadsworth",
-      "Status": "Completed",
-      "Completion_date": "2.21.2024",
+      "Steps to reproduce": "1. Run simulation. 2. Wait for simulation to finish. 3. Aircraft maintenance hours are way above 200.",
+      "Assigned to": "Anthony Cox, Will Wadsworth",
+      "Status": "Completed (2.21.2024)",
       "Comments": "There was no check for maintenance hours, added."
     },
     {
@@ -141,26 +97,20 @@
       "Severity": "Severe",
       "Priority": "Medium",
       "Description": "Route object storing NULL destinations, leading to incorrect flight paths in the simulation.",
-      "Steps_to_reproduce": [
-        "Run simulation.",
-        "Wait for simulation to finish.",
-        "Simulation output lists NULL destination for some flights."
-      ],
-      "Assigned_to": "Parker Blue, Zach Christopher",
-      "Status": "Completed",
-      "Completion_date": "2.25.2024",
+      "Steps to reproduce": "1. Run simulation. 2. Wait for simulation to finish. 3. Simulation output lists NULL destination for some flights.",
+      "Assigned to": "Parker Blue, Zach Christopher",
+      "Status": "Completed (2.25.2024)",
       "Comments": "Added TypeError checking and NULL exception handling in class constructor."
     },
     {
-      "Date": "",
+      "Date": "3.10.2024",
       "ID": "CA-010",
       "Severity": "Moderate",
       "Priority": "Medium",
       "Description": "Flight scheduling object not considering airport curfew times.",
-      "Steps_to_reproduce": [],
-      "Assigned_to": "Parker Blue, Zach Christopher",
-      "Status": "Completed",
-      "Completion_date": ".2024",
+      "Steps to reproduce": "1. Run simulation. 2. Generated output includes arrival times between 1 AM and 5 AM.",
+      "Assigned to": "Parker Blue, Zach Christopher",
+      "Status": "Completed (3.14.2024)",
       "Comments": ""
     },
     {
@@ -169,14 +119,9 @@
       "Severity": "Moderate",
       "Priority": "Low",
       "Description": "Route module does not accurately track flight demand for a given flight.",
-      "Steps_to_reproduce": [
-        "Run simulation.",
-        "Note demand for a flight for each airport/aircraft in the log.",
-        "Observe that passenger count is not accurate over each day."
-      ],
-      "Assigned_to": "Zach Christopher, Corey Lawrence",
-      "Status": "Completed",
-      "Completion_date": "3.21.2024",
+      "Steps to reproduce": "1. Run simulation. 2. Note demand for a flight for each airport/aircraft in the log. 3. Observe that passenger count is not accurate over each day.",
+      "Assigned to": "Zach Christopher, Corey Lawrence",
+      "Status": "Completed (3.21.2024)",
       "Comments": "Separated flight demand variable into two: current, daily demand. Script now resets current demand to daily demand after each day."
     },
     {
@@ -185,13 +130,9 @@
       "Severity": "Moderate",
       "Priority": "Low",
       "Description": "Flight module does not include expected/actual arrival times.",
-      "Steps_to_reproduce": [
-        "Run simulation.",
-        "Observe that the flight module does not keep track of the expected/actual times."
-      ],
-      "Assigned_to": "Dylan Hudson",
-      "Status": "Completed",
-      "Completion_date": "3.21.2024",
+      "Steps to reproduce": "1. Run simulation. 2. Observe that the flight module does not keep track of the expected/actual times.",
+      "Assigned to": "Dylan Hudson",
+      "Status": "Completed (3.21.2024)",
       "Comments": "Added four respective data members initialized to None, and update after flight has landed."
     },
     {
@@ -200,14 +141,9 @@
       "Severity": "Moderate",
       "Priority": "Low",
       "Description": "Simulation takes forever to calculate.",
-      "Steps_to_reproduce": [
-        "Run simulation.",
-        "Wait.",
-        "Simulation is still running after 700 minutes."
-      ],
-      "Assigned_to": "Anthony Cox",
-      "Status": "Completed",
-      "Completion_date": "4.9.2024",
+      "Steps to reproduce": "1. Run simulation. 2. Wait. 3. Simulation is still running after 700 minutes.",
+      "Assigned to": "Anthony Cox",
+      "Status": "Completed (4.9.2024)",
       "Comments": "For lambda functions, instead of creating a filter object and then casting it to a list object, create only a single list via conditional construction."
     },
     {
@@ -216,14 +152,9 @@
       "Severity": "Severe",
       "Priority": "High",
       "Description": "Simulation not generating output.",
-      "Steps_to_reproduce": [
-        "Run simulation.",
-        "Wait for simulation to finish.",
-        "Observe the reports folder is empty."
-      ],
-      "Assigned_to": "Anthony Cox",
-      "Status": "Completed",
-      "Completion_date": "4.9.2024",
+      "Steps to reproduce": "1. Run simulation. 2. Wait for simulation to finish. 3. Observe the reports folder is empty.",
+      "Assigned to": "Anthony Cox",
+      "Status": "Completed (4.9.2024)",
       "Comments": "Folder was mis-named, renamed to correct name."
     },
     {
@@ -232,14 +163,9 @@
       "Severity": "Moderate",
       "Priority": "Low",
       "Description": "Incorrect departure time displayed in flight details.",
-      "Steps_to_reproduce": [
-        "Search for a flight.",
-        "Select a flight.",
-        "Displayed departure time does not match the scheduled departure time."
-      ],
-      "Assigned_to": "Anthony Cox, Corey Lawrence",
-      "Status": "Completed",
-      "Completion_date": "4.12.2024",
+      "Steps to reproduce": "1. Search for a flight. 2. Select a flight. 3. Displayed departure time does not match the scheduled departure time.",
+      "Assigned to": "Anthony Cox, Corey Lawrence",
+      "Status": "Completed (4.12.2024)",
       "Comments": "Updated the flight details retrieval function to display the correct departure time."
     },
     {
@@ -248,12 +174,8 @@
       "Severity": "Minimal",
       "Priority": "Low",
       "Description": "Passenger cannot purchase ticket if special characters are used in name fields.",
-      "Steps_to_reproduce": [
-        "Load Comfort Airlines website.",
-        "Login using a special character in the name field.",
-        "Ticket lists do not load."
-      ],
-      "Assigned_to": "Corey Lawrence",
+      "Steps to reproduce": "1. Load Comfort Airlines website. 2. Login using a special character in the name field. 3. Ticket lists do not load.",
+      "Assigned to": "Corey Lawrence",
       "Status": "Open",
       "Comments": ""
     },
@@ -263,14 +185,8 @@
       "Severity": "Severe",
       "Priority": "High",
       "Description": "Error occurs when attempting to cancel a flight reservation.",
-      "Steps_to_reproduce": [
-        "Load Comfort Airlines website.",
-        "Login.",
-        "Search for and purchase a flight.",
-        "Navigate to your trips, select your ticket, and click 'Cancel flight.'",
-        "Page reloads."
-      ],
-      "Assigned_to": "Corey Lawrence",
+      "Steps to reproduce": "1. Load Comfort Airlines website. 2. Login. 3. Search for and purchase a flight. 4. Navigate to your trips, select your ticket, and click 'Cancel flight.' 5. Page reloads.",
+      "Assigned to": "Corey Lawrence",
       "Status": "Open",
       "Comments": ""
     },
@@ -280,12 +196,41 @@
       "Severity": "Minimal",
       "Priority": "Low",
       "Description": "Simulation output lists flight number as tail number.",
-      "Steps_to_reproduce": [
-        "Run simulation.",
-        "Wait for simulation to finish.",
-        "Aircraft tail number shows aircraft flight number."
-      ],
-      "Assigned_to": "Anthony Cox, Parker Blue",
+      "Steps to reproduce": "1. Run simulation. 2. Wait for simulation to finish. 3. Aircraft tail number shows aircraft flight number.",
+      "Assigned to": "Anthony Cox, Parker Blue",
+      "Status": "Open",
+      "Comments": ""
+    },
+    {
+      "Date": "4.10.2024",
+      "ID": "CA-019",
+      "Severity": "Minimal",
+      "Priority": "Low",
+      "Description": "GUI is not displaying correct ticket price, and re-running the code gives you a new seat.",
+      "Steps to reproduce": "1. Load Comfort Airlines website. 2. Ticket price in CSV does not match displayed ticket price. 3. Re-running gives the user a new seat each time.",
+      "Assigned to": "Corey Lawrence",
+      "Status": "Open",
+      "Comments": "Created when timetable is imported and added then, so only displayed once instead at one time."
+    },
+    {
+      "Date": "4.10.2024",
+      "ID": "CA-020",
+      "Severity": "Minimal",
+      "Priority": "Low",
+      "Description": "About 20,000 passengers went missing on some flights in the records.",
+      "Steps to reproduce": "1. Run simulation 2. Wait for simulation to finish. 3. Ticket profits do not match number of tickets purchased by passengers.",
+      "Assigned to": "Parker Blue, Anthony Cox",
+      "Status": "Completed (4.11.2024)",
+      "Comments": ""
+    },
+    {
+      "Date": "4.15.2024",
+      "ID": "CA-021",
+      "Severity": "Moderate",
+      "Priority": "High",
+      "Description": "Simulation not flying to Paris.",
+      "Steps to reproduce": "1. Run simulation 2. Wait for simulation to finish. 3. In flights.csv report file, a Paris flight is not found.",
+      "Assigned to": "Anthony Cox",
       "Status": "Open",
       "Comments": ""
     }
