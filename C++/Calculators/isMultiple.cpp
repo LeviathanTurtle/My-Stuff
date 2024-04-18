@@ -15,13 +15,10 @@
  * 
  * 
  * [USE]:
- * To compile:
- *     g++ isMultiple.cpp -Wall -o isMultiple
+ * To compile: g++ isMultiple.cpp -Wall -o isMultiple
+ * To run: ./isMultiple <X> <Y>
  * 
- * To run:
- *     ./isMultiple [X] [Y]
- * 
- * where [X] and [Y] are the integers you want to use.
+ * where <X> and <Y> are the integers you want to use.
  * 
  * Restrictions: X and Y must be greater than 0 and rounded to the nearest
  *               whole
@@ -39,7 +36,6 @@
  * 50
  * 
  * 50 has 5 multiples of 10
- * 
 */
 
 #include <iostream>

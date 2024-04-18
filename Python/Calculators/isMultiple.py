@@ -90,6 +90,6 @@ if(x%y == 0):
         count += 1
     
     # output results
-    print("\n", x, " has ", count, " multiples of ", y)
+    print(f"\n{x} has {count} multiples of {y}")
 else:
-    print(x, " has no multiples of ", y)
+    print(f"{x} has no multiples of {y}")
