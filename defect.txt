@@ -305,7 +305,7 @@ Date: 4.10.2024
 ID: CA-020
 Severity: Minimal
 Priority: Low
-Description: About 20,000 passengers went missing on some flights in the records.
+Description: About 20,000 passengers flights went missing.
 Steps to reproduce: 1. Run simulation
                     2. Wait for simulation to finish.
                     3. Ticket profits do not match number of tickets purchased by passengers.
