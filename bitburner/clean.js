@@ -39,14 +39,14 @@ export async function main(ns) {
       //await ns.sleep(250);
     }
 
-    if (ns.fileExists("grow-template.js.js",servers[i])) {
-      ns.tprint(`Deleting grow-template.js.js from ${servers[i]}`);
+    if (ns.fileExists("grow-template.js",servers[i])) {
+      ns.tprint(`Deleting grow-template.js from ${servers[i]}`);
       ns.rm("grow-template.js.js",servers[i]);
       //await ns.sleep(250);
     }
 
-    if (ns.fileExists("hack-template.js.js",servers[i])) {
-      ns.tprint(`Deleting hack-template.js.js from ${servers[i]}`);
+    if (ns.fileExists("hack-template.js",servers[i])) {
+      ns.tprint(`Deleting hack-template.js from ${servers[i]}`);
       ns.rm("hack-template.js.js",servers[i]);
       //await ns.sleep(250);
     }
