@@ -45,7 +45,6 @@ export async function main(ns) {
         //  ns.scriptKill("grow-template.js");
         //}
 
-        // from ChatGPT
         const scripts = ns.ps("home");
 
         // Find the script started by one of the main scripts
@@ -56,7 +55,8 @@ export async function main(ns) {
           // Kill all other scripts except the one started by "run master.js"
           for (const script of scripts) {
             if (script.pid !== startupScript_1.pid || script.pid !== startupScript_2.pid) {
-              await ns.kill(script.pid);
+              ns.kill(script.pid);
+              //await ns.sleep(250);
             }
           }
           ns.tprint("All scripts except master.js killed.");

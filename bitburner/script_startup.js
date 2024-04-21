@@ -53,14 +53,14 @@ export async function main(ns) {
                         "silver-helix",     // 64 GB
                         "the-hub",          // 8 GB
 //                          "avmnite-02h",      // 64 GB
-//                          "johnson-ortho",    // 0? GB
-//                          "crush-fitness"];   // 0? GB
+//                          "johnson-ortho",    // 0 GB
+//                          "crush-fitness"];   // 0 GB
   ];
   
   // Array of all servers that only need 3 ports opened
   // to gain root access.
   const servers3Port = ["netlink",          // 64 GB
-//                          "computek",         // 0? GB
+//                          "computek",         // 0 GB
                         "summit-uni",       // 64 GB
                         "catalyst",         // 64 GB
 //                          "I.I.I.I",          // 256 GB
@@ -68,7 +68,7 @@ export async function main(ns) {
 
   // Array of all servers that only need 4 ports opened
   // to gain root access.
-  //const servers4Port = ["syscore"];         // 0? GB
+  //const servers4Port = ["syscore"];         // 0 GB
   
   // Array of all servers that only need 5 ports opened
   // to gain root access.
@@ -89,11 +89,8 @@ export async function main(ns) {
       const serv = servers0Port[i];
       // calculate max threads
       let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      if (threads <= 0) {
-        threads = 1;
-      }
       // bool to determine if the current server is hackable
-      let pass = true;
+      let hackable = true;
 
       // announce this portion
       ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
@@ -102,14 +99,14 @@ export async function main(ns) {
       // check for current hack level vs. server
       if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
         ns.tprint(`Current server ${serv} is not currently hackable\n\n`);
-        pass = false;
+        hackable = false;
       }
       // WHILE OPTION FOR SLEEPING INSTEAD
       //while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
       //  await ns.sleep(60000);
       //}
 
-      if (pass) {
+      if (hackable) {
         switch (serv) {
             case "n00dles":
               //await copyFiles(ns, "early-hack-template.js", serv);
@@ -120,7 +117,7 @@ export async function main(ns) {
                 await access(ns,serv,ns.getServerNumPortsRequired(serv));
               }
 
-              ns.tprint(`Launching script 'early-hack-template.js' on server '${serv}' with 1 thread`);
+              ns.tprint(`Launching script 'early-hack-template.js' on ${serv} with 1 thread`);
               ns.exec("early-hack-template.js", serv);
               ns.tprint(`early-hack-template.js successfully running on ${serv}\n\n`);
               affect_server_count++;
@@ -137,25 +134,25 @@ export async function main(ns) {
               }
               //ns.tprint(`test: files done copied to ${serv} and will run on ${threads} threads.`);
 
-              //ns.tprint(`Nuking ${serv} in 3s...`);
-              //await ns.sleep(3000);
-              //ns.nuke(serv);
+              // check that we have root access
               if (!ns.hasRootAccess(serv)) {
                 await access(ns,serv,ns.getServerNumPortsRequired(serv));
               }
 
-              ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 1s...`);
-              await ns.sleep(1000);
+              // if we have a valid thread count, proceed as normal
+              if (threads > 0) {
+                  ns.tprint(`Launching scripts '${files}' on ${serv} with ${threads} threads in 1s...`);
+                  await ns.sleep(1000);
+                  await execFiles(ns, files, serv, threads);
 
-              //for (let j = 0; j < files.length; ++j) {
-              //  ns.exec(files[j], serv, threads);
-              //  await ns.sleep(1000); // sleep for 1 second
-              //}
-              await execFiles(ns, files, serv, threads);
-              ns.tprint(`All files successfully running on ${serv}\n\n`);
-              //await ns.sleep(5000);
-              affect_server_count++;
-              affected_servers.push(serv);
+                  // update affected server list and count
+                  affect_server_count++;
+                  affected_servers.push(serv);
+
+                  ns.tprint(`All files successfully running on ${serv}\n\n`);
+              } else { // not a valid thread count, cannot proceed
+                ns.tprint(`Files not running on ${serv}\n\n`);
+              }
           }
       }
   }
@@ -188,11 +185,8 @@ export async function main(ns) {
       const serv = servers1Port[i];
       // calculate max threads
       let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      if (threads <= 0) {
-        threads = 1;
-      }
       // bool to determine if the current server is hackable
-      let pass = true;
+      let hackable = true;
 
       // announce this portion
       ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
@@ -201,14 +195,14 @@ export async function main(ns) {
       // check for current hack level vs. server
       if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
         ns.tprint(`Current server ${serv} is not currently hackable\n\n`);
-        pass = false;
+        hackable = false;
       }
       // WHILE OPTION FOR SLEEPING INSTEAD
       //while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
       //  await ns.sleep(60000);
       //}
 
-      if (pass) {
+      if (hackable) {
         if (ns.scp(files,serv)) {
           ns.tprint(`copied files to ${serv}`);
         } else {
@@ -226,14 +220,20 @@ export async function main(ns) {
           await access(ns,serv,ns.getServerNumPortsRequired(serv));
         }
 
-        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 1s...`);
-        await ns.sleep(1000);
+        // if we have a valid thread count, proceed as normal
+        if (threads > 0) {
+            ns.tprint(`Launching scripts '${files}' on ${serv} with ${threads} threads in 1s...`);
+            await ns.sleep(1000);
+            await execFiles(ns, files, serv, threads);
 
-        await execFiles(ns, files, serv, threads);
-        ns.tprint(`All files successfully running on ${serv}\n\n`);
-        //await ns.sleep(5000);
-        affect_server_count++;
-        affected_servers.push(serv);
+            // update affected server list and count
+            affect_server_count++;
+            affected_servers.push(serv);
+
+            ns.tprint(`All files successfully running on ${serv}\n\n`);
+        } else { // not a valid thread count, cannot proceed
+          ns.tprint(`Files not running on ${serv}\n\n`);
+        }
       }
   }
 
@@ -265,11 +265,8 @@ export async function main(ns) {
       const serv = servers2Port[i];
       // calculate max threads
       let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      if (threads <= 0) {
-        threads = 1;
-      }
       // bool to determine if the current server is hackable
-      let pass = true;
+      let hackable = true;
 
       // announce this portion
       ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
@@ -278,14 +275,14 @@ export async function main(ns) {
       // check for current hack level vs. server
       if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
         ns.tprint(`Current server ${serv} is not currently hackable\n\n`);
-        pass = false;
+        hackable = false;
       }
       // WHILE OPTION FOR SLEEPING INSTEAD
       //while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
       //  await ns.sleep(60000);
       //}
 
-      if (pass) {
+      if (hackable) {
         if (ns.scp(files,serv)) {
           ns.tprint(`copied files to ${serv}`);
         } else {
@@ -297,14 +294,20 @@ export async function main(ns) {
           await access(ns,serv,ns.getServerNumPortsRequired(serv));
         }
 
-        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 1s`);
-        await ns.sleep(1000);
+        // if we have a valid thread count, proceed as normal
+        if (threads > 0) {
+            ns.tprint(`Launching scripts '${files}' on ${serv} with ${threads} threads in 1s...`);
+            await ns.sleep(1000);
+            await execFiles(ns, files, serv, threads);
 
-        await execFiles(ns, files, serv, threads);
-        ns.tprint(`All files successfully running on ${serv}\n\n`);
-        //await ns.sleep(5000);
-        affect_server_count++;
-        affected_servers.push(serv);
+            // update affected server list and count
+            affect_server_count++;
+            affected_servers.push(serv);
+
+            ns.tprint(`All files successfully running on ${serv}\n\n`);
+        } else { // not a valid thread count, cannot proceed
+          ns.tprint(`Files not running on ${serv}\n\n`);
+        }
       }
   }
 
@@ -336,11 +339,8 @@ export async function main(ns) {
       const serv = servers3Port[i];
       // calculate max threads
       let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      if (threads <= 0) {
-        threads = 1;
-      }
       // bool to determine if the current server is hackable
-      let pass = true;
+      let hackable = true;
 
       // announce this portion
       ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
@@ -349,14 +349,14 @@ export async function main(ns) {
       // check for current hack level vs. server
       if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
         ns.tprint(`Current server ${serv} is not currently hackable\n\n`);
-        pass = false;
+        hackable = false;
       }
       // WHILE OPTION FOR SLEEPING INSTEAD
       //while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
       //  await ns.sleep(60000);
       //}
 
-      if (pass) {
+      if (hackable) {
         if (ns.scp(files,serv)) {
           ns.tprint(`copied files to ${serv}`);
         } else {
@@ -368,14 +368,20 @@ export async function main(ns) {
           await access(ns,serv,ns.getServerNumPortsRequired(serv));
         }
 
-        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 1s`);
-        await ns.sleep(1000);
+        // if we have a valid thread count, proceed as normal
+        if (threads > 0) {
+            ns.tprint(`Launching scripts '${files}' on ${serv} with ${threads} threads in 1s...`);
+            await ns.sleep(1000);
+            await execFiles(ns, files, serv, threads);
 
-        await execFiles(ns, files, serv, threads);
-        ns.tprint(`All files successfully running on ${serv}\n\n`);
-        //await ns.sleep(5000);
-        affect_server_count++;
-        affected_servers.push(serv);
+            // update affected server list and count
+            affect_server_count++;
+            affected_servers.push(serv);
+
+            ns.tprint(`All files successfully running on ${serv}\n\n`);
+        } else { // not a valid thread count, cannot proceed
+          ns.tprint(`Files not running on ${serv}\n\n`);
+        }
       }
   }
 
@@ -407,11 +413,8 @@ export async function main(ns) {
       const serv = servers4Port[i];
       // calculate max threads
       let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      if (threads <= 0) {
-        threads = 1;
-      }
       // bool to determine if the current server is hackable
-      let pass = true;
+      let hackable = true;
 
       // announce this portion
       ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
@@ -420,14 +423,14 @@ export async function main(ns) {
       // check for current hack level vs. server
       if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
         ns.tprint(`Current server ${serv} is not currently hackable\n\n`);
-        pass = false;
+        hackable = false;
       }
       // WHILE OPTION FOR SLEEPING INSTEAD
       //while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
       //  await ns.sleep(60000);
       //}
 
-      if (pass) {
+      if (hackable) {
         if (ns.scp(files,serv)) {
           ns.tprint(`copied files to ${serv}`);
         } else {
@@ -439,14 +442,20 @@ export async function main(ns) {
           await access(ns,serv,ns.getServerNumPortsRequired(serv));
         }
 
-        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 1s`);
-        await ns.sleep(1000);
+        // if we have a valid thread count, proceed as normal
+        if (threads > 0) {
+            ns.tprint(`Launching scripts '${files}' on ${serv} with ${threads} threads in 1s...`);
+            await ns.sleep(1000);
+            await execFiles(ns, files, serv, threads);
 
-        await execFiles(ns, files, serv, threads);
-        ns.tprint(`All files successfully running on ${serv}\n\n`);
-        //await ns.sleep(5000);
-        affect_server_count++;
-        affected_servers.push(serv);
+            // update affected server list and count
+            affect_server_count++;
+            affected_servers.push(serv);
+
+            ns.tprint(`All files successfully running on ${serv}\n\n`);
+        } else { // not a valid thread count, cannot proceed
+          ns.tprint(`Files not running on ${serv}\n\n`);
+        }
       }
   }
 */
@@ -478,11 +487,8 @@ export async function main(ns) {
       const serv = servers5Port[i];
       // calculate max threads
       let threads = Math.floor((ns.getServerMaxRam(serv) - ns.getServerUsedRam(serv)) / ram_req);
-      if (threads <= 0) {
-        threads = 1;
-      }
       // bool to determine if the current server is hackable
-      let pass = true;
+      let hackable = true;
 
       // announce this portion
       ns.tprint(`Next server: ${serv}. Beginning in 2s...`);
@@ -491,14 +497,14 @@ export async function main(ns) {
       // check for current hack level vs. server
       if (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
         ns.tprint(`Current server ${serv} is not currently hackable\n\n`);
-        pass = false;
+        hackable = false;
       }
       // WHILE OPTION FOR SLEEPING INSTEAD
       //while (ns.getHackingLevel() < ns.getServerRequiredHackingLevel(serv)) {
       //  await ns.sleep(60000);
       //}
 
-      if (pass) {
+      if (hackable) {
         if (ns.scp(files,serv)) {
           ns.tprint(`copied files to ${serv}`);
         } else {
@@ -510,14 +516,20 @@ export async function main(ns) {
           await access(ns,serv,ns.getServerNumPortsRequired(serv));
         }
 
-        ns.tprint(`Launching scripts '${files}' on server ${serv} with ${threads} threads in 1s`);
-        await ns.sleep(1000);
+        // if we have a valid thread count, proceed as normal
+        if (threads > 0) {
+            ns.tprint(`Launching scripts '${files}' on ${serv} with ${threads} threads in 1s...`);
+            await ns.sleep(1000);
+            await execFiles(ns, files, serv, threads);
 
-        await execFiles(ns, files, serv, threads);
-        ns.tprint(`All files successfully running on ${serv}\n\n`);
-        //await ns.sleep(5000);
-        affect_server_count++;
-        affected_servers.push(serv);
+            // update affected server list and count
+            affect_server_count++;
+            affected_servers.push(serv);
+
+            ns.tprint(`All files successfully running on ${serv}\n\n`);
+        } else { // not a valid thread count, cannot proceed
+          ns.tprint(`Files not running on ${serv}\n\n`);
+        }
       }
   }
 
@@ -663,4 +675,6 @@ async function access(ns, server, num_ports) {
               break;
       }
   });
+
+  // I think this can also be reduced
 }
