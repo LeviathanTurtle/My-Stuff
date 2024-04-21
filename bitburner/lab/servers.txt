@@ -1,0 +1,63 @@
+const servers = ["n00dles",
+                 "foodnstuff",
+                 "sigma-cosmetics",
+                 "joesguns",
+                 "hong-fang-tea",
+                 "harakiri-sushi",
+                 "nectar-net",
+
+// 1 port --------------------------------------
+                 "iron-gym",
+                 "zer0",
+//                 "CSEC",               faction
+                 "max-hardware",
+                 "neo-net",
+
+// 2 port --------------------------------------
+                 "phantasy",
+                 "silver-helix",
+                 "omega-net",
+                 "the-hub",
+
+// 3 port --------------------------------------
+//                 "I.I.I.I",           no money
+                 "summit-uni",
+                 "rho-construction",
+                 "netlink",
+                 "rothman-uni",
+//                 "avmnite-02h",        faction
+                 "millenium-fitness",
+
+// 4 port --------------------------------------
+                 "rothman-uni",
+                 "catalyst",
+                 "alpha-ent",
+                 "aevum-police",
+                 "global-pharm",
+                 "lexo-corp",
+                 "unitalife",
+                 "univ-energy",
+
+// 5 port --------------------------------------
+                 "zb-institute",
+                 "omnia",
+                 "solaris"
+];
+
+
+const servers_no_ram = ["johnson-ortho",
+                        "crush-fitness",
+                        "computek",
+                        "syscore",
+                        "zb-def",
+                        "nova-med",
+                        "snap-fitness",
+                        "galactic-cyber",
+                        "aerocorp",
+                        "deltaone",
+                        "icarus",
+                        "zeus-med",
+                        "defcomm",
+                        "taiyang-digital",
+                        "infocomm"
+];

@@ -7,10 +7,16 @@
 // 128 GB : 22 threads each (1.5 free)
 // 256 GB : 
 
+// ADD RETURN servers_affected
 export async function main(ns) {
   // array of main files to copy and use
   const files = ["weaken-template.js", "hack-template.js", "grow-template.js"];
   //ns.tprint(`TEST: ns.getHostName = ${ns.getHostname()}`);
+
+  // array of servers affected
+  let affected_servers = [];
+  // variable to see how many servers are affected
+  let affect_server_count = 0;
 
   // calculate total script ram usage
   let ram_req = 0;
@@ -18,6 +24,9 @@ export async function main(ns) {
     ram_req += ns.getScriptRam(files[i]);
   }
   //ns.tprint(`total script ram required: ${ram_req}\n\n`);
+
+  // bool var for determining if malicious programs exist yet
+  //let first = true;
 
   // Array of all servers that don't need any ports opened
   // to gain root access.
@@ -43,22 +52,23 @@ export async function main(ns) {
                         "omega-net",        // 32 GB
                         "silver-helix",     // 64 GB
                         "the-hub",          // 8 GB
-                        "avmnite-02h",      // 64 GB
-                        "johnson-ortho",    // 0? GB
-                        "crush-fitness"];   // 0? GB
+//                          "avmnite-02h",      // 64 GB
+//                          "johnson-ortho",    // 0? GB
+//                          "crush-fitness"];   // 0? GB
+  ];
   
   // Array of all servers that only need 3 ports opened
   // to gain root access.
   const servers3Port = ["netlink",          // 64 GB
-                        "computek",         // 0? GB
+//                          "computek",         // 0? GB
                         "summit-uni",       // 64 GB
                         "catalyst",         // 64 GB
-                        "I.I.I.I",          // 256 GB
+//                          "I.I.I.I",          // 256 GB
                         "rothman-uni"];     // 32 GB
 
   // Array of all servers that only need 4 ports opened
   // to gain root access.
-  const servers4Port = ["syscore"];         // 0? GB
+  //const servers4Port = ["syscore"];         // 0? GB
   
   // Array of all servers that only need 5 ports opened
   // to gain root access.
@@ -68,9 +78,6 @@ export async function main(ns) {
   // big for loop thanks to checks like 
   // ns.getServerNumPortsRequired(serv). I am not doing that
   // because I do not care enough to do so. 
-
-  // variable to see how many servers are affected
-  let affect_server_count = 0;
 
 
 
@@ -117,6 +124,7 @@ export async function main(ns) {
               ns.exec("early-hack-template.js", serv);
               ns.tprint(`early-hack-template.js successfully running on ${serv}\n\n`);
               affect_server_count++;
+              affected_servers.push(serv);
 
               break;
             
@@ -147,6 +155,7 @@ export async function main(ns) {
               ns.tprint(`All files successfully running on ${serv}\n\n`);
               //await ns.sleep(5000);
               affect_server_count++;
+              affected_servers.push(serv);
           }
       }
   }
@@ -155,13 +164,18 @@ export async function main(ns) {
   
   // Wait until we acquire the "BruteSSH.exe" program
   //while (!ns.fileExists("BruteSSH.exe", "home")) {
+  //    if (first) {
+  //      ns.tprint("Sleeping until BruteSSH.exe exists...");
+  //      first = false;
+  //    }
   //    await ns.sleep(60000);
   //}
+  //first = true;
   // IF VARIANT
   if (!ns.fileExists("BruteSSH.exe", "home")) {
       ns.tprint("File BruteSSH.exe does not exist.");
       ns.tprint(`Affected servers: ${affect_server_count}`);
-      return;
+      return affected_servers;
   }
 
 
@@ -219,6 +233,7 @@ export async function main(ns) {
         ns.tprint(`All files successfully running on ${serv}\n\n`);
         //await ns.sleep(5000);
         affect_server_count++;
+        affected_servers.push(serv);
       }
   }
 
@@ -226,13 +241,18 @@ export async function main(ns) {
   
   // Wait until we acquire the "FTPCrack.exe" program
   //while (!ns.fileExists("FTPCrack.exe", "home")) {
+  //    if (first) {
+  //      ns.tprint("Sleeping until FTPCrack.exe exists...");
+  //      first = false;
+  //    }
   //    await ns.sleep(60000);
   //}
+  //first = true;
   // IF VARIANT
   if (!ns.fileExists("FTPCrack.exe", "home")) {
       ns.tprint("File FTPCrack.exe does not exist.");
       ns.tprint(`Affected servers: ${affect_server_count}`);
-      return;
+      return affected_servers;
   }
 
 
@@ -284,6 +304,7 @@ export async function main(ns) {
         ns.tprint(`All files successfully running on ${serv}\n\n`);
         //await ns.sleep(5000);
         affect_server_count++;
+        affected_servers.push(serv);
       }
   }
 
@@ -291,13 +312,18 @@ export async function main(ns) {
 
   // Wait until we acquire the "RelaySMTP.exe" program
   //while (!ns.fileExists("RelaySMTP.exe", "home")) {
+  //    if (first) {
+  //      ns.tprint("Sleeping until RelaySMTP.exe exists...");
+  //      first = false;
+  //    }
   //    await ns.sleep(60000);
   //}
+  //first = true;
   // IF VARIANT
   if (!ns.fileExists("RelaySMTP.exe", "home")) {
       ns.tprint("File RelaySMTP.exe does not exist.");
       ns.tprint(`Affected servers: ${affect_server_count}`);
-      return;
+      return affected_servers;
   }
 
 
@@ -349,6 +375,7 @@ export async function main(ns) {
         ns.tprint(`All files successfully running on ${serv}\n\n`);
         //await ns.sleep(5000);
         affect_server_count++;
+        affected_servers.push(serv);
       }
   }
 
@@ -356,17 +383,22 @@ export async function main(ns) {
 
   // Wait until we acquire the "HTTPWorm.exe" program
   //while (!ns.fileExists("HTTPWorm.exe", "home")) {
+  //    if (first) {
+  //      ns.tprint("Sleeping until HTTPWorm.exe exists...");
+  //      first = false;
+  //    }
   //    await ns.sleep(60000);
   //}
+  //first = true;
   // IF VARIANT
   if (!ns.fileExists("HTTPWorm.exe", "home")) {
       ns.tprint("File HTTPWorm.exe does not exist.");
       ns.tprint(`Affected servers: ${affect_server_count}`);
-      return;
+      return affected_servers;
   }
 
 
-
+/* can't do because 0 RAM
   //ns.tprint("Beginning main loop - 4 port");
   // Copy our scripts onto each server that requires 3 ports to gain
   // root access. Then use ftpcrack(), brutessh(), relaysmtp(),
@@ -414,20 +446,26 @@ export async function main(ns) {
         ns.tprint(`All files successfully running on ${serv}\n\n`);
         //await ns.sleep(5000);
         affect_server_count++;
+        affected_servers.push(serv);
       }
   }
-
+*/
 
 
   // Wait until we acquire the "SQLInject.exe" program
   //while (!ns.fileExists("SQLInject.exe", "home")) {
+  //    if (first) {
+  //      ns.tprint("Sleeping until SQLInject.exe exists...");
+  //      first = false;
+  //    }
   //    await ns.sleep(60000);
   //}
+  //first = true;
   // IF VARIANT
   if (!ns.fileExists("SQLInject.exe", "home")) {
       ns.tprint("File SQLInject.exe does not exist.");
       ns.tprint(`Affected servers: ${affect_server_count}`);
-      return;
+      return affected_servers;
   }
 
 
@@ -479,12 +517,13 @@ export async function main(ns) {
         ns.tprint(`All files successfully running on ${serv}\n\n`);
         //await ns.sleep(5000);
         affect_server_count++;
+        affected_servers.push(serv);
       }
   }
 
   ns.tprint("DONE -- copying/executing scripts");
   ns.tprint(`Affected servers: ${affect_server_count}`);
-  return;
+  return affected_servers;
 }
 
 
@@ -521,7 +560,7 @@ async function access(ns, server, num_ports) {
   return new Promise(async resolve => {
       switch (num_ports) {
           case 0:
-              ns.tprint(`Nuking ${server} (${num_ports} ports) in 3s...`);
+              ns.tprint(`Nuking ${server} in 3s...`);
               await ns.sleep(3000);
               ns.nuke(server);
 
@@ -532,7 +571,7 @@ async function access(ns, server, num_ports) {
               await ns.sleep(3000);
               ns.brutessh(server);
               
-              ns.tprint(`Nuking ${server} (${num_ports} ports) in 3s...`);
+              ns.tprint(`Nuking ${server} in 3s...`);
               await ns.sleep(3000);
               ns.nuke(server);
 
@@ -547,7 +586,7 @@ async function access(ns, server, num_ports) {
               await ns.sleep(3000);
               ns.brutessh(server);
 
-              ns.tprint(`Nuking ${server} (${num_ports} ports) in 3s...`);
+              ns.tprint(`Nuking ${server} in 3s...`);
               await ns.sleep(3000);
               ns.nuke(server);
 
@@ -566,7 +605,7 @@ async function access(ns, server, num_ports) {
               await ns.sleep(3000);
               ns.brutessh(server);
 
-              ns.tprint(`Nuking ${server} (${num_ports} ports) in 3s...`);
+              ns.tprint(`Nuking ${server} in 3s...`);
               await ns.sleep(3000);
               ns.nuke(server);
 
@@ -589,7 +628,7 @@ async function access(ns, server, num_ports) {
               await ns.sleep(3000);
               ns.brutessh(server);
 
-              ns.tprint(`Nuking ${server} (${num_ports} ports) in 3s...`);
+              ns.tprint(`Nuking ${server} in 3s...`);
               await ns.sleep(3000);
               ns.nuke(server);
 
@@ -616,7 +655,7 @@ async function access(ns, server, num_ports) {
               await ns.sleep(3000);
               ns.brutessh(server);
 
-              ns.tprint(`Nuking ${server} (${num_ports} ports) in 3s...`);
+              ns.tprint(`Nuking ${server} in 3s...`);
               await ns.sleep(3000);
               ns.nuke(server);
 

@@ -7,7 +7,7 @@
 // 128 GB : 22 threads each (1.5 free)
 // 256 GB : 
 
-export async function main(ns) {
+export async function main(ns, servers) {
   // array of main files to copy and use
   const files = ["weaken-template.js", "hack-template.js", "grow-template.js"];
   //ns.tprint(`TEST: ns.getHostName = ${ns.getHostname()}`);
@@ -32,19 +32,19 @@ export async function main(ns) {
                    "neo-net",          // 32 GB
                    "zer0",             // 32 GB
                    "iron-gym",         // 32 GB
-//                   "CSEC"];            // 8 GB
+//                   "CSEC"              // 8 GB
                    "phantasy",         // 32 GB
                    "omega-net",        // 32 GB
                    "silver-helix",     // 64 GB
                    "the-hub",          // 8 GB
-                   "avmnite-02h",      // 64 GB
+//                   "avmnite-02h",      // 64 GB
                    "johnson-ortho",    // 0? GB
                    "crush-fitness",    // 0? GB
                    "netlink",          // 64 GB
                    "computek",         // 0? GB
                    "summit-uni",       // 64 GB
                    "catalyst",         // 64 GB
-                   "I.I.I.I",          // 256 GB
+//                   "I.I.I.I",          // 256 GB
                    "rothman-uni",      // 32 GB
                    "syscore",          // 0? GB
                    "zb-institute"      // 64 GB
