@@ -11,8 +11,7 @@
 # It then calculates and outputs the total sum of money based on what the user input. 
 # 
 # [USAGE]:
-# To run:
-#     python3 moneyCalculator.py
+# To run: python3 moneyCalculator.py
 
 
 # --- IMPORTS ---------------------------------------------------------------------------

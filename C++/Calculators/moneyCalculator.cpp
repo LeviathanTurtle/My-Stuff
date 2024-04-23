@@ -14,12 +14,8 @@
  * 
  * 
  * [USE]:
- * To compile:
- *     g++ moneyCalculator.cpp -Wall -o moneyCalculator
- * 
- * To run:
- *     ./moneyCalculator
- * 
+ * To compile: g++ moneyCalculator.cpp -Wall -o moneyCalculator
+ * To run: ./moneyCalculator
 */
 
 
@@ -37,7 +33,7 @@ int main()
     // take input
     cin >> bills1;
     // if the user did not provide an int, repeatedly prompt until one is given
-    if(typeid(bills1) != typeid(string)) {
+    if(typeid(bills1) != typeid(int)) {
         cout << "error: integer number not provided.";
         exit(1);
     }
@@ -46,35 +42,35 @@ int main()
 
     cout << "Enter the number of $5 bills: ";
     cin >> bills5;
-    if(typeid(bills5) != typeid(string)) {
+    if(typeid(bills5) != typeid(int)) {
         cout << "error: integer number not provided.";
         exit(1);
     }
 
     cout << "Enter the number of $10 bills: ";
     cin >> bills10;
-    if(typeid(bills10) != typeid(string)) {
+    if(typeid(bills10) != typeid(int)) {
         cout << "error: integer number not provided.";
         exit(1);
     }
 
     cout << "Enter the number of $20 bills: ";
     cin >> bills20;
-    if(typeid(bills20) != typeid(string)) {
+    if(typeid(bills20) != typeid(int)) {
         cout << "error: integer number not provided.";
         exit(1);
     }
 
     cout << "Enter the number of $50 bills: ";
     cin >> bills50;
-    if(typeid(bills50) != typeid(string)) {
+    if(typeid(bills50) != typeid(int)) {
         cout << "error: integer number not provided.";
         exit(1);
     }
 
     cout << "Enter the number of $100 bills: ";
     cin >> bills100;
-    if(typeid(bills100) != typeid(string)) {
+    if(typeid(bills100) != typeid(int)) {
         cout << "error: integer number not provided.";
         exit(1);
     }
