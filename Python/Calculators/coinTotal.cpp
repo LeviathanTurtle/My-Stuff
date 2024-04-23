@@ -9,15 +9,13 @@
  * calculate and output the minimum amount of coins for each type (quarter,
  * dime, nickel, penny) required to meet the price.
  * 
- * Note: does not always work, 21.31 does not include last penny
+ * Note: does not always work, 21.31 does not include last penny  This will be
+ * fixed in the future.
  * 
  * 
  * [COMPILE/RUN]:
- * To compile:
- *     g++ coinTotal.cpp -Wall -o coinTotal
- * 
- * To run:
- *     ./coinTotal
+ * To compile: g++ coinTotal.cpp -Wall -o coinTotal
+ * To run: ./coinTotal
  * 
  * 
  * [EXIT/TERMINATING CODES]:
