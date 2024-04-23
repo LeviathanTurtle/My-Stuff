@@ -23,7 +23,7 @@ using namespace std;
 
 #define MAX 100000
 """
-import sys
+import time
 
 MAX = 100000
 
@@ -167,18 +167,24 @@ def merge(m, output, front, midL, back):
     
     while l1 <= r1 and l2 <= r2:
         if m[l1] < m[l2]:
-            t[n+=1] = m[l1+=1]
-            output[5] += 1
+            t[n] = m[l1]
+            l1 += 1
         else:
-            t[n+=1] = m[l2+=1]
-            output[5] += 1
+            t[n] = m[l2]
+            l2 += 1
+        n += 1
+        output[5] += 1
     
     while l1 <= r1:
-        t[n+=1] = m[l1+=1]
+        t[n] = m[l1]
+        n += 1
+        l1 += 1
         output[5] += 1
     
     while l2 <= r2:
-        t[n+=1] = m[l2+=1]
+        t[n] = m[l2]
+        n += 1
+        l2 += 1
         output[5] += 1
     
     # back+1 because it's <=
@@ -235,7 +241,7 @@ void loadSort(int* data, long long int results[], double time, int sortAmt, int 
 }
 """
 # asks user for sorting algorithm, calls designated function, outputs everything except time
-def loadSort(data, results, time, sortAmt, sortNum):
+def loadSort(data, results, sortAmt, sortNum):
     # input validation
     while sortNum < 1 and sortNum > 3:
         sortNum = int(input(f"error: invalid sort method number ({sortNum}): "))
@@ -276,13 +282,16 @@ def loadSort(data, results, time, sortAmt, sortNum):
 
 # --- LOAD ARRAY --------------------------------
 """
-void loadArray(ifstream&, int*, int);
-void loadArray(ifstream& dataFile, int* array, int amount)
+void loadArray(string, int*, int);
+void loadArray(string dataFile, int* array, int amount)
 {
+   ifstream file (dataFile);
+
    for (int i = 0; i < amount; i++)
-      dataFile >> array[i];
+      file >> array[i];
 
    cout << "data file successfully loaded" << endl;
+   file.close();
 }
 """
 # load array definition: loads values from data file
@@ -298,55 +307,52 @@ def loadArray(dataFile, array, amount):
 """
 int main()
 {
-   ifstream test;
+    string dataResp;
+    cout << "Enter the dataset: ";
+    cin >> dataResp;
 
-   string dataResp;
-   cout << "Enter the dataset: ";
-   cin >> dataResp;
-   test.open(dataResp);
-   cout << endl;
+    cout << endl;
 """
 # data array
 #data = [MAX]
 
 # query dataset, open file
 dataResp = input("Enter the dataset: ")
-with open(dataResp, 'r') as file:
-    print("\n")
+print("\n")
     
 # --- CREATE DATASET ----------------------------
 """
+int* data;
+if(typeid(sortAmt) == typeid(int))
+   data = new int[sortAmt];
+else
+   data = new int[MAX];
 
+loadArray(dataResp, data, sortAmt);
 """
 # query number of processed items
 sortAmt = 10 # default 10, ignore faulty input = reduce headaches
 sortAmt = int(input("Enter the number of random numbers to process [0, 100,000]: "))
 
 # dynamically create data array
-data = 
-if type(sortAmt) == type(int):
-    pass
+#if type(sortAmt) == type(int):
+if isinstance(sortAmt, int):
+   # use user input for size
+   data = [0] * sortAmt
 else:
-    pass
+   # user input size bad, default to #define
+   data = [0] * MAX
 
+# load array with data
+loadArray(dataResp,data,sortAmt)
 
-   
-   int* data;
-   if(typeid(sortAmt) == typeid(int))
-       data = new int[sortAmt]; // use user input for size
-   else
-       data = new int[MAX]; // user input size bad, default to #define
-
-   // load array with data
-   loadArray(test, data, sortAmt);
-
-   // query sort method number
-   int sortNum = 1; // default 1, more less headaches is good
+# --- SORT, RESULTS SETUP -----------------------
+"""
+   int sortNum = 1;
    cout << endl << "Enter the type of sort (1=bubble1,2=bubble2,3=merge): ";
    cin >> sortNum;
    cout << endl;
 
-   // results, put in array for ease of use
    long long int results[6] = { 0 };
    /*
    results[0] = bubble1 if frequency
@@ -356,9 +362,22 @@ else:
           [4] = mergeSort recursive calls
           [5] = mergeSort elements moved
    */
+"""
+# query sort method number   
+sortNum = 1 # default 1, more less headaches is good
+sortNum = int(input("Enter the type of sort (1=bubble1, 2=bubble2, 3=merge): "))
 
-   // ============================================================ TIMEVAL
+# results, put in array for ease of use
+results = [0] * 6
+# results[0] = bubble1 if frequency
+#        [1] = bubble1 elements moved
+#        [2] = bubble2 if frequency
+#        [3] = bubble2 elements moved
+#        [4] = mergeSort recursive calls
+#        [5] = mergeSort elements moved
 
+# --- TIMEVAL -----------------------------------
+"""
    struct timeval startTime, stopTime;
    double /*start, stop,*/ diff;
 
@@ -373,14 +392,19 @@ else:
 */    
    diff = stopTime.tv_sec - startTime.tv_sec;
    diff += (stopTime.tv_usec - startTime.tv_usec) / 1000000.0;
+"""
+startTime = time.time()
+loadSort(data,results,sortAmt,sortNum)
+stopTime = time.time()
 
-   // ====================================================== OUTPUT PART 2
-    
+diff = stopTime - startTime
+
+# --- OUTPUT ------------------------------------
+""" 
    cout << "  time: " << fixed << /*showpoint <<*/ setprecision(10)
         << diff << " seconds " << endl;
 
-   // choice to output sorted array
-   string yn = "n"; // default of no output 
+   string yn = "n";
    cout << endl << "Output the sorted list (y/n): ";
    cin >> yn;
    if (yn == "y")
@@ -388,9 +412,15 @@ else:
          cout << data[i] << " ";
    cout << endl;
 
-   // close file, end program
    test.close();
    return 0;
 }
+"""
+print(f"  time: {diff:.5f} seconds")
 
-
+# choice to output sorted array
+yn = chr(input("Output the sorted list? [y/n]: "))
+if yn == 'y':
+   for i in range(sortAmt):
+      print(f"{data[i]} ")
+print("\n")

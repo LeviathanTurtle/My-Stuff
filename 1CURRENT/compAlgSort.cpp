@@ -2,21 +2,19 @@
  * William Wadsworth + Kolt Byers
  * Created: 11.29.2021
  * Doctored: 10.15.2023
+ *           4.23.2024 (minor)
  * CSC 2342
  * ~/discrete/prog2
  * 
- * 
+ * [DESCRIPTION]:
  * This program takes random values from a data file and puts them into an
  * array. The program then calls user-specified sorting algorithms to
  * sort the array from least to greatest. The program outputs the
  * frequency of the swap statements and the number of elements moved.
  * 
- * 
- * To compile:
- *   g++ compAlgSort.cpp -Wall -o compAlgSort
- * 
- * To run:
- *   ./compAlgSort
+ * [USAGE]:
+ * To compile: g++ compAlgSort.cpp -Wall -o compAlgSort
+ * To run: ./compAlgSort
 */
 
 #define MAX 100000
@@ -56,13 +54,13 @@ void loadSort(int*, long long int[], double, int, int);
 
 // loadArray
 //void loadArray(ifstream&, int[], int);
-void loadArray(ifstream&, int*, int);
+void loadArray(string, int*, int);
 
 // ========================================================== MAIN PROGRAM
 int main()
 {
    // file io
-   ifstream test;
+   //ifstream test;
    // data array
    //int data[MAX];
 
@@ -70,7 +68,7 @@ int main()
    string dataResp;
    cout << "Enter the dataset: ";
    cin >> dataResp;
-   test.open(dataResp);
+   //test.open(dataResp);
    cout << endl;
 
    // query number of processed items
@@ -85,7 +83,7 @@ int main()
        data = new int[MAX]; // user input size bad, default to #define
 
    // load array with data
-   loadArray(test, data, sortAmt);
+   loadArray(dataResp, data, sortAmt);
 
    // query sort method number
    int sortNum = 1; // default 1, more less headaches is good
@@ -136,7 +134,7 @@ int main()
    cout << endl;
 
    // close file, end program
-   test.close();
+   //test.close();
    return 0;
 }
 
@@ -290,12 +288,15 @@ void loadSort(int* data, long long int results[], double time, int sortAmt, int 
 // loadArray definition
 // load array definition: loads values from data file
 //void loadArray(ifstream& dataFile, int array[], int amount)
-void loadArray(ifstream& dataFile, int* array, int amount)
+void loadArray(string dataFile, int* array, int amount)
 {
+   ifstream file (dataFile);
+
    for (int i = 0; i < amount; i++)
-      dataFile >> array[i];
+      file >> array[i];
 
    cout << "data file successfully loaded" << endl;
+   file.close();
 }
 
 
