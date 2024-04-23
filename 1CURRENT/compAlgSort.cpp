@@ -78,10 +78,11 @@ int main()
    cout << "Enter the number of random numbers to process [0, 100,000]: ";
    cin >> sortAmt;
    // dynamically create data array
+   int* data;
    if(typeid(sortAmt) == typeid(int))
-       int* data = new int[sortAmt]; // use user input for size
+       data = new int[sortAmt]; // use user input for size
    else
-       int* data = new int[MAX]; // user input size bad, default to #define
+       data = new int[MAX]; // user input size bad, default to #define
 
    // load array with data
    loadArray(test, data, sortAmt);
@@ -144,7 +145,7 @@ int main()
 // bubble sort 1 definition
 // sorts n values in a[] and increments designated counters in output[]
 //void bubble1(int a[], int n, long long int output[])
-void bubble1(int a*, int n, long long int output[])
+void bubble1(int* a, int n, long long int output[])
 {
    for (int i = 0; i < n-1; i++)
       for (int j = 0; j < n - 1; j++) {
@@ -163,7 +164,7 @@ void bubble1(int a*, int n, long long int output[])
 // bubble sort 2 definition
 // sorts n values in a[] and increments designated counters in output[]
 //void bubble2(int a[], int n, long long int output[])
-void bubble2(int a*, int n, long long int output[])
+void bubble2(int* a, int n, long long int output[])
 {
    for (int i = 0; i < n-1; i++)
       for (int j = 0; j < n - i-1; j++) {
@@ -183,7 +184,7 @@ void bubble2(int a*, int n, long long int output[])
 // splits a[] (via merge method process) in half recursively, increments
 //    designated counters in output[], calls merge
 //void mergeSort(int a[], long long int output[], int start, int end)
-void mergeSort(int a*, long long int output[], int start, int end)
+void mergeSort(int* a, long long int output[], int start, int end)
 {
    output[4]++;
    if (start < end) {
@@ -198,7 +199,7 @@ void mergeSort(int a*, long long int output[], int start, int end)
 // reassembles split arrays in sorted order (least to greatest), increments
 //    designated counters in output[]
 //void merge(int m[], long long int output[], int front, int midL, int back)
-void merge(int m*, long long int output[], int front, int midL, int back)
+void merge(int* m, long long int output[], int front, int midL, int back)
 {
    int T[MAX];
    int L1 = front;
@@ -233,7 +234,7 @@ void merge(int m*, long long int output[], int front, int midL, int back)
 // asks user for sorting algorithm, calls designated function, outputs
 //    everything except time
 //void loadSort(int data[], long long int results[], double time, int sortAmt, int sortNum)
-void loadSort(int data*, long long int results[], double time, int sortAmt, int sortNum)
+void loadSort(int* data, long long int results[], double time, int sortAmt, int sortNum)
 {
    
    // run sort, store selected store frequency in variable
