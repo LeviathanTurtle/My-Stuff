@@ -103,8 +103,9 @@ void printArray(double numbers[], const int& size)
 """
 # this function takes an array and its size as parameters, and outputs each value in said array
 # along with its location.
-def printArray():
-    pass
+def printArray(numbers, size):
+    for i in range(size):
+        print(f"nums[{i}] = {numbers[i]}")
 
 # --- SORT ARRAY --------------------------------
 """
@@ -161,12 +162,12 @@ def median(array, size) -> float:
     
     # if the size is odd, pick the middle value
     if size%2 != 0:
-        #print(f"nums[{size/2}] = ")
         med = array[size/2]
+        #print(f"nums[{size/2}] = ")
     # if the size is even, average the two middle values
     else:
-        #print(f"(nums[{size/2}] + nums[{(size/2)-1}]) / 2 = ")
         med = (array[size/2] + array[(size/2)-1]) / 2
+        #print(f"(nums[{size/2}] + nums[{(size/2)-1}]) / 2 = ")
     
     return med
 
