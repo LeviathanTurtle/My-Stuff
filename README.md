@@ -1,3 +1,5 @@
+# this is out of date
+
 The programs in this directory were originally written in C++. They were later 
 translated to Rust and Python.
 
