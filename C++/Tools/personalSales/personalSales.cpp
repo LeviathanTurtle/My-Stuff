@@ -34,6 +34,10 @@
 using namespace std;
 
 
+personalSales loadStruct(char*);
+void dump(char*, char*);
+
+
 struct personalSales {
     string firstName;
     string lastName;
@@ -46,11 +50,6 @@ struct personalSales {
     int cups;
     double cupCost;
 };
-
-
-personalSales loadStruct(char*);
-void dump(char*, char*);
-
 
 
 int main (int argc, char* argv[])
