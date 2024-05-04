@@ -363,10 +363,18 @@ string doubleToString(const double&)
 // FILE overload
 void doubleToString(ifstream& file, const string& filename)
 {
+    // create output file object
+    ofstream outputFile (filename+"-output");
+
+    // holder variable for current value in filee
+    double temp;
+    
     // repeat for every entry in the file
-    while(!file.eof()) {
-        
-    }
+    //while(!file.eof()) {
+    while(file >> temp)
+        outputFile << doubleToString(temp);
+
+    outputFile.close();
 }
 
 // SCIENTIFIC NOTATION to INTEGER
@@ -384,10 +392,18 @@ int stringToInt(const string&)
 // FILE overload
 void stringToInt(ifstream& file, const string& filename)
 {
+    // create output file object
+    ofstream outputFile (filename+"-output");
+
+    // holder variable for current value in filee
+    string temp;
+    
     // repeat for every entry in the file
-    while(!file.eof()) {
-        
-    }
+    //while(!file.eof()) {
+    while(file >> temp)
+        outputFile << stringToInt(temp);
+
+    outputFile.close();
 }
 
 // SCIENTIFIC NOTATION to DECIMAL
@@ -404,9 +420,17 @@ double stringToDouble(const string&)
 // FILE overload
 void stringToDouble(ifstream& file, const string& filename)
 {
+    // create output file object
+    ofstream outputFile (filename+"-output");
+
+    // holder variable for current value in filee
+    string temp;
+    
     // repeat for every entry in the file
-    while(!file.eof()) {
-        
-    }
+    //while(!file.eof()) {
+    while(file >> temp)
+        outputFile << stringToDouble(temp);
+
+    outputFile.close();
 }
 
