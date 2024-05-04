@@ -106,12 +106,6 @@ int main(int argc, char* argv[])
     }
 
 
-    // flags for types of number (if needed to be input by user)
-    // separate flags for integer and decimal because taking a float/double as
-    // an integer is truncated
-    bool isDecimal = false, isInt = false, isExponent = false;
-
-
     // check flags
     if(argc > 1) {
         // verbose output was provided at execution
@@ -164,29 +158,27 @@ int main(int argc, char* argv[])
 
         // call respective functions
         switch(result) {
+            case 1:
+                // move elsewhere?
+                cout << fixed << setprecision(1);
+                cout << intToString(stoi(number)) << endl; // the number is an integer (128000)
+            case 2:
+                // atod? stod, stof
+                cout << fixed << setprecision(1);
+                cout << doubleToString(stof(number)) << endl; // the number is a decimal (.128)
 
-        }
-        if(isInt) {
-            // move elsewhere?
-            cout << fixed << setprecision(1);
-            cout << intToString(stoi(number)) << endl; // the number is an integer (128000)
-        }
-        else if(isDecimal) {
-            // atod? stod, stof
-            cout << fixed << setprecision(1);
-            cout << doubleToString(stof(number)) << endl; // the number is a decimal (.128)
-        }
-        // SCIENTIFIC NOTATION WAS GIVEN
-        else {
-            //if(isExponent)
-            //    if(searchCharacter(number,'-'))
-            //        stringToDouble(number); // the string is a decimal (128e-3)
-            if(isExponent && searchCharacter(number,'-'))
-                cout << stringToDouble(number) << endl; // the string is a decimal (128e-3)
-            else
-                cout << stringToInt(number) << endl; // the string is an integer (128e3)
+            // SCIENTIFIC NOTATION WAS GIVEN
+            case 3:
+                //if(isExponent)
+                //    if(searchCharacter(number,'-'))
+                //        stringToDouble(number); // the string is a decimal (128e-3)
+                if(searchCharacter(number,'-'))
+                    cout << stringToDouble(number) << endl; // the string is a decimal (128e-3)
+                else
+                    cout << stringToInt(number) << endl; // the string is an integer (128e3)
         }
     }
+
     // number was provided at execution
     else {
         // no file is specified
@@ -204,23 +196,20 @@ int main(int argc, char* argv[])
         // same approach as above
         // call respective functions
         switch(result) {
+            case 1:
+                cout << fixed << setprecision(1);
+                cout << intToString(atoi(argv[1])) << endl; // the number is an integer (128000)
+            case 2:
+                // atod? stod, stof
+                cout << fixed << setprecision(1);
+                cout << doubleToString(atof(argv[1])) << endl; // the number is a decimal (.128)
 
-        }
-        if(isInt) {
-            cout << fixed << setprecision(1);
-            cout << intToString(atoi(argv[1])) << endl; // the number is an integer (128000)
-        }
-        else if(isDecimal) {
-            // atod? stod, stof
-            cout << fixed << setprecision(1);
-            cout << doubleToString(atof(argv[1])) << endl; // the number is a decimal (.128)
-        }
-        // SCIENTIFIC NOTATION WAS GIVEN
-        else {
-            if(isExponent && searchCharacter(argv[1],'-'))
-                cout << stringToDouble(argv[1]) << endl; // the string is a decimal (128e-3)
-            else
-                cout << stringToInt(argv[1]) << endl; // the string is an integer (128e3)
+            // SCIENTIFIC NOTATION WAS GIVEN
+            case 3:
+                if(searchCharacter(argv[1],'-'))
+                    cout << stringToDouble(argv[1]) << endl; // the string is a decimal (128e-3)
+                else
+                    cout << stringToInt(argv[1]) << endl; // the string is an integer (128e3)
         }
     }
 
@@ -301,10 +290,10 @@ bool searchCharacter(const string& item)
 // function to update the flags for the type of the output number
 int determineType(const string& number)
 {
-    // if the number is in scientific notation, mark respective flag
+    // if the number is in scientific notation
     if(searchCharacter(number,'e') || searchCharacter(number,'E'))
         return 3;
-    // if number is a decimal, mark respective flag
+    // if number is a decimal
     else if(searchCharacter(number))
         return 2;
     // assume number is an integer
