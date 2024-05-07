@@ -55,30 +55,32 @@ void processFile(const char*);
 
 // function to search for specific character if a string (number in scientific
 // notation) is provided -- by ChatGPT
-bool searchCharacter(const char*, const char&);
+bool searchCharacter(const string&, const char&);
+// FILE overload
+bool searchCharacter(const string&);
 
 // function to update the flags for the type of the output number
-void determineType(const string&, bool&, bool&, bool&);
+int determineType(const string&);
 
 // convert SCIENTIFIC NOTATION to INTEGER
 int stringToInt(const string&);    // 3e3
 // FILE overload
-void stringToInt(ifstream&);
+void stringToInt(ifstream&, const string&);
 
 // convert SCIENTIFIC NOTATION to DECIMAL
 double stringToDouble(const string&); // 3e-3
 // FILE overload
-void stringToDouble(iftream&);
+void stringToDouble(ifstream&, const string&);
 
 // convert INTEGERS to SCIENTIFIC NOTATION
 string intToString(const int&);       // 128000
 // FILE overload
-void intToString(ifstream&);
+void intToString(ifstream&, const string&);
 
 // convert DECIMAL to SCIENTIFIC NOTATION
 string doubleToString(const double&); // .003
 // FILE overload
-void doubleToString(ifstream&);
+void doubleToString(ifstream&, const string&);
 
 
 // variable for verbose output
@@ -102,12 +104,6 @@ int main(int argc, char* argv[])
              << "    [string] - optional, provide a number in scientific notation\n";
         exit(1);
     }
-
-
-    // flags for types of number (if needed to be input by user)
-    // separate flags for integer and decimal because taking a float/double as
-    // an integer is truncated
-    bool isDecimal = false, isInt = false, isExponent = false;
 
 
     // check flags
@@ -149,7 +145,7 @@ int main(int argc, char* argv[])
         cin >> number;
 
         // set respective flag
-        determineType(number,isDecimal,isInt,isExponent);
+        int result = determineType(number);
 
         // if integer
         // --> int to string
@@ -161,27 +157,28 @@ int main(int argc, char* argv[])
         // --> or convert to double
 
         // call respective functions
-        if(isInt) {
-            // move elsewhere?
-            cout << fixed << setprecision(1);
-            cout << intToString(atoi(number)) << endl; // the number is an integer (128000)
-        }
-        else if(isDecimal) {
-            // atod? stod, stof
-            cout << fixed << setprecision(1);
-            cout << doubleToString(atof(number)) << endl; // the number is a decimal (.128)
-        }
-        // SCIENTIFIC NOTATION WAS GIVEN
-        else {
-            //if(isExponent)
-            //    if(searchCharacter(number,'-'))
-            //        stringToDouble(number); // the string is a decimal (128e-3)
-            if(isExponent && searchCharacter(number,'-'))
-                cout << stringToDouble(number) << endl; // the string is a decimal (128e-3)
-            else
-                cout << stringToInt(number) << endl; // the string is an integer (128e3)
+        switch(result) {
+            case 1:
+                // move elsewhere?
+                cout << fixed << setprecision(1);
+                cout << intToString(stoi(number)) << endl; // the number is an integer (128000)
+            case 2:
+                // atod? stod, stof
+                cout << fixed << setprecision(1);
+                cout << doubleToString(stof(number)) << endl; // the number is a decimal (.128)
+
+            // SCIENTIFIC NOTATION WAS GIVEN
+            case 3:
+                //if(isExponent)
+                //    if(searchCharacter(number,'-'))
+                //        stringToDouble(number); // the string is a decimal (128e-3)
+                if(searchCharacter(number,'-'))
+                    cout << stringToDouble(number) << endl; // the string is a decimal (128e-3)
+                else
+                    cout << stringToInt(number) << endl; // the string is an integer (128e3)
         }
     }
+
     // number was provided at execution
     else {
         // no file is specified
@@ -194,25 +191,25 @@ int main(int argc, char* argv[])
         //     intToString
         
         // set respective flag
-        determineType(argv[1],isDecimal,isInt,isExponent);
+        int result = determineType(argv[1]);
 
         // same approach as above
         // call respective functions
-        if(isInt) {
-            cout << fixed << setprecision(1);
-            cout << intToString(atoi(argv[1])) << endl; // the number is an integer (128000)
-        }
-        else if(isDecimal) {
-            // atod? stod, stof
-            cout << fixed << setprecision(1);
-            cout << doubleToString(atof(argv[1])) << endl; // the number is a decimal (.128)
-        }
-        // SCIENTIFIC NOTATION WAS GIVEN
-        else {
-            if(isExponent && searchCharacter(argv[1],'-'))
-                cout << stringToDouble(argv[1]) << endl; // the string is a decimal (128e-3)
-            else
-                cout << stringToInt(argv[1]) << endl; // the string is an integer (128e3)
+        switch(result) {
+            case 1:
+                cout << fixed << setprecision(1);
+                cout << intToString(atoi(argv[1])) << endl; // the number is an integer (128000)
+            case 2:
+                // atod? stod, stof
+                cout << fixed << setprecision(1);
+                cout << doubleToString(atof(argv[1])) << endl; // the number is a decimal (.128)
+
+            // SCIENTIFIC NOTATION WAS GIVEN
+            case 3:
+                if(searchCharacter(argv[1],'-'))
+                    cout << stringToDouble(argv[1]) << endl; // the string is a decimal (128e-3)
+                else
+                    cout << stringToInt(argv[1]) << endl; // the string is an integer (128e3)
         }
     }
 
@@ -233,21 +230,24 @@ void processFile(const char* filename)
     // check first value in file
     // if it contains e or E --> stringToInt
     // else --> intToString
-    determineType(file.peek(),isDecimal,isInt,isExponent);
+    int result = determineType(to_string(file.peek()));
 
     // same approach as main -- call respective functions
     // call respective functions
-    if(isInt)
-        intToString(file); // the number is an integer (128000)
-    else if(isDecimal)
-        // atod? stod, stof
-        doubleToString(file); // the number is a decimal (.128)
-    // SCIENTIFIC NOTATION WAS GIVEN
-    else
-        if(isExponent && searchCharacter(file.peek(),'-'))
-            stringToDouble(file); // the string is a decimal (128e-3)
-        else
-            stringToInt(file); // the string is an integer (128e3)
+    switch(result) {
+        case 1:
+            intToString(file, filename); // the number is an integer (128000)
+        case 2:
+            // atod? stod, stof
+            doubleToString(file, filename); // the number is a decimal (.128)
+        
+        // SCIENTIFIC NOTATION WAS GIVEN
+        case 3:
+            if(searchCharacter(to_string(file.peek()),'-'))
+                stringToDouble(file, filename); // the string is a decimal (128e-3)
+            else
+                stringToInt(file, filename); // the string is an integer (128e3)
+    }   
 
     // close file
     file.close();
@@ -256,10 +256,10 @@ void processFile(const char* filename)
 
 // function to search for a specific character if a string (number in scientific notation)
 // is provided -- by ChatGPT
-bool searchCharacter(const char* string, const char& target)
+bool searchCharacter(const string& item, const char& target)
 {
     // iterate through string
-    for(char ch : string)
+    for(char ch : item)
         if(ch == target)
             return true; // found target
     
@@ -269,12 +269,12 @@ bool searchCharacter(const char* string, const char& target)
 
 
 // function to determine if an exponent is negative
-bool searchCharacter(const char* string)
+bool searchCharacter(const string& item)
 {
     bool isRight = false;
 
     // iterate through string
-    for(char ch : string) {
+    for(char ch : item) {
         if(ch == 'e' || ch == 'E')
             isRight = true;        
 
@@ -288,17 +288,17 @@ bool searchCharacter(const char* string)
 
 
 // function to update the flags for the type of the output number
-void determineType(const string& number, bool& isDecimal, bool& isInt, bool& isExponent)
+int determineType(const string& number)
 {
-    // if the number is in scientific notation, mark respective flag
+    // if the number is in scientific notation
     if(searchCharacter(number,'e') || searchCharacter(number,'E'))
-        isExponent = true;
-    // if number is a decimal, mark respective flag
+        return 3;
+    // if number is a decimal
     else if(searchCharacter(number))
-        isDecimal = true;
+        return 2;
     // assume number is an integer
     else
-        isInt = true;
+        return 1;
 }
 
 
@@ -321,14 +321,14 @@ string intToString(const int& number)
     double base = number / pow(10, exponent);
 
     // return answer 
-    return base + "e" + exponent;
+    return to_string(base) + 'e' + to_string(exponent);
 }
 
 // FILE overload
-void intToString(ifstream& file)
+void intToString(ifstream& file, const string& filename)
 {
     // create output file object
-    ofstream outputFile (file.str()+"-output");
+    ofstream outputFile (filename+"-output");
 
     // holder variable for current value in filee
     int temp;
@@ -350,12 +350,20 @@ string doubleToString(const double&)
 }
 
 // FILE overload
-void doubleToString(ifstream& file)
+void doubleToString(ifstream& file, const string& filename)
 {
+    // create output file object
+    ofstream outputFile (filename+"-output");
+
+    // holder variable for current value in filee
+    double temp;
+    
     // repeat for every entry in the file
-    while(!file.eof()) {
-        
-    }
+    //while(!file.eof()) {
+    while(file >> temp)
+        outputFile << doubleToString(temp);
+
+    outputFile.close();
 }
 
 // SCIENTIFIC NOTATION to INTEGER
@@ -371,12 +379,20 @@ int stringToInt(const string&)
 
 
 // FILE overload
-void stringToInt(ifstream& file)
+void stringToInt(ifstream& file, const string& filename)
 {
+    // create output file object
+    ofstream outputFile (filename+"-output");
+
+    // holder variable for current value in filee
+    string temp;
+    
     // repeat for every entry in the file
-    while(!file.eof()) {
-        
-    }
+    //while(!file.eof()) {
+    while(file >> temp)
+        outputFile << stringToInt(temp);
+
+    outputFile.close();
 }
 
 // SCIENTIFIC NOTATION to DECIMAL
@@ -391,11 +407,19 @@ double stringToDouble(const string&)
 }
 
 // FILE overload
-void stringToDouble(ifstream& file)
+void stringToDouble(ifstream& file, const string& filename)
 {
+    // create output file object
+    ofstream outputFile (filename+"-output");
+
+    // holder variable for current value in filee
+    string temp;
+    
     // repeat for every entry in the file
-    while(!file.eof()) {
-        
-    }
+    //while(!file.eof()) {
+    while(file >> temp)
+        outputFile << stringToDouble(temp);
+
+    outputFile.close();
 }
 

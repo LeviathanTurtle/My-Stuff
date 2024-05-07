@@ -81,48 +81,48 @@ personalSales loadStruct(char* inputFile)
     personalSales person;
 
     // declare data file variables
-    ifstream inputFile (inputFile);
+    ifstream file (inputFile);
 
     // check file was opened
-    if(!inputFile) {
+    if(!file) {
         cerr << "error: file unable to be opened or created.\n";
         exit(2);
     }
 
     // take first and last values from data file, display in output
-    inputFile >> person.firstName;
-    inputFile >> person.lastName;
-    inputFile >> person.department;
-    cout << "Name: " << person.first << " " << person.last << ", Department: "
+    file >> person.firstName;
+    file >> person.lastName;
+    file >> person.department;
+    cout << "Name: " << person.firstName << " " << person.lastName << ", Department: "
          << person.department << endl;
 
     // take salary, bonus, and tax values from data file, display in output, 
     // set to display 2 decimal values
     cout << fixed << showpoint << setprecision(2);
-    inputFile >> person.salary;
-    inputFile >> person.bonus;
-    inputFile >> person.taxes;
+    file >> person.salary;
+    file >> person.bonus;
+    file >> person.taxes;
     cout << "Monthly Gross Income: $" << person.salary << ", Bonus: " 
          << person.bonus << "%, Taxes: " << person.taxes << "%" << endl;
 
     // take distance and time values from data file, display in output, 
     // calculate mph
-    inputFile >> person.distance;
-    inputFile >> person.time;
+    file >> person.distance;
+    file >> person.time;
     cout << "Distance traveled: " << person.distance << " miles, "
          << "Traveling Time: " << person.time << " hours" << endl;
     cout << "Average Speed: " << person.distance/person.time << " miles per "
          << "hour" << endl;
 
     // take cups and cost values from data file, display in output
-    inputFile >> person.cups;
-    inputFile >> person.cupCost;
+    file >> person.cups;
+    file >> person.cupCost;
     cout << "Number of coffee cups sold: " << person.cups << ", Cost: $" 
          << person.cupCost << " per cup" << endl;
     cout << "Sales amount = $" << person.cups*person.cupCost << endl;
 
     // close input file
-    inputFile.close();
+    file.close();
 
     return person;
 }
