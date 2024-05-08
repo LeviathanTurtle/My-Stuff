@@ -93,7 +93,7 @@ void loadFile(const char* filename)
         exit(2);
     }
 
-
+    initMap(file);
 
     file.close();
 
@@ -135,6 +135,7 @@ map<string, double> initMap(ifstream& file)
 
     if (DEBUG) {
         for (const auto& entry : config)
+            //cout << entry.first << ": " << entry.second << "\n";
             printf("Loaded map:\n%s: %.2f\n", entry.first.c_str(), entry.second);
         printf("\nExiting initMap...\n");
     }
@@ -143,5 +144,5 @@ map<string, double> initMap(ifstream& file)
 
 map<string, double> addMapItem(ifstream&)
 {
-    
+
 }
