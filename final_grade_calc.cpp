@@ -23,7 +23,7 @@
  * 
  * 1 - invalid CLI args
  * 
- * 2 - 
+ * 2 - file unable to be opened
 */
 
 #include <iostream>
@@ -36,7 +36,8 @@ bool DEBUG = false;
 
 
 void loadFile(const char*);
-map<string, double> initMap();
+map<string, double> initMap(ifstream&);
+map<string, double> addMapItem(ifstream&);
 
 
 // the defaults are made up values
@@ -82,25 +83,65 @@ int main(int argc, char* argv[])
 
 void loadFile(const char* filename)
 {
+    if (DEBUG)
+        printf("Entering loadFile...\n");
+    
     ifstream file (filename);
+    // check file is opened
+    if (!file) {
+        cerr << "Error: file unable to be opened.\n";
+        exit(2);
+    }
 
 
 
     file.close();
+
+    if (DEBUG)
+        printf("Exiting loadFile...\n");
 }
 
 
-map<string, double> initMap()
+// note: this function only initializes the map
+map<string, double> initMap(ifstream& file)
 {
+    if (DEBUG)
+        printf("Entering initMap...\n");
+
     map<string, double> config;
 
     // defaults
+    /*
     config["homework"] = 0.1;
     config["quiz"] = 0.15;
     config["lab"] = 0.15;
     config["project"] = 0.15;
     config["test"] = 0.2;
     config["exam"] = 0.25;
+    */
+    config.insert(make_pair("homework",0.1));
+    config.insert(make_pair("quiz",0.15));
+    config.insert(make_pair("lab",0.15));
+    config.insert(make_pair("project",0.15));
+    config.insert(make_pair("test",0.2));
+    config.insert(make_pair("exam",0.25));
 
     // load from file
+    string category;
+    double weight;
+    //for (int i=0; i<config.size(); i++)
+    while (file >> category >> weight)
+        config[category] = weight;
+
+    if (DEBUG) {
+        for (const auto& entry : config)
+            printf("Loaded map:\n%s: %.2f\n", entry.first.c_str(), entry.second);
+        printf("\nExiting initMap...\n");
+    }
+}
+
+
+map<string, double> addMapItem(ifstream&)
+{
+    
 }
