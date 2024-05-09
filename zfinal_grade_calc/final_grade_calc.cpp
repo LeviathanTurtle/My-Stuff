@@ -41,11 +41,15 @@ bool DEBUG = false;
 
 
 //map<string, double> loadFile(const char*);
+void process_command_line(const int&, const char* []);
 map<string, double> initMap(ifstream&);
 void printMap(const map<string, double>&);
-void action(map<string, double>&, const char*);
+void action(map<string, double>&, const char*, bool&);
 map<string, double> addMapItem(map<string, double>&, const string&, const double&, const char*);
 map<string, double> editMapItem(map<string, double>&, const string&, const char*);
+// calc final grade
+
+// enter target grade
 
 
 // the defaults are made up values
@@ -60,7 +64,14 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
+    process_command_line(argc,argv);
 
+    return 0;
+}
+
+
+void process_command_line(const int& argc, const char* argv[])
+{
     // call loadFile func
     // BASED ON CLI ARGS
     if (argv[1] == "-d") {
@@ -70,8 +81,10 @@ int main(int argc, char* argv[])
         map<string, double> config = initMap(argv[2]);
 
         // prompt user for action
-        // while
-        action(config, argv[2]);
+        // bool var for repeating inputs
+        bool finished = false;
+        while (!finished)
+            action(config, argv[2], finished);
     }
     else {
         // not debug
@@ -79,11 +92,11 @@ int main(int argc, char* argv[])
         map<string, double> config = initMap(argv[1]);
 
         // prompt user for action
-        // while
-        action(config, argv[1]);
+        // bool var for repeating inputs
+        bool finished = false;
+        while (!finished)
+            action(config, argv[1], finished);
     }
-
-    return 0;
 }
 
 
@@ -94,13 +107,6 @@ map<string, double> initMap(const char* filename)
         printf("Entering initMap...\n");
 
     map<string, double> config;
-
-    ifstream file (filename);
-    // check file is opened
-    if (!file) {
-        cerr << "Error: file unable to be opened.\n";
-        exit(2);
-    }
 
     // defaults
     /*
@@ -117,6 +123,13 @@ map<string, double> initMap(const char* filename)
     config.insert(make_pair("project",0.15));
     config.insert(make_pair("test",0.2));
     config.insert(make_pair("exam",0.25));
+
+    ifstream file (filename);
+    // check file is opened
+    if (!file) {
+        cerr << "Error: file unable to be opened.\n";
+        exit(2);
+    }
 
     // load from file
     string category;
@@ -150,7 +163,7 @@ void printMap(const map<string, double>& config)
 }
 
 
-void action(map<string, double>& config, const char* filename)
+void action(map<string, double>& config, const char* filename, bool& finished)
 {
     if (DEBUG)
         printf("Entering action...\n");
@@ -198,6 +211,7 @@ void action(map<string, double>& config, const char* filename)
         
         case 5:
             // mark as finished
+            finished = true;
             break;
 
         // should not be hit if the user can read
