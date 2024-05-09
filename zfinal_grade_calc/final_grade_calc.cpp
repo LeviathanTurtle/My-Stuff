@@ -48,7 +48,7 @@ void action(map<string, double>&, const char*, bool&);
 map<string, double> addMapItem(map<string, double>&, const string&, const double&, const char*);
 map<string, double> editMapItem(map<string, double>&, const string&, const char*);
 // calc final grade
-
+double calcFinalGrade(const map<string, double>&);
 // enter target grade
 
 
@@ -286,3 +286,19 @@ map<string, double> editMapItem(map<string, double>& config, const string& item,
         printf("Exiting editMapItem...\n");
 }
 
+
+double calcFinalGrade(const map<string, double>& config)
+{
+    if (DEBUG)
+        printf("Entering calcFinalGrade...\n");
+    
+    int* num_assignments = new int [config.size()];
+    
+    int num_input;
+    for (int i=0; i<config.size(); i++) {
+        cout << "How many assignments"
+    }
+
+    if (DEBUG)
+        printf("Exiting calcFinalGrade...\n");
+}
