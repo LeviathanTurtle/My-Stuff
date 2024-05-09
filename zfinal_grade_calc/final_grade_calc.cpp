@@ -49,11 +49,8 @@ map<string, double> addMapItem(map<string, double>&, const string&, const double
 map<string, double> editMapItem(map<string, double>&, const string&, const char*);
 // calc final grade
 double calcFinalGrade(const map<string, double>&);
-// enter target grade
-
-
-// the defaults are made up values
-//map<string, double> config;
+// enter target grade -- this is for exam
+void temp();
 
 
 int main(int argc, char* argv[])
@@ -78,7 +75,8 @@ void process_command_line(const int& argc, const char* argv[])
         // debug
         DEBUG = true;
 
-        map<string, double> config = initMap(argv[2]);
+        //map<string, double> config = initMap(argv[2]);
+        map<string, double> config;
 
         // prompt user for action
         // bool var for repeating inputs
@@ -116,13 +114,21 @@ map<string, double> initMap(const char* filename)
     config["project"] = 0.15;
     config["test"] = 0.2;
     config["exam"] = 0.25;
-    */
+    *//*
     config.insert(make_pair("homework",0.1));
     config.insert(make_pair("quiz",0.15));
     config.insert(make_pair("lab",0.15));
     config.insert(make_pair("project",0.15));
     config.insert(make_pair("test",0.2));
     config.insert(make_pair("exam",0.25));
+    *//*
+    config[std::make_tuple(1, "homework")] = 0.1;
+    config[std::make_tuple(2, "quiz")] = 0.15;
+    config[std::make_tuple(3, "lab")] = 0.15;
+    config[std::make_tuple(4, "project")] = 0.15;
+    config[std::make_tuple(5, "test")] = 0.2;
+    config[std::make_tuple(6, "exam")] = 0.25;
+    */
 
     ifstream file (filename);
     // check file is opened
@@ -135,7 +141,8 @@ map<string, double> initMap(const char* filename)
     string category;
     double weight;
     while (file >> category >> weight)
-        config[category] = weight;
+        //config[category] = weight;
+        config.insert(make_pair(category,weight));
 
     file.close();
 
@@ -203,10 +210,11 @@ void action(map<string, double>& config, const char* filename, bool& finished)
 
         case 3:
             // calculate final grade
+            printf("Your final grade is %.2f\n", calcFinalGrade(config));
             break;
 
         case 4:
-            // enter target grade
+            // enter target grade -- this is for exam
             break;
         
         case 5:
@@ -293,12 +301,25 @@ double calcFinalGrade(const map<string, double>& config)
         printf("Entering calcFinalGrade...\n");
     
     int* num_assignments = new int [config.size()];
+    // array control for ^
+    int index = 0;
     
     int num_input;
-    for (int i=0; i<config.size(); i++) {
-        cout << "How many assignments"
+    for (const auto& entry : config) {
+        cout << "Enter the number of " << entry.first << " assignments: ";
+        cin >> num_input;
+
+        num_assignments[index] = num_input;
+        index++;
     }
+    // check all are accounted for
+    if (index+1 != config.size())
+        cerr << "Error: not all assignments accounted for\n";
+
+    // calculations here
 
     if (DEBUG)
         printf("Exiting calcFinalGrade...\n");
 }
+
+
