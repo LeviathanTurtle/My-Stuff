@@ -45,7 +45,7 @@ map<string, double> initMap(ifstream&);
 void printMap(const map<string, double>&);
 void action(map<string, double>&, const char*);
 map<string, double> addMapItem(map<string, double>&, const string&, const double&, const char*);
-map<string, double> editMapItem(map<string, double>&, const string&, double&, const char*);
+map<string, double> editMapItem(map<string, double>&, const string&, const char*);
 
 
 // the defaults are made up values
@@ -68,19 +68,20 @@ int main(int argc, char* argv[])
         DEBUG = true;
 
         map<string, double> config = initMap(argv[2]);
+
+        // prompt user for action
+        // while
+        action(config, argv[2]);
     }
     else {
         // not debug
 
         map<string, double> config = initMap(argv[1]);
+
+        // prompt user for action
+        // while
+        action(config, argv[1]);
     }
-
-
-    // prompt user for action
-    // switch/case
-
-
-    // 
 
     return 0;
 }
@@ -157,12 +158,13 @@ void action(map<string, double>& config, const char* filename)
     printMap(config);
 
     cout << "Would you like to:\n1. Add an item/weight\n2. Edit an item/weight\n3. Calculate "
-         << "final grade\n4. Enter target grade\n\nEnter your choice: ";
+         << "final grade\n4. Enter target grade\n5. Mark you are finished\n\nEnter your choice: ";
     int choice;
     cin >> choice;
 
     switch(choice) {
         case 1:
+        // add item/weight
         {
             string item;
             cout << "Enter the assignment name: ";
@@ -175,19 +177,27 @@ void action(map<string, double>& config, const char* filename)
             break;
         }
         case 2:
+        // edit item/weight
         {
             printMap(config);
             string item_edit;
             cout << "\nWhat item would you like to edit: ";
             cin >> item_edit;
 
+            editMapItem(config, item_edit, filename);
             break;
         }
 
         case 3:
+            // calculate final grade
             break;
 
         case 4:
+            // enter target grade
+            break;
+        
+        case 5:
+            // mark as finished
             break;
 
         // should not be hit if the user can read
@@ -225,7 +235,7 @@ map<string, double> addMapItem(map<string, double>& config, const string& item, 
 }
 
 
-map<string, double> editMapItem(map<string, double>& config, const string& item, double& weight, const char* filename)
+map<string, double> editMapItem(map<string, double>& config, const string& item, const char* filename)
 {
     // the original approach would read from the file until it reached the target assignment,
     // then update the float that came after. Since I could not figure out how to do that, I 
@@ -234,6 +244,7 @@ map<string, double> editMapItem(map<string, double>& config, const string& item,
     if (DEBUG)
         printf("Entering editMapItem...\n");
 
+    double weight;
     cout << "Enter the new value you want for " << item << ": ";
     cin >> weight;
 
