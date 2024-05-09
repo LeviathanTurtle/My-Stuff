@@ -31,6 +31,9 @@
 #include <iostream>
 #include <fstream>      // file I/O
 #include <map>          // hold config options
+
+//#include <string>
+
 using namespace std;
 
 
@@ -42,7 +45,7 @@ map<string, double> initMap(ifstream&);
 void printMap(const map<string, double>&);
 void action(map<string, double>&, const char*);
 map<string, double> addMapItem(map<string, double>&, const string&, const double&, const char*);
-map<string, double> editMapItem(map<string, double>&, const string&, const double&, const char*);
+map<string, double> editMapItem(map<string, double>&, const string&, double&, const char*);
 
 
 // the defaults are made up values
@@ -222,8 +225,39 @@ map<string, double> addMapItem(map<string, double>& config, const string& item, 
 }
 
 
-map<string, double> editMapItem(map<string, double>& config, const string& item, const double& weight, const char* filename)
+map<string, double> editMapItem(map<string, double>& config, const string& item, double& weight, const char* filename)
 {
+    // the original approach would read from the file until it reached the target assignment,
+    // then update the float that came after. Since I could not figure out how to do that, I 
+    // instead decided to just remove and remake the file. Not the best solution, but it works
+    
+    if (DEBUG)
+        printf("Entering editMapItem...\n");
 
+    cout << "Enter the new value you want for " << item << ": ";
+    cin >> weight;
+
+    config[item] = weight;
+
+    string command = "rm " + string(filename);
+    int result = system(command.c_str());
+    // check result
+    if (result == -1)
+        cerr << "Error executing command" << endl;
+
+    ofstream file (filename);
+    // check file is opened
+    if (!file) {
+        cerr << "Error: file unable to be opened.\n";
+        exit(2);
+    }
+
+    for (const auto& entry : config)
+        file << entry.first << " " << entry.second << "\n";
+    
+    file.close();
+
+    if (DEBUG)
+        printf("Exiting editMapItem...\n");
 }
 
