@@ -31,6 +31,7 @@
 #include <iostream>
 #include <fstream>      // file I/O
 #include <map>          // hold config options
+#include <algorithm>
 
 //#include <string>
 
@@ -304,6 +305,7 @@ double calcFinalGrade(const map<string, double>& config)
     // array control for ^
     int index = 0;
     
+    // get the number of assignments for each assignment
     int num_input;
     for (const auto& entry : config) {
         cout << "Enter the number of " << entry.first << " assignments: ";
@@ -317,9 +319,34 @@ double calcFinalGrade(const map<string, double>& config)
         cerr << "Error: not all assignments accounted for\n";
 
     // calculations here
+    double global_sum = 0, grade_sum = 0, grade;
+    // inner for loop control var
+    int j = 0;
+
+    // for each assignment
+    for (const auto& entry : config) {
+        cout << "\n\nCurrent assignment category: " << entry.first << "\n";
+        // for each assignment number (e.g. homework 1, homework 2, etc.)
+        for(int i=0; i<num_assignments[j]; i++) {
+            // get the grade for that assignment
+            cout << toupper(entry.first[0]) << i+1 << ": ";
+            cin >> grade;
+
+            // add sum
+            grade_sum += grade;
+        }
+
+        global_sum += (grade_sum/num_assignments[j]) * entry.second;
+
+        // increment for next assignment number
+        j++;
+    }
+
 
     if (DEBUG)
         printf("Exiting calcFinalGrade...\n");
+    
+    return global_sum;
 }
 
 

@@ -63,6 +63,7 @@
     "ios": "cpp",
     "fstream": "cpp",
     "string": "cpp",
-    "utility": "cpp"
+    "utility": "cpp",
+    "xtree": "cpp"
   }
 }
