@@ -40,7 +40,6 @@ bool DEBUG = false;
 
 
 //map<string, double> loadFile(const char*);
-void process_command_line(const int&, const char* []);
 map<string, double> initMap(ifstream&);
 void printMap(const map<string, double>&);
 void action(map<string, double>&, const char*, bool&);
@@ -49,7 +48,7 @@ void editMapItem(map<string, double>&, const string&, const char*);
 // calc final grade
 double calcFinalGrade(const map<string, double>&);
 // enter target grade -- this is for exam
-void temp();
+double finalExamCalc(const map<string, double>&, const double&);
 
 
 int main(int argc, char* argv[])
@@ -60,14 +59,6 @@ int main(int argc, char* argv[])
         exit(1);
     }
 
-    process_command_line(argc,argv);
-
-    return 0;
-}
-
-
-void process_command_line(const int& argc, const char* argv[])
-{
     // call loadFile func
     // BASED ON CLI ARGS
     if (argv[1] == "-d") {
@@ -94,6 +85,8 @@ void process_command_line(const int& argc, const char* argv[])
         while (!finished)
             action(config, argv[1], finished);
     }
+
+    return 0;
 }
 
 
@@ -214,8 +207,14 @@ void action(map<string, double>& config, const char* filename, bool& finished)
             break;
 
         case 4:
+        {
+            double target_grade;
+            cout << "What final grade would you like to receive: ";
+            cin >> target_grade;
             // enter target grade -- this is for exam
+            printf("You need a %.2f on the exam to get a %.2f\n",finalExamCalc(config,target_grade),target_grade);
             break;
+        }
         
         case 5:
             // mark as finished
@@ -348,3 +347,7 @@ double calcFinalGrade(const map<string, double>& config)
 }
 
 
+double finalExamCalc(const map<string, double>& config, const double& target_grade)
+{
+
+}
