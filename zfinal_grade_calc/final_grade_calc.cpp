@@ -342,7 +342,6 @@ double calcFinalGrade(const map<string, double>& config)
         j++;
     }
 
-
     if (DEBUG)
         printf("Exiting calcFinalGrade...\n");
     

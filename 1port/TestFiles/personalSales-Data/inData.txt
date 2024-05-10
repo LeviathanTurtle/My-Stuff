@@ -1,4 +1,0 @@
-William Wadsworth ComputerScience
-6000 10 25
-266 4
-56 2
