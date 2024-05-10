@@ -31,24 +31,30 @@
 #include <iostream>
 #include <fstream>      // file I/O
 #include <map>          // hold config options
-//#include <algorithm>
-//#include <string>
+#include <vector>       // only used in map sorting
+#include <algorithm>    // sort()
 using namespace std;
 
 
 bool DEBUG = false;
 
 
-//map<string, double> loadFile(const char*);
+// function to 
 map<string, double> initMap(ifstream&);
+// function to 
 void printMap(const map<string, double>&);
+// function to 
 void action(map<string, double>&, const char*, bool&);
+// function to 
 void addMapItem(map<string, double>&, const string&, const double&, const char*);
+// function to 
 void editMapItem(map<string, double>&, const string&, const char*);
-// calc final grade
+// function to 
 double calcFinalGrade(const map<string, double>&);
-// enter target grade -- this is for exam
+// function to 
 double finalExamCalc(const map<string, double>&, const double&);
+// function to sort the map items
+void mapSort(map<string, double>&);
 
 
 int main(int argc, char* argv[])
@@ -113,12 +119,12 @@ map<string, double> initMap(const char* filename)
     config.insert(make_pair("test",0.2));
     config.insert(make_pair("exam",0.25));
     *//*
-    config[std::make_tuple(1, "homework")] = 0.1;
-    config[std::make_tuple(2, "quiz")] = 0.15;
-    config[std::make_tuple(3, "lab")] = 0.15;
-    config[std::make_tuple(4, "project")] = 0.15;
-    config[std::make_tuple(5, "test")] = 0.2;
-    config[std::make_tuple(6, "exam")] = 0.25;
+    config[make_tuple(1, "homework")] = 0.1;
+    config[make_tuple(2, "quiz")] = 0.15;
+    config[make_tuple(3, "lab")] = 0.15;
+    config[make_tuple(4, "project")] = 0.15;
+    config[make_tuple(5, "test")] = 0.2;
+    config[make_tuple(6, "exam")] = 0.25;
     */
 
     ifstream file (filename);
@@ -136,6 +142,8 @@ map<string, double> initMap(const char* filename)
         config.insert(make_pair(category,weight));
 
     file.close();
+    // sort the map
+    mapSort(config);
 
     if (DEBUG) {
         printf("Loaded map:\n");
@@ -238,6 +246,8 @@ void addMapItem(map<string, double>& config, const string& item, const double& w
         printf("\nEntering addMapItem...\n");
 
     config.insert(make_pair(item,weight));
+    // resort the map
+    mapSort(config);
 
     ofstream file (filename);
     // check file is opened
@@ -265,11 +275,15 @@ void editMapItem(map<string, double>& config, const string& item, const char* fi
     if (DEBUG)
         printf("Entering editMapItem...\n");
 
+    // add check that item is in map
+
     double weight;
     cout << "Enter the new value you want for " << item << ": ";
     cin >> weight;
 
     config[item] = weight;
+    // resort the map
+    mapSort(config);
 
     string command = "rm " + string(filename);
     int result = system(command.c_str());
@@ -288,6 +302,15 @@ void editMapItem(map<string, double>& config, const string& item, const char* fi
         file << entry.first << " " << entry.second << "\n";
     
     file.close();
+
+    // check that all weights = 1 (100)
+    double weight_check = 0;
+    for (const auto& entry : config)
+        weight_check += entry.second;
+    if(weight_check != 1) {
+        cerr << "Error: weights do not sum to 100\n";
+        editMapItem(config, item, filename);
+    }
 
     if (DEBUG)
         printf("Exiting editMapItem...\n");
@@ -373,3 +396,31 @@ double finalExamCalc(const map<string, double>& config, const double& target_gra
 
     return (target_grade - calcFinalGrade(config) * current_grade_weight)/final_weight;
 }
+
+
+void mapSort(map<string, double>& config)
+{
+    if (DEBUG)
+        printf("Entering mapSort...\n");
+
+    // create a vector copy because maps cannot be sorted
+    vector<pair<string, double>> vec(config.begin(), config.end());
+
+    // sort vector based on double
+    sort(vec.begin(), vec.end(),
+        [](const pair<string, double>& a, const pair<string, double>& b) {
+            return a.second < b.second;
+        });
+    // from ChatGPT
+
+    // clear original map
+    config.clear();
+
+    // put sorted entries back into map
+    for (const auto& entry : vec)
+        config.insert(entry);
+
+    if (DEBUG)
+        printf("Exiting mapSort...\n");
+}
+

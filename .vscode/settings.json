@@ -64,6 +64,7 @@
     "fstream": "cpp",
     "string": "cpp",
     "utility": "cpp",
-    "xtree": "cpp"
+    "xtree": "cpp",
+    "vector": "cpp"
   }
 }
