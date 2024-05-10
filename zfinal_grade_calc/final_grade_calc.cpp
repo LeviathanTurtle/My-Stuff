@@ -31,10 +31,8 @@
 #include <iostream>
 #include <fstream>      // file I/O
 #include <map>          // hold config options
-#include <algorithm>
-
+//#include <algorithm>
 //#include <string>
-
 using namespace std;
 
 
@@ -46,8 +44,8 @@ void process_command_line(const int&, const char* []);
 map<string, double> initMap(ifstream&);
 void printMap(const map<string, double>&);
 void action(map<string, double>&, const char*, bool&);
-map<string, double> addMapItem(map<string, double>&, const string&, const double&, const char*);
-map<string, double> editMapItem(map<string, double>&, const string&, const char*);
+void addMapItem(map<string, double>&, const string&, const double&, const char*);
+void editMapItem(map<string, double>&, const string&, const char*);
 // calc final grade
 double calcFinalGrade(const map<string, double>&);
 // enter target grade -- this is for exam
@@ -178,8 +176,9 @@ void action(map<string, double>& config, const char* filename, bool& finished)
 
     printMap(config);
 
-    cout << "Would you like to:\n1. Add an item/weight\n2. Edit an item/weight\n3. Calculate "
-         << "final grade\n4. Enter target grade\n5. Mark you are finished\n\nEnter your choice: ";
+    cout << "Would you like to:\n1. Add an assignment/weight\n2. Edit an assignment/weight\n3. "
+         << "Calculate final grade\n4. Enter target grade\n5. Mark you are finished\n\nEnter your "
+         << "choice: ";
     int choice;
     cin >> choice;
 
@@ -234,7 +233,7 @@ void action(map<string, double>& config, const char* filename, bool& finished)
 }
 
 
-map<string, double> addMapItem(map<string, double>& config, const string& item, const double& weight, const char* filename)
+void addMapItem(map<string, double>& config, const string& item, const double& weight, const char* filename)
 {
     if (DEBUG)
         printf("\nEntering addMapItem...\n");
@@ -258,7 +257,7 @@ map<string, double> addMapItem(map<string, double>& config, const string& item, 
 }
 
 
-map<string, double> editMapItem(map<string, double>& config, const string& item, const char* filename)
+void editMapItem(map<string, double>& config, const string& item, const char* filename)
 {
     // the original approach would read from the file until it reached the target assignment,
     // then update the float that came after. Since I could not figure out how to do that, I 
