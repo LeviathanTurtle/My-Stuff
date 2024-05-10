@@ -65,7 +65,6 @@ int main(int argc, char* argv[])
         // debug
         DEBUG = true;
 
-        //map<string, double> config = initMap(argv[2]);
         map<string, double> config = initMap(argv[2]);
 
         // prompt user for action
@@ -207,11 +206,12 @@ void action(map<string, double>& config, const char* filename, bool& finished)
             break;
 
         case 4:
+        // enter target grade -- this is for exam
         {
             double target_grade;
             cout << "What final grade would you like to receive: ";
             cin >> target_grade;
-            // enter target grade -- this is for exam
+            
             printf("You need a %.2f on the exam to get a %.2f\n",finalExamCalc(config,target_grade),target_grade);
             break;
         }
@@ -349,5 +349,27 @@ double calcFinalGrade(const map<string, double>& config)
 
 double finalExamCalc(const map<string, double>& config, const double& target_grade)
 {
+    if (DEBUG)
+        printf("Entering finalExamCalc...\n");
 
+    string final_assignment;
+    cout << "What is the final assignment (e.g. exam, project, etc.): ";
+    cin >> final_assignment;
+    
+    double final_weight;
+    cout << "What is the weighted percentage of the final (enter XY%): ";
+    cin >> final_weight;
+    // input check
+    while (final_weight >= 100) {
+        cout << "Error: final assignment weight cannot exceed 100%. Re-enter: ";
+        cin >> final_weight;
+    }
+    
+    // define the weight of the current grade
+    double current_grade_weight = 1-final_weight;
+
+    if (DEBUG)
+        printf("Exiting finalExamCalc...\n");
+
+    return (target_grade - calcFinalGrade(config) * current_grade_weight)/final_weight;
 }
