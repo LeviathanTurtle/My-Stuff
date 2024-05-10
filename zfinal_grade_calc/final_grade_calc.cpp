@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
         DEBUG = true;
 
         //map<string, double> config = initMap(argv[2]);
-        map<string, double> config;
+        map<string, double> config = initMap(argv[2]);
 
         // prompt user for action
         // bool var for repeating inputs
