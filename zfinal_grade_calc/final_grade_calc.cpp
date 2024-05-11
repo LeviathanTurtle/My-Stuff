@@ -49,6 +49,8 @@ void action(map<string, double>&, const char*, bool&);
 void addMapItem(map<string, double>&, const string&, const double&, const char*);
 // function to edit a name of weight of an assignment
 void editMapItem(map<string, double>&, const string&, const char*);
+// function to output the map to a file
+void dumpMap(const map<string, double>&, const char*);
 // function to calculate the final grade in a class
 double calcFinalGrade(const map<string, double>&);
 // function to determine if 'final' is in the input string
@@ -101,11 +103,14 @@ int main(int argc, char* argv[])
 }
 
 
-// function to initialize a map from the external file
-/* 
+/* function to initialize a map from the external file
+ * pre-condition: expects a character pointer (string) filename as input, which should not be null
+ *                or empty. This will be used to populate the key-value pair map
  * 
- * 
- * 
+ * post-condition: populates a key-value pair map (string, double) named `config` which is
+ *                 returned. It is populated from input via an external file with the format
+ *                 'string double\nstring double\n...'. The map is then sorted from least to
+ *                 greatest based on the 'double' value
 */
 map<string, double> initMap(const char* filename)
 {
@@ -169,11 +174,13 @@ map<string, double> initMap(const char* filename)
 }
 
 
-// function to print the current map
-/* 
+/* function to print the current map
+ * pre-condition: expects a reference to a key-value pair map `config` of strings to doubles as
+ *                input
  * 
- * 
- * 
+ * post-condition: prints each key-value pair from the input map `config`. The output format is
+ *                 "<key>: <value>" where <key> is a string and <value> is a double, with each
+ *                 key-value pair printed on a new line
 */
 void printMap(const map<string, double>& config)
 {
@@ -189,11 +196,14 @@ void printMap(const map<string, double>& config)
 }
 
 
-// function that takes input from the user and does what the user specifies
-/* 
+/* function that takes input from the user and does what the user specifies
+ * pre-condition: expects a reference to a key-value pair map `config` of strings to doubles as
+ *                input. It also expects a reference to a character pointer (string) filename which
+ *                should not be null or empty and an initialized boolean value
  * 
- * 
- * 
+ * post-condition: calls printMap, takes a user's input to indicate which function to call.
+ *                 Depending on the function call, 'config' may be updated or re-created. If an
+ *                 invalid option is selected, the program exits
 */
 void action(map<string, double>& config, const char* filename, bool& finished)
 {
@@ -292,11 +302,13 @@ void action(map<string, double>& config, const char* filename, bool& finished)
 }
 
 
-// function to add an assignment to the current map
-/* 
+/* function to add an assignment to the current map
+ * pre-condition: expects a reference to a key-value pair map `config` of strings to doubles as
+ *                input, a constant reference to a string and double, and a reference to a
+ *                character pointer (string) filename which should not be null or empty
  * 
- * 
- * 
+ * post-condition: adds the string 'item' and double 'weight' pair to the map 'config', then dumps
+ *                 the contents of the map to an external file via dumpMap 
 */
 void addMapItem(map<string, double>& config, const string& item, const double& weight, const char* filename)
 {
@@ -305,21 +317,9 @@ void addMapItem(map<string, double>& config, const string& item, const double& w
 
     // add the item to the map
     config.insert(make_pair(item,weight));
-    // resort the map
-    mapSort(config);
 
-    // set up file output
-    ofstream file (filename);
-    // check file is opened
-    if (!file) {
-        cerr << "Error: file unable to be opened.\n";
-        exit(2);
-    }
-
-    // output new assignment to file
-    file << item << " " << weight << endl;
-
-    file.close();
+    // output map to file
+    dumpMap(config, filename);
 
     if (DEBUG) {
         printf("Updated map:\n");
@@ -329,11 +329,49 @@ void addMapItem(map<string, double>& config, const string& item, const double& w
 }
 
 
-// function to edit a name of weight of an assignment
-/* 
+/* function to output the map to a file
+ * pre-condition: expects a reference to a key-value pair map `config` of strings to doubles as
+ *                input and a reference to a character pointer (string) filename which should not
+ *                be null or empty
  * 
+ * post-condition: sorts the map for redundancy and outputs the contents of the map to an external
+ *                 file with the format "string double\nstring double\n..."
+*/
+void dumpMap(map<string, double>& config, const char* filename)
+{
+    // ensure map is sorted
+    mapSort(config);
+
+    // remove the file
+    string command = "rm " + string(filename);
+    int result = system(command.c_str());
+    // check result
+    if (result == -1)
+        cerr << "Error executing command" << endl;
+    
+    // set up file output
+    ofstream file (filename);
+    // check file is opened
+    if (!file) {
+        cerr << "Error: file unable to be opened.\n";
+        exit(2);
+    }
+
+    for (const auto& entry: config)
+        // output new assignment to file
+        file << entry.first << " " << entry.second << endl;
+
+    file.close();
+}
+
+
+/* function to edit a name of weight of an assignment
+ * pre-condition: expects a reference to a key-value pair map `config` of strings to doubles as
+ *                input, a constant reference to a string, and a reference to a character pointer
+ *                (string) filename which should not be null or empty
  * 
- * 
+ * post-condition: the original config file is deleted and re-made, assuming the weights sum to 1.
+ *                 If not, the function is re-called to try again
 */
 void editMapItem(map<string, double>& config, const string& item, const char* filename)
 {
@@ -344,36 +382,13 @@ void editMapItem(map<string, double>& config, const string& item, const char* fi
     if (DEBUG)
         printf("Entering editMapItem...\n");
 
-    // add check that item is in map
+    // TODO: ADD CHECK THAT ITEM IS IN MAP
 
     double weight;
     cout << "Enter the new value you want for " << item << ": ";
     cin >> weight;
 
     config[item] = weight;
-    // resort the map
-    mapSort(config);
-
-    // remove the file
-    string command = "rm " + string(filename);
-    int result = system(command.c_str());
-    // check result
-    if (result == -1)
-        cerr << "Error executing command" << endl;
-
-    // set up file output
-    ofstream file (filename);
-    // check file is opened
-    if (!file) {
-        cerr << "Error: file unable to be opened.\n";
-        exit(2);
-    }
-
-    // for each assignment, output its name and weight
-    for (const auto& entry : config)
-        file << entry.first << " " << entry.second << "\n";
-    
-    file.close();
 
     // check that all weights = 1 (100%)
     double weight_check = 0;
@@ -382,20 +397,25 @@ void editMapItem(map<string, double>& config, const string& item, const char* fi
         weight_check += entry.second;
     // if the sum of the weights do not equal 1 (100%), output error, re-call function
     if(weight_check != 1) {
-        cerr << "Error: weights do not sum to 100\n";
+        cerr << "Error: weights do not sum to 1 (100%)\n";
+        printMap(config);
         editMapItem(config, item, filename);
     }
+
+    // output map to file
+    dumpMap(config, filename);
 
     if (DEBUG)
         printf("Exiting editMapItem...\n");
 }
 
 
-// function to calculate the final grade in a class
-/* 
+/* function to calculate the final grade in a class
+ * pre-condition: expects a constant reference to a key-value pair map `config` of strings to
+ *                doubles as input
  * 
- * 
- * 
+ * post-condition: returns the final grade based on the number of assignments given. These values
+ *                 are input by the user and stored in a separate array
 */
 double calcFinalGrade(const map<string, double>& config)
 {
@@ -452,14 +472,14 @@ double calcFinalGrade(const map<string, double>& config)
         printf("Exiting calcFinalGrade...\n");
     
     return global_sum;
+    // TODO: MERGE THE TWO FOR LOOPS
 }
 
 
-// function to determine if 'final' is in the input string
-/* 
+/* function to determine if 'final' is in the input string
+ * pre-condition: expects a constant reference to a string
  * 
- * 
- * 
+ * post-condition: returns true if the word 'final' is in the input string
 */
 bool containsFinal(const string& str)
 {
@@ -471,11 +491,12 @@ bool containsFinal(const string& str)
 }
 
 
-// function to calculate the grade you would need on a final to get a certain grade overall
-/* 
+/* function to calculate the grade you would need on a final to get a certain grade overall
+ * pre-condition: expects a constant reference to a key-value pair map `config` of strings to
+ *                doubles as input and a constant reference to a double
  * 
- * 
- * 
+ * post-condition: the function returns the grade you would need to score on the final to get
+ *                 the grade the user specifies
 */
 double finalExamCalc(const map<string, double>& config, const double& target_grade)
 {
@@ -507,11 +528,12 @@ double finalExamCalc(const map<string, double>& config, const double& target_gra
 }
 
 
-// function to sort the map items
-/* 
+/* function to sort the map items
+ * pre-condition: expects a reference to a key-value pair map `config` of strings to doubles as
+ *                input
  * 
- * 
- * 
+ * post-condition: the map is cleared, then re-created sorted based from least to greatest based
+ *                 on the 'double' value 
 */
 void mapSort(map<string, double>& config)
 {
