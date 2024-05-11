@@ -51,8 +51,10 @@ void addMapItem(map<string, double>&, const string&, const double&, const char*)
 void editMapItem(map<string, double>&, const string&, const char*);
 // function to calculate the final grade in a class
 double calcFinalGrade(const map<string, double>&);
+// function to determine if 'final' is in the input string
+bool containsFinal(const string&);
 // function to calculate the grade you would need on a final to get a certain grade overall
-void finalExamCalc(const map<string, double>&, const double&);
+double finalExamCalc(const map<string, double>&, const double&);
 // function to sort the map items
 void mapSort(map<string, double>&);
 
@@ -212,10 +214,10 @@ void action(map<string, double>& config, const char* filename, bool& finished)
         // add item/weight
         {
             string item;
-            cout << "Enter the assignment name. Enter as one word: ";
+            cout << "What is the assignment name? Enter as one word: ";
             cin >> item;
             double weight;
-            cout << "Enter the assignment's weight: ";
+            cout << "What is the assignment's weight? Enter as a decimal: ";
             cin >> weight;
 
             addMapItem(config, item, weight, filename);
@@ -241,16 +243,36 @@ void action(map<string, double>& config, const char* filename, bool& finished)
         case 4:
         // enter target grade -- this is for final exam
         {
+            // ensure that final is in the map
+            bool found = false;
+            for (const auto& entry : config)
+                // if it is in the map, mark it found
+                if (containsFinal(entry.first)) {
+                    char response;
+                    cout << "Is " << entry.first << " the final assignment? [Y/n]: ";
+                    cin >> response;
+
+                    if (response == 'Y')
+                        found = true;
+                }
+            // if it is not in the map, add it
+            if (!found) {
+                string final_assignment;
+                double final_weight;
+                
+                cout << "What is the final assignment name? Enter as one word: ";
+                cin >> final_assignment;
+                cout << "What is the final assigment weight? Enter as a decimal: ";
+                cin >> final_weight;
+
+                addMapItem(config,final_assignment,final_weight,filename);
+            }
+            
             double target_grade;
             cout << "What final grade would you like to receive: ";
             cin >> target_grade;
-
-            // get final assignment name
-            string final_assignment;
-            cout << "What is the final assignment (e.g. exam, project, etc.): ";
-            cin >> final_assignment;
             
-            finalExamCalc(config, target_grade);
+            printf("You need a %.2f on the exam to get a %.2f\n",finalExamCalc(config,target_grade),target_grade);
             break;
         }
         
@@ -433,47 +455,55 @@ double calcFinalGrade(const map<string, double>& config)
 }
 
 
+// function to determine if 'final' is in the input string
+/* 
+ * 
+ * 
+ * 
+*/
+bool containsFinal(const string& str)
+{
+    for (int i=0; i <= str.length()-5; i++) // length of "final" is 5
+        if (str.substr(i, 5) == "final")
+            return true;
+
+    return false;
+}
+
+
 // function to calculate the grade you would need on a final to get a certain grade overall
 /* 
  * 
  * 
  * 
 */
-void finalExamCalc(const map<string, double>& config, const double& target_grade)
+double finalExamCalc(const map<string, double>& config, const double& target_grade)
 {
     if (DEBUG)
         printf("Entering finalExamCalc...\n");
+
+    // get final assignment name
+    string final_assignment;
+    cout << "What is the final assignment (e.g. exam, project, etc.): ";
+    cin >> final_assignment;
     
-    // check if it's in the map
-    for (const auto& entry : config) {
-        if (entry.first ==)
-    }
-
-
-
-
-
-    
-    
-    // get final assignment weight 
+    // get final assignment weight
     double final_weight;
-    cout << "What is the weighted percentage of the final (enter XY%): ";
+    cout << "What is the weighted percentage of the final. Enter as a decimal: ";
     cin >> final_weight;
     // input check
-    while (final_weight >= 100) {
-        cout << "Error: final assignment weight cannot exceed 100%. Re-enter: ";
+    while (final_weight >= 1) {
+        cout << "Error: final assignment weight cannot exceed 1 (100%). Re-enter: ";
         cin >> final_weight;
     }
-    // I think this is ok?
-    while ()
     
     // define the weight of the current grade
-    double current_grade_weight = 1-(final_weight/100);
+    double current_grade_weight = 1-final_weight;
 
     if (DEBUG)
         printf("Exiting finalExamCalc...\n");
 
-    //return (target_grade - calcFinalGrade(config) * current_grade_weight)/final_weight;
+    return (target_grade - calcFinalGrade(config) * current_grade_weight)/final_weight;
 }
 
 
