@@ -382,13 +382,20 @@ void editMapItem(map<string, double>& config, const string& item, const char* fi
     if (DEBUG)
         printf("Entering editMapItem...\n");
 
-    // TODO: ADD CHECK THAT ITEM IS IN MAP
+    // check that item is in map
+    bool found = false;
+    for (const auto& entry : config)
+        if (entry.first == item)
+            found = true;
 
     double weight;
     cout << "Enter the new value you want for " << item << ": ";
     cin >> weight;
 
-    config[item] = weight;
+    if (!found)
+        addMapItem(config,item,weight,filename);
+    else
+        config[item] = weight;
 
     // check that all weights = 1 (100%)
     double weight_check = 0;
