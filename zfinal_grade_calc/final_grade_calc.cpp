@@ -422,46 +422,29 @@ void editMapItem(map<string, double>& config, const string& item, const char* fi
  *                doubles as input
  * 
  * post-condition: returns the final grade based on the number of assignments given. These values
- *                 are input by the user and stored in a separate array
+ *                 are input by the user
 */
 double calcFinalGrade(const map<string, double>& config)
 {
     if (DEBUG)
         printf("Entering calcFinalGrade...\n");
     
-    // create an array of the same size of the map
-    // each index will contain the number of assignments corresponding to the map
-    int* num_assignments = new int [config.size()];
-    // array control for ^
-    int index = 0;
+    // var to keep track of number of assignments processed, will be used to check all are used
+    int num_input, num_assignments_used = 0;
+    // calculation vars
+    double grade, grade_sum = 0, global_sum = 0;
     
     // get the number of assignments for each assignment
-    int num_input;
     for (const auto& entry : config) {
         cout << "Enter the number of " << entry.first << " assignments: ";
         cin >> num_input;
 
-        // store in array
-        num_assignments[index] = num_input;
-        // increment index for next assignment
-        index++;
-    }
-    // check all are accounted for
-    if (index+1 != config.size())
-        cerr << "Error: not all assignments accounted for\n";
+        //cout << "\nCurrent assignment category: " << entry.first << "\n";
 
-    // calculations here
-    double global_sum = 0, grade_sum = 0, grade;
-    // inner for loop control var
-    int j = 0;
-
-    // for each assignment
-    for (const auto& entry : config) {
-        cout << "\n\nCurrent assignment category: " << entry.first << "\n";
         // for each assignment number (e.g. homework 1, homework 2, etc.)
-        for(int i=0; i<num_assignments[j]; i++) {
+        for(int i=1; i<=num_input; i++) {
             // get the grade for that assignment
-            cout << toupper(entry.first[0]) << i+1 << ": ";
+            cout << toupper(entry.first[0]) << i << ": ";
             cin >> grade;
 
             // add to assignment sum
@@ -469,17 +452,20 @@ double calcFinalGrade(const map<string, double>& config)
         }
 
         // add to total sum
-        global_sum += (grade_sum/num_assignments[j]) * entry.second;
+        global_sum += (grade_sum/num_input) * entry.second;
 
-        // increment for next assignment number
-        j++;
+        // increment for current processed item
+        num_assignments_used++;
     }
+
+    // check all are accounted for
+    if (num_assignments_used+1 != config.size())
+        cerr << "Error: not all assignments accounted for\n";
 
     if (DEBUG)
         printf("Exiting calcFinalGrade...\n");
     
     return global_sum;
-    // TODO: MERGE THE TWO FOR LOOPS
 }
 
 
