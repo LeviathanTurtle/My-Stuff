@@ -3,7 +3,8 @@
  * Created: at some point
  * 
  * [DESCRIPTION]:
- * This program calculates the nth fibonacci number, where n is determined by the user.
+ * This program calculates the nth fibonacci number, where n is determined by the user. This only
+ * works with small values.
  * 
  * [USAGE]:
  * To compile:
