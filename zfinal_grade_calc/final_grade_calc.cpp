@@ -33,6 +33,7 @@
 #include <map>          // hold config options
 #include <vector>       // only used in map sorting
 #include <algorithm>    // sort()
+#include <cstring>      // strcmp
 using namespace std;
 
 
@@ -40,7 +41,7 @@ bool DEBUG = false;
 
 
 // function to initialize a map from the external file
-map<string, double> initMap(ifstream&);
+map<string, double> initMap(const char*);
 // function to print the current map
 void printMap(const map<string, double>&);
 // function that takes input from the user and does what the user specifies
@@ -50,7 +51,7 @@ void addMapItem(map<string, double>&, const string&, const double&, const char*)
 // function to edit a name of weight of an assignment
 void editMapItem(map<string, double>&, const string&, const char*);
 // function to output the map to a file
-void dumpMap(const map<string, double>&, const char*);
+void dumpMap(map<string, double>&, const char*);
 // function to calculate the final grade in a class
 double calcFinalGrade(const map<string, double>&);
 // function to determine if 'final' is in the input string
@@ -64,14 +65,15 @@ void mapSort(map<string, double>&);
 int main(int argc, char* argv[])
 {
     // check CLI args
-    if(argc != 3) {
+    if(argc < 2 || argc > 3) {
         cerr << "Error: invalid arguments. Usage: ./<exe name> [-d] <config file name> \n";
         exit(1);
     }
 
     // call loadFile func
     // BASED ON CLI ARGS
-    if (argv[1] == "-d") {
+    //if (argv[1] == "-d") {
+    if (!strcmp(argv[1],"-d")) {
         // debug
         DEBUG = true;
 
@@ -189,7 +191,7 @@ void printMap(const map<string, double>& config)
 
     for (const auto& entry : config)
         //cout << entry.first << ": " << entry.second << "\n";
-        printf("%s: %.2f\n", entry.first.c_str(), entry.second);
+        printf("%s: %.2f ( %d%% )\n", entry.first.c_str(), entry.second, int(entry.second*100));
 
     if (DEBUG)
         printf("Exiting printMap...\n");
@@ -213,11 +215,11 @@ void action(map<string, double>& config, const char* filename, bool& finished)
     // print the current config for the user
     printMap(config);
 
-    cout << "Would you like to:\n1. Add an assignment/weight\n2. Edit an assignment/weight\n3. "
-         << "Calculate final grade\n4. Enter target grade\n5. Mark you are finished\n\nEnter your "
-         << "choice: ";
+    cout << "\nWould you like to:\n1. Add an assignment/weight\n2. Edit an assignment/weight\n3. "
+         << "Calculate final grade\n4. Enter target grade\n5. Exit program\n\nEnter your choice: ";
     int choice;
     cin >> choice;
+    // TODO: ADD REMOVE ITEM OPTION
 
     switch(choice) {
         case 1:
@@ -339,8 +341,11 @@ void addMapItem(map<string, double>& config, const string& item, const double& w
 */
 void dumpMap(map<string, double>& config, const char* filename)
 {
+    if (DEBUG)
+        printf("Entering dumpMap...\n");
+    
     // ensure map is sorted
-    mapSort(config);
+    //mapSort(config);
 
     // remove the file
     string command = "rm " + string(filename);
@@ -362,6 +367,9 @@ void dumpMap(map<string, double>& config, const char* filename)
         file << entry.first << " " << entry.second << endl;
 
     file.close();
+
+    if (DEBUG)
+        printf("Exiting dumpMap...\n");
 }
 
 
@@ -459,7 +467,7 @@ double calcFinalGrade(const map<string, double>& config)
     }
 
     // check all are accounted for
-    if (num_assignments_used != config.size())
+    if (num_assignments_used != int(config.size()))
         cerr << "Warning: not all assignments accounted for\n";
 
     if (DEBUG)
@@ -476,9 +484,19 @@ double calcFinalGrade(const map<string, double>& config)
 */
 bool containsFinal(const string& str)
 {
-    for (int i=0; i <= str.length()-5; i++) // length of "final" is 5
-        if (str.substr(i, 5) == "final")
+    if (DEBUG)
+        printf("Entering containsFinal...\n");
+    
+    for (size_t i=0; i <= str.length()-5; i++) // length of "final" is 5
+        if (str.substr(i, 5) == "final") {
+            if (DEBUG)
+                printf("Exiting containsFinal...\n");
+
             return true;
+        }
+
+    if (DEBUG)
+        printf("Exiting containsFinal...\n");
 
     return false;
 }
