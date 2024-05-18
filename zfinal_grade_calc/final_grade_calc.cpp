@@ -468,7 +468,7 @@ double calcFinalGrade(const map<string, double>& config)
 
     // check all are accounted for
     if (num_assignments_used != int(config.size()))
-        cerr << "Warning: not all assignments accounted for\n";
+        cout << "Warning: not all assignments accounted for!\n";
 
     if (DEBUG)
         printf("Exiting calcFinalGrade...\n");
