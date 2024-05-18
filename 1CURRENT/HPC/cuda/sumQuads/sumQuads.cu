@@ -3,20 +3,16 @@
  * CSC 4310
  * 10.31.2023
  * 
- * 
  * [DESCRIPTION]:
  * This program uses CUDA to do an element-wise sum of a matrix, and stores the
  * answers in the second quadrant.
  *
- * 
  * [COMPILE/RUN]:
  * To compile:
  *     nvcc sumQuads.cu -o sq
- * 
  * To run:
  *     ./sq <matrix file> <output file>
  * 
- *
  * [EXIT/TERMINATING CODES]:
  * 0 - the user confirmed information is incorrect or the program completed one
  *     full execution
