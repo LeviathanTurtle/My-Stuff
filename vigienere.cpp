@@ -41,7 +41,6 @@ int main(int argc, char* argv[])
 
     } else {
         // not debug
-
     }
 
     return 0;
