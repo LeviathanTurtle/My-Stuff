@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
     // 
     if (argc < 2 || argc > 3) {
         cerr << "Uasge: ./<exe name> [-d] <token>\nwhere:\n    -d - optional, enable debug output"
-             << "\n<token> - " << endl;
+             << "\n    <token> - " << endl;
         exit(1);
     }
 
@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 
     } else {
         // not debug
-        
+
     }
 
     return 0;
