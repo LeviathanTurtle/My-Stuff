@@ -18,6 +18,7 @@
 */
 
 #include <iostream>
+#include <cstring>      // strcmp
 using namespace std;
 
 typedef char VigenereTable[26][26];
@@ -43,23 +44,25 @@ int main(int argc, char* argv[])
 {
     // check CLI arg usage
     if (argc < 2 || argc > 3) {
-        cerr << "Uasge: ./<exe name> [-d] <token>\nwhere:\n    -d - optional, enable debug output"
-             << "\n    <token> - keyword used in the vigenere cipher" << endl;
+        cerr << "Uasge: ./<exe name> [-d] <token>\nwhere:\n    -d      - optional, enable debug "
+             << "output\n    <token> - keyword used in the vigenere cipher" << endl;
         exit(1);
     }
 
     // 
-    if (argv[1] == "-d") {
+    if (!strcmp(argv[1],"-d")) {
         // debug
         DEBUG = true;
 
         string keyed_alphabet = genKeyedAlphabet(argv[2]);
         // switch/case like final_grade_calc
+        genVigenereTable(keyed_alphabet);
     } else {
         // not debug
 
         string keyed_alphabet = genKeyedAlphabet(argv[1]);
         // switch/case like final_grade_calc
+        genVigenereTable(keyed_alphabet);
     }
 
     return 0;
@@ -85,11 +88,12 @@ string genKeyedAlphabet(const string& keyword)
             keyed_alphabet.append(1,ALPHABET[i]);
     
     // check length is ok
-    if (keyed_alphabet.length() != ALPHABET_LENGTH)
+    if (int(keyed_alphabet.length()) != ALPHABET_LENGTH)
         cout << "Warning: keyed alphabet is not 26 characters long!\n";
 
     if (DEBUG)
-        printf("Exiting genKeyedAlphabet...\n");
+        //printf("Generated keyed alphabet: %s\nExiting genKeyedAlphabet...\n",keyed_alphabet.c_str());
+        cout << "Generated keyed alphabet: " << keyed_alphabet << "\nExiting genKeyedAlphabet...\n";
 
     return keyed_alphabet;
 }
@@ -130,24 +134,26 @@ VigenereTable* genVigenereTable(const string& keyed_alphabet)
     // static is necsssary because without it the var would be destroyed when the function exits.
     // So returning a pointer to the var would result in returning a dangling pointer
     static VigenereTable vigenere_table;
+    const int KEYED_ALPHABET_LENGTH = keyed_alphabet.length();
 
     // set the first row of the table to the keyed alphabet
-    for (int i=0; i<ALPHABET_LENGTH; i++)
+    for (int i=0; i<KEYED_ALPHABET_LENGTH; i++)
         vigenere_table[0][i] = keyed_alphabet[i];
     
     // fill in the rest of the table
-    for (int i=1; i<ALPHABET_LENGTH; i++)
-        for (int j=0; j<ALPHABET_LENGTH; j++)
-            vigenere_table[i][j] = 'a' + (i+j) % ALPHABET_LENGTH;
+    for (int i=1; i<KEYED_ALPHABET_LENGTH; i++)
+        for (int j=0; j<KEYED_ALPHABET_LENGTH; j++)
+            vigenere_table[i][j] = keyed_alphabet[(i+j) % KEYED_ALPHABET_LENGTH];
+            // THIS LOOKS SICK
+            //vigenere_table[i][j] = 'a' + keyed_alphabet[(i+j) % KEYED_ALPHABET_LENGTH];
     // 'a'               : starting char
     // (i+j)             : sum of indices, represents pos of char in alphabet for wrapping
     // % ALPHABET_LENGTH : ensures calculated pos stays within alphabet length bounds
 
-    // print table
-    printVigenereTable(vigenere_table);
-
-    if (DEBUG)
+    if (DEBUG) {
+        printVigenereTable(vigenere_table);
         printf("Exiting genVigenereTable...\n");
+    }
     
     return &vigenere_table;
 }
@@ -160,12 +166,14 @@ VigenereTable* genVigenereTable(const string& keyed_alphabet)
 */
 void printVigenereTable(const VigenereTable& table)
 {
-    if (DEBUG)
+    if (DEBUG) {
         printf("Entering printVigenereTable...\n");
+        printf("Generated table:\n");
+    }
 
     for (int i=0; i<ALPHABET_LENGTH; i++) {
         for (int j=0; j<ALPHABET_LENGTH; j++)
-            cout << table[i][j] << ' ';
+            cout << (char)toupper(table[i][j]) << ' ';
         cout << endl;
     }
 
