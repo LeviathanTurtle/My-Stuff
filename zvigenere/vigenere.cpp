@@ -21,9 +21,11 @@
 #include <iostream>
 #include <cstring>      // strcmp
 #include <fstream>      // file I/O
-using namespace std;
 
-typedef char VigenereTable[26][26];
+using namespace std;
+#define ALPHABET_LENGTH 26
+
+typedef char VigenereTable[ALPHABET_LENGTH][ALPHABET_LENGTH];
 
 
 // function to generate a keyed alpbabet based on the keyword provided at runtime
@@ -41,13 +43,11 @@ void dumpVigenereTable(const VigenereTable*, const string&);
 // function to input a vigenere table from a file
 VigenereTable* inputVigenereTable(const string&);
 // function to verify a vigenere table has no anomalous values
-void verifyVigenereTable(const VigenereTable*);
+bool verifyVigenereTable(const VigenereTable*);
 
 
 bool DEBUG = false;
 const string ALPHABET = "abcdefghijklmnopqrstuvwxyz";
-const int ALPHABET_LENGTH = ALPHABET.length();
-//using VigenereTable = array<array<char, 26>,26>;
 
 
 int main(int argc, char* argv[])
@@ -154,11 +154,15 @@ VigenereTable* genVigenereTable(const string& keyed_alphabet)
     for (int i=1; i<KEYED_ALPHABET_LENGTH; i++)
         for (int j=0; j<KEYED_ALPHABET_LENGTH; j++)
             vigenere_table[i][j] = keyed_alphabet[(i+j) % KEYED_ALPHABET_LENGTH];
-            // THIS LOOKS SICK
+            // THIS LOOKS KINDA COOL
             //vigenere_table[i][j] = 'a' + keyed_alphabet[(i+j) % KEYED_ALPHABET_LENGTH];
     // 'a'               : starting char
     // (i+j)             : sum of indices, represents pos of char in alphabet for wrapping
     // % ALPHABET_LENGTH : ensures calculated pos stays within alphabet length bounds
+
+    // verify it was generated correctly
+    if(!verifyVigenereTable(&vigenere_table))
+        cerr << "Warning: generated vigenere table is invalid!\n";
 
     if (DEBUG) {
         //printVigenereTable(vigenere_table);
@@ -207,32 +211,36 @@ void action(bool& finished)
     // 1. create vigenere table from keyword
     // 2. dump vigenere table to file
     // 3. input vigenere table from file
-    // 4. encode word
-    // 5. decode word
-    // 6. exit
+    // 4. print/verify vigenere table
+    // 5. encode word
+    // 6. decode word
+    // 7. exit
 
     cout << "Would you like to:\n1. Create a vigenere table from a keyword\n2. Dump an existing "
-         << "vigenere table to a file\n3. Input a vigenere table from a file\n4. Encode a word\n"
-         << "5. Decode a word\n6. Exit program\n\n: ";
+         << "vigenere table to a file\n3. Input a vigenere table from a file\n4. Print and verify "
+         << "the generated vigenere table\n5. Encode a word\n6. Decode a word\n7. Exit program\n\n: ";
     int choice;
     cin >> choice;
 
     // main vars defined here because the uses vary in the switch/case
     string keyed_alphabet;
-    VigenereTable* vigenere_table;
+    // init to null so we can tell if it has been successfully updated
+    VigenereTable table = { { '\0 '} };
+    VigenereTable* vigenere_table = &table;
 
     switch (choice) {
         // create vigenere table
         case 1:
         {
             string keyword;
-            cout << "Enter the keyword to be used in the keyed alphabet: ";
+            cout << "Enter the keyword to be used for the keyed alphabet: ";
             cin >> keyword;
 
-            // create keyed alphabet based on CLI arg
+            // create keyed alphabet
             keyed_alphabet = genKeyedAlphabet(keyword);
             // generate the vigenere table based on keyed alphabet
             vigenere_table = genVigenereTable(keyed_alphabet);
+            //vigenere_table = genVigenereTable(genKeyedAlphabet(keyword));
 
             printVigenereTable(vigenere_table);
 
@@ -245,10 +253,10 @@ void action(bool& finished)
             cout << "Enter the filename to dump the cipher to: ";
             cin >> filename;
 
-            if (vigenere_table != 0)
+            if (verifyVigenereTable(vigenere_table))
                 dumpVigenereTable(vigenere_table, filename);
             else 
-                cerr << "Error: no vigenere table generated.\n";
+                cerr << "Error: vigenere table is either invalid or not generated.\n";
 
             break;
         }
@@ -261,17 +269,39 @@ void action(bool& finished)
 
             vigenere_table = inputVigenereTable(filename);
             break;
-        }
-        // encode a word
+        }        
+        // print/verify
         case 4:
-            break;
+            printVigenereTable(vigenere_table);
 
-        // decode a word
+            if(verifyVigenereTable(vigenere_table))
+                printf("Vigenere table is valid");
+            else
+                printf("Vigenere table is invalid");
+            
+            break;
+        
+        // encode a word
         case 5:
-            break;
+        {
+            string plaintext, plaintext_keyword;
+            cout << "Enter the plaintext you would like to encode: ";
+            cin >> plaintext;
+            cout << "Enter the keyword used to encode the plaintext: ";
+            cin >> plaintext_keyword;
 
-        // exit
+            
+
+            break;
+        }
+        // decode a word
         case 6:
+        {
+
+            break;
+        }
+        // exit
+        case 7:
             finished = true;
             break;
 
@@ -292,7 +322,13 @@ void action(bool& finished)
 */
 void dumpVigenereTable(const VigenereTable* vigenere_table, const string& filename)
 {
+    if (DEBUG)
+        printf("Entering dumpVigenereTable...\n");
 
+
+
+    if (DEBUG)
+        printf("Exiting dumpVigenereTable...\n");
 }
 
 
@@ -335,7 +371,7 @@ VigenereTable* inputVigenereTable(const string& filename)
  * 
  * post-condition: 
 */
-void verifyVigenereTable(const VigenereTable* vigenere_table)
+bool verifyVigenereTable(const VigenereTable* vigenere_table)
 {
     if (DEBUG)
         printf("Entering verifyVigenereTable...\n");
@@ -343,13 +379,13 @@ void verifyVigenereTable(const VigenereTable* vigenere_table)
     // check that contents of table are a-z or A-Z
     for(int i=0; i<ALPHABET_LENGTH; i++)
         for(int j=0; j<ALPHABET_LENGTH; j++)
-            if ( !isalpha((*vigenere_table)[i][j]) ) {
-                cerr << "Warning: generated vigenere table is invalid!\n";
-                return;
-            }
+            if ( !isalpha((*vigenere_table)[i][j]) )
+                return false;
 
     if (DEBUG)
         printf("Exiting verifyVigenereTable...\n");
+    
+    return true;
 }
 
 
