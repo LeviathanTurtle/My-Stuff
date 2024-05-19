@@ -32,6 +32,8 @@ bool isInString(const string&, char);
 VigenereTable* genVigenereTable(const string&);
 // function to print the vigenere table
 void printVigenereTable(const VigenereTable&);
+// function to handle user action choices
+void action();
 
 
 bool DEBUG = false;
@@ -54,14 +56,16 @@ int main(int argc, char* argv[])
         // debug
         DEBUG = true;
 
+        // create keyed alphabet based on CLI arg
         string keyed_alphabet = genKeyedAlphabet(argv[2]);
-        // switch/case like final_grade_calc
+        // generate the vigenere table based on keyed alphabet
         genVigenereTable(keyed_alphabet);
     } else {
         // not debug
 
+        // create keyed alphabet based on CLI arg
         string keyed_alphabet = genKeyedAlphabet(argv[1]);
-        // switch/case like final_grade_calc
+        // generate the vigenere table based on keyed alphabet
         genVigenereTable(keyed_alphabet);
     }
 
@@ -181,3 +185,19 @@ void printVigenereTable(const VigenereTable& table)
         printf("Exiting printVigenereTable...\n");
 }
 
+
+/* function to print the vigenere table
+ * pre-condition: 
+ * 
+ * post-condition: 
+*/
+void action()
+{
+    // switch/case, like final_grade_calc
+
+    // 1. create vigenere table from keyword
+    // 2. dump vigenere table to file
+    // 3. input vigenere table from file
+    // 4. encode word
+    // 5. decode word
+}
