@@ -297,14 +297,14 @@ VigenereTable* inputVigenereTable(const string& filename)
 {
     if (DEBUG)
         printf("Entering inputVigenereTable...\n");
+    
+    VigenereTable* vigenere_table;
 
     ifstream file (filename);
     if (!file) {
         cerr << "Error: file unable to be opened\n";
         exit(2);
     }
-
-    VigenereTable* vigenere_table;
 
     for(int i=0; i<ALPHABET_LENGTH; i++)
         for(int j=0; j<ALPHABET_LENGTH; j++)
@@ -332,8 +332,16 @@ void verifyVigenereTable(const VigenereTable* vigenere_table)
     if (DEBUG)
         printf("Entering verifyVigenereTable...\n");
 
-
+    // check that contents of table are a-z or A-Z
+    for(int i=0; i<ALPHABET_LENGTH; i++)
+        for(int j=0; j<ALPHABET_LENGTH; j++)
+            if ( !isalpha((*vigenere_table)[i][j]) ) {
+                cerr << "Warning: generated vigenere table is invalid!\n";
+                return;
+            }
 
     if (DEBUG)
         printf("Exiting verifyVigenereTable...\n");
 }
+
+
