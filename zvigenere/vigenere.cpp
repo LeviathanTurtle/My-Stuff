@@ -9,7 +9,7 @@
  * To run:      ./<exe name> [-d] <token>
  * where:
  * [-d]    - optional, enable debug output
- * <token> - keyword used in the vigenere cipher
+ * <token> - keyword used to generate the keyed alphabet in the vigenere cipher
  * 
  * [EXIT/TERMINATING CODES]:
  * 0 - program successfully completed a full execution
@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <cstring>      // strcmp
+#include <fstream>      // file I/O
 using namespace std;
 
 typedef char VigenereTable[26][26];
@@ -31,9 +32,13 @@ bool isInString(const string&, char);
 // function to create a vigenere table based on a keyed alphabet
 VigenereTable* genVigenereTable(const string&);
 // function to print the vigenere table
-void printVigenereTable(const VigenereTable&);
+void printVigenereTable(const VigenereTable*);
 // function to handle user action choices
-void action();
+void action(bool&, const char*);
+// function to dump the current vigenere table to a file
+void dumpVigenereTable(const VigenereTable*);
+// function to input a vigenere table from a file
+VigenereTable* inputVigenereTable(const string&);
 
 
 bool DEBUG = false;
@@ -47,26 +52,24 @@ int main(int argc, char* argv[])
     // check CLI arg usage
     if (argc < 2 || argc > 3) {
         cerr << "Uasge: ./<exe name> [-d] <token>\nwhere:\n    -d      - optional, enable debug "
-             << "output\n    <token> - keyword used in the vigenere cipher" << endl;
+             << "output\n    <token> - keyword used to generate the keyed alphabet in the vigenere"
+             << " cipher" << endl;
         exit(1);
     }
 
     // 
+    bool finished = false;
     if (!strcmp(argv[1],"-d")) {
         // debug
         DEBUG = true;
 
-        // create keyed alphabet based on CLI arg
-        string keyed_alphabet = genKeyedAlphabet(argv[2]);
-        // generate the vigenere table based on keyed alphabet
-        genVigenereTable(keyed_alphabet);
+        while (!finished)
+            action(finished,argv[2]);
     } else {
         // not debug
 
-        // create keyed alphabet based on CLI arg
-        string keyed_alphabet = genKeyedAlphabet(argv[1]);
-        // generate the vigenere table based on keyed alphabet
-        genVigenereTable(keyed_alphabet);
+        while (!finished)
+            action(finished,argv[1]);
     }
 
     return 0;
@@ -155,7 +158,7 @@ VigenereTable* genVigenereTable(const string& keyed_alphabet)
     // % ALPHABET_LENGTH : ensures calculated pos stays within alphabet length bounds
 
     if (DEBUG) {
-        printVigenereTable(vigenere_table);
+        //printVigenereTable(vigenere_table);
         printf("Exiting genVigenereTable...\n");
     }
     
@@ -168,7 +171,7 @@ VigenereTable* genVigenereTable(const string& keyed_alphabet)
  * 
  * post-condition: 
 */
-void printVigenereTable(const VigenereTable& table)
+void printVigenereTable(const VigenereTable* table)
 {
     if (DEBUG) {
         printf("Entering printVigenereTable...\n");
@@ -177,7 +180,7 @@ void printVigenereTable(const VigenereTable& table)
 
     for (int i=0; i<ALPHABET_LENGTH; i++) {
         for (int j=0; j<ALPHABET_LENGTH; j++)
-            cout << (char)toupper(table[i][j]) << ' ';
+            cout << (char)toupper((*table)[i][j]) << ' ';
         cout << endl;
     }
 
@@ -191,8 +194,11 @@ void printVigenereTable(const VigenereTable& table)
  * 
  * post-condition: 
 */
-void action()
+void action(bool& finished, const char* keyword)
 {
+    if (DEBUG)
+        printf("Entering action...\n");
+
     // switch/case, like final_grade_calc
 
     // 1. create vigenere table from keyword
@@ -200,4 +206,99 @@ void action()
     // 3. input vigenere table from file
     // 4. encode word
     // 5. decode word
+    // 6. exit
+
+    cout << "Would you like to:\n1. Create a vigenere table from a keyword\n2. Dump an existing "
+         << "vigenere table to a file\n3. Input a vigenere table from a file\n4. Encode a word\n"
+         << "5. Decode a word\n6. Exit program\n\n: ";
+    int choice;
+    cin >> choice;
+
+    // main vars defined here because the uses vary in the switch/case
+    string keyed_alphabet;
+    VigenereTable* vigenere_table;
+
+    switch (choice) {
+        // create vigenere table
+        case 1:
+            // create keyed alphabet based on CLI arg
+            keyed_alphabet = genKeyedAlphabet(keyword);
+            // generate the vigenere table based on keyed alphabet
+            vigenere_table = genVigenereTable(keyed_alphabet);
+
+            printVigenereTable(vigenere_table);
+
+            break;
+
+        // dump existing vigenere table
+        case 2:
+            if (vigenere_table != 0)
+                dumpVigenereTable(vigenere_table);
+            else 
+                cerr << "Error: no vigenere table generated.\n";
+
+            break;
+
+        // input vigenere table
+        case 3:
+        {
+            string filename;
+            cout << "Enter the filename containing the vigenere table: ";
+            cin >> filename;
+
+            vigenere_table = inputVigenereTable(filename);
+            break;
+        }
+        // encode a word
+        case 4:
+            break;
+
+        // decode a word
+        case 5:
+            break;
+
+        // exit
+        case 6:
+            finished = true;
+            break;
+
+        // oopsie, problem
+        // if the user can read, this should not be hit
+        //default:
+    }
+
+    if (DEBUG)
+        printf("Exiting action...\n");
 }
+
+
+/* function to dump the current vigenere table to a file
+ * pre-condition: 
+ * 
+ * post-condition: 
+*/
+void dumpVigenereTable(const VigenereTable* vigenere_table)
+{
+
+}
+
+
+/* function to input a vigenere table from a file
+ * pre-condition: 
+ * 
+ * post-condition: 
+*/
+VigenereTable* inputVigenereTable(const string& filename)
+{
+    if (DEBUG)
+        printf("Entering inputVigenereTable...\n");
+
+
+
+    if (DEBUG)
+        printf("Exiting inputVigenereTable...\n");
+    
+    return;
+}
+
+
