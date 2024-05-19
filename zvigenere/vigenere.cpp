@@ -6,10 +6,9 @@
  * 
  * [USAGE]:
  * To compile:  g++ vigienere.cpp -Wall -o <exe name>
- * To run:      ./<exe name> [-d] <token>
+ * To run:      ./<exe name> [-d]
  * where:
  * [-d]    - optional, enable debug output
- * <token> - keyword used to generate the keyed alphabet in the vigenere cipher
  * 
  * [EXIT/TERMINATING CODES]:
  * 0 - program successfully completed a full execution
@@ -36,12 +35,11 @@ VigenereTable* genVigenereTable(const string&);
 // function to print the vigenere table
 void printVigenereTable(const VigenereTable*);
 // function to handle user action choices
-void action(bool&, const char*);
+void action(bool&);
 // function to dump the current vigenere table to a file
-void dumpVigenereTable(const VigenereTable*);
+void dumpVigenereTable(const VigenereTable*, const string&);
 // function to input a vigenere table from a file
 VigenereTable* inputVigenereTable(const string&);
-
 // function to verify a vigenere table has no anomalous values
 void verifyVigenereTable(const VigenereTable*);
 
@@ -69,12 +67,12 @@ int main(int argc, char* argv[])
         DEBUG = true;
 
         while (!finished)
-            action(finished,argv[2]);
+            action(finished);
     } else {
         // not debug
 
         while (!finished)
-            action(finished,argv[1]);
+            action(finished);
     }
 
     return 0;
@@ -199,7 +197,7 @@ void printVigenereTable(const VigenereTable* table)
  * 
  * post-condition: 
 */
-void action(bool& finished, const char* keyword)
+void action(bool& finished)
 {
     if (DEBUG)
         printf("Entering action...\n");
@@ -226,6 +224,11 @@ void action(bool& finished, const char* keyword)
     switch (choice) {
         // create vigenere table
         case 1:
+        {
+            string keyword;
+            cout << "Enter the keyword to be used in the keyed alphabet: ";
+            cin >> keyword;
+
             // create keyed alphabet based on CLI arg
             keyed_alphabet = genKeyedAlphabet(keyword);
             // generate the vigenere table based on keyed alphabet
@@ -234,16 +237,21 @@ void action(bool& finished, const char* keyword)
             printVigenereTable(vigenere_table);
 
             break;
-
+        }
         // dump existing vigenere table
         case 2:
+        {
+            string filename;
+            cout << "Enter the filename to dump the cipher to: ";
+            cin >> filename;
+
             if (vigenere_table != 0)
-                dumpVigenereTable(vigenere_table);
+                dumpVigenereTable(vigenere_table, filename);
             else 
                 cerr << "Error: no vigenere table generated.\n";
 
             break;
-
+        }
         // input vigenere table
         case 3:
         {
@@ -282,7 +290,7 @@ void action(bool& finished, const char* keyword)
  * 
  * post-condition: 
 */
-void dumpVigenereTable(const VigenereTable* vigenere_table)
+void dumpVigenereTable(const VigenereTable* vigenere_table, const string& filename)
 {
 
 }
