@@ -15,6 +15,8 @@
  * 0 - program successfully completed a full execution
  * 
  * 1 - incorrect program arguments used
+ * 
+ * 2 - file unable to be opened
 */
 
 #include <iostream>
@@ -39,6 +41,9 @@ void action(bool&, const char*);
 void dumpVigenereTable(const VigenereTable*);
 // function to input a vigenere table from a file
 VigenereTable* inputVigenereTable(const string&);
+
+// function to verify a vigenere table has no anomalous values
+void verifyVigenereTable(const VigenereTable*);
 
 
 bool DEBUG = false;
@@ -293,12 +298,42 @@ VigenereTable* inputVigenereTable(const string& filename)
     if (DEBUG)
         printf("Entering inputVigenereTable...\n");
 
+    ifstream file (filename);
+    if (!file) {
+        cerr << "Error: file unable to be opened\n";
+        exit(2);
+    }
 
+    VigenereTable* vigenere_table;
 
-    if (DEBUG)
-        printf("Exiting inputVigenereTable...\n");
+    for(int i=0; i<ALPHABET_LENGTH; i++)
+        for(int j=0; j<ALPHABET_LENGTH; j++)
+            file >> vigenere_table[i][j];
+
     
-    return;
+    file.close();
+
+    if (DEBUG) {
+        printVigenereTable(vigenere_table);
+        printf("Exiting inputVigenereTable...\n");
+    }
+
+    return vigenere_table;
 }
 
 
+/* function to verify a vigenere table has no anomalous values
+ * pre-condition: 
+ * 
+ * post-condition: 
+*/
+void verifyVigenereTable(const VigenereTable* vigenere_table)
+{
+    if (DEBUG)
+        printf("Entering verifyVigenereTable...\n");
+
+
+
+    if (DEBUG)
+        printf("Exiting verifyVigenereTable...\n");
+}
