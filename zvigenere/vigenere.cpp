@@ -1,14 +1,18 @@
 /* stuff using a vigenere (cryptography)
  * reference lemmino's "Krptos"
  *
+ * 
  * [DESCRIPTION]:
  * This program 
+ * 
  * 
  * [USAGE]:
  * To compile:  g++ vigienere.cpp -Wall -o <exe name>
  * To run:      ./<exe name> [-d]
+ * 
  * where:
  * [-d]    - optional, enable debug output
+ * 
  * 
  * [EXIT/TERMINATING CODES]:
  * 0 - program successfully completed a full execution
@@ -45,6 +49,14 @@ VigenereTable* inputVigenereTable(const string&);
 // function to verify a vigenere table has no anomalous values
 bool verifyVigenereTable(const VigenereTable*);
 
+// function to encode a word
+string encode(const VigenereTable*, const string&, string);
+// function to find the index of a char in a row (helper func)
+int findCharIndex(const char*, const char&);
+
+// function to decode a word
+string decode(const VigenereTable*, const string&, const string&);
+
 
 bool DEBUG = false;
 const string ALPHABET = "abcdefghijklmnopqrstuvwxyz";
@@ -53,7 +65,7 @@ const string ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 int main(int argc, char* argv[])
 {
     // check CLI arg usage
-    if (argc < 2 || argc > 3) {
+    if (argc < 1 || argc > 2) {
         cerr << "Uasge: ./<exe name> [-d] <token>\nwhere:\n    -d      - optional, enable debug "
              << "output\n    <token> - keyword used to generate the keyed alphabet in the vigenere"
              << " cipher" << endl;
@@ -91,13 +103,14 @@ string genKeyedAlphabet(const string& keyword)
 
     // move letters of the keyword to the front of the alphabet
     string keyed_alphabet = keyword;
+
     // append the rest of the letters
     for(int i=0; i<ALPHABET_LENGTH; i++)
         // if the letter is not in the keyword, append
         if (!isInString(keyword, ALPHABET[i]))
             keyed_alphabet.append(1,ALPHABET[i]);
     
-    // check length is ok
+    // check length is ok, should not be hit?
     if (int(keyed_alphabet.length()) != ALPHABET_LENGTH)
         cout << "Warning: keyed alphabet is not 26 characters long!\n";
 
@@ -144,16 +157,16 @@ VigenereTable* genVigenereTable(const string& keyed_alphabet)
     // static is necsssary because without it the var would be destroyed when the function exits.
     // So returning a pointer to the var would result in returning a dangling pointer
     static VigenereTable vigenere_table;
-    const int KEYED_ALPHABET_LENGTH = keyed_alphabet.length();
+    //const int KEYED_ALPHABET_LENGTH = keyed_alphabet.length();
 
     // set the first row of the table to the keyed alphabet
-    for (int i=0; i<KEYED_ALPHABET_LENGTH; i++)
+    for (int i=0; i<ALPHABET_LENGTH; i++)
         vigenere_table[0][i] = keyed_alphabet[i];
     
     // fill in the rest of the table
-    for (int i=1; i<KEYED_ALPHABET_LENGTH; i++)
-        for (int j=0; j<KEYED_ALPHABET_LENGTH; j++)
-            vigenere_table[i][j] = keyed_alphabet[(i+j) % KEYED_ALPHABET_LENGTH];
+    for (int i=1; i<ALPHABET_LENGTH; i++)
+        for (int j=0; j<ALPHABET_LENGTH; j++)
+            vigenere_table[i][j] = keyed_alphabet[(i+j) % ALPHABET_LENGTH];
             // THIS LOOKS KINDA COOL
             //vigenere_table[i][j] = 'a' + keyed_alphabet[(i+j) % KEYED_ALPHABET_LENGTH];
     // 'a'               : starting char
@@ -275,9 +288,9 @@ void action(bool& finished)
             printVigenereTable(vigenere_table);
 
             if(verifyVigenereTable(vigenere_table))
-                printf("Vigenere table is valid");
+                printf("Vigenere table is valid\n");
             else
-                printf("Vigenere table is invalid");
+                printf("Vigenere table is invalid\n");
             
             break;
         
@@ -290,7 +303,9 @@ void action(bool& finished)
             cout << "Enter the keyword used to encode the plaintext: ";
             cin >> plaintext_keyword;
 
-            
+            string cipher_text = encode(vigenere_table, plaintext, plaintext_keyword);
+
+            printf("The ciphertext for the word %s is %s\n",plaintext,cipher_text);
 
             break;
         }
@@ -325,7 +340,22 @@ void dumpVigenereTable(const VigenereTable* vigenere_table, const string& filena
     if (DEBUG)
         printf("Entering dumpVigenereTable...\n");
 
+    // create/open file
+    ofstream file (filename);
+    // verify file opened
+    if (!file) {
+        cerr << "Error: file unable to be opened\n";
+        exit(2);
+    }
 
+    // write contents of cipher to file
+    for(int i=0; i<ALPHABET_LENGTH; i++) {
+        for(int j=0; j<ALPHABET_LENGTH; j++)
+            file << (*vigenere_table)[i][j] << ' ';
+        cout << "\n";
+    }
+
+    file.close();
 
     if (DEBUG)
         printf("Exiting dumpVigenereTable...\n");
@@ -342,20 +372,28 @@ VigenereTable* inputVigenereTable(const string& filename)
     if (DEBUG)
         printf("Entering inputVigenereTable...\n");
     
-    VigenereTable* vigenere_table;
+    // init to null so we can tell if it has been successfully updated
+    VigenereTable table = { { '\0 '} };
+    VigenereTable* vigenere_table = &table;
 
+    // open file
     ifstream file (filename);
+    // verify file opened
     if (!file) {
         cerr << "Error: file unable to be opened\n";
         exit(2);
     }
 
+    // read input
     for(int i=0; i<ALPHABET_LENGTH; i++)
         for(int j=0; j<ALPHABET_LENGTH; j++)
             file >> vigenere_table[i][j];
 
-    
     file.close();
+
+    // verify it was generated correctly
+    if(!verifyVigenereTable(vigenere_table))
+        cerr << "Warning: generated vigenere table is invalid!\n";
 
     if (DEBUG) {
         printVigenereTable(vigenere_table);
@@ -386,6 +424,102 @@ bool verifyVigenereTable(const VigenereTable* vigenere_table)
         printf("Exiting verifyVigenereTable...\n");
     
     return true;
+}
+
+
+/* function to encode a word
+ * pre-condition: 
+ * 
+ * post-condition: 
+*/
+string encode(const VigenereTable* vigenere_table, const string& plaintext, string plaintext_keyword)
+{
+    if (DEBUG)
+        printf("Entering encode...\n");
+    
+    string ciphertext;
+    
+    // first, ensure keystream equals number of chars in plaintext
+    // keystream is less than the plaintext
+    if (plaintext_keyword.length() < plaintext.length())
+        while (plaintext_keyword.length() < plaintext.length())
+            plaintext_keyword += plaintext_keyword.substr(0, plaintext.length() - plaintext_keyword.length());
+    // keystream is greater than the plaintext
+    else if (plaintext_keyword.length() > plaintext.length())
+        plaintext_keyword = plaintext_keyword.substr(0, plaintext.length());
+    
+    // the actual encoding bit
+    for (int i=0; i<plaintext.length(); i++) {
+        char p_target = plaintext[i];
+        char k_target = plaintext_keyword[i];
+
+        // find the index for the plaintext (y-axis)
+        int y_index = -1;
+        for (int j=0; j<ALPHABET_LENGTH; j++)
+            if ((*vigenere_table)[j][0] == p_target) {
+                y_index = j;
+                break;
+            }
+
+        // find the index for the keystream (x-axis)
+        int x_index = -1;
+        for (int j=0; j<ALPHABET_LENGTH; j++)
+            if ((*vigenere_table)[0][j] == k_target) {
+                x_index = j;
+                break;
+            }
+
+        // ensure both indices were found
+        if (y_index == -1 || x_index == -1) {
+            cerr << "Error: character not found in vigenere table." << endl;
+            return "";
+        }
+
+        ciphertext.append(1, (*vigenere_table)[y_index][x_index]);
+    }
+
+    if (DEBUG)
+        printf("Exiting encode...\n");
+    
+    return ciphertext;
+}
+
+
+/* function to find the index of a char in a row (helper func)
+ * pre-condition: 
+ * 
+ * post-condition: 
+*/
+int findCharIndex(const char* row, const char& target)
+{
+    if (DEBUG)
+        printf("Entering findCharIndex...\n");
+
+    for (int i=0; i<ALPHABET_LENGTH; i++)
+        if (row[i] == target)
+            return i;
+
+    return -1;
+
+    if (DEBUG)
+        printf("Exiting findCharIndex...\n");
+}
+
+
+/* function to decode a word
+ * pre-condition: 
+ * 
+ * post-condition: 
+*/
+string decode(const VigenereTable* vigenere_table, const string& ciphertext, const string& plaintext_keyword)
+{
+    if (DEBUG)
+        printf("Entering decode...\n");
+
+
+
+    if (DEBUG)
+        printf("Exiting decode...\n");
 }
 
 

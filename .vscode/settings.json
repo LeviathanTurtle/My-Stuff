@@ -67,6 +67,7 @@
     "xtree": "cpp",
     "vector": "cpp",
     "map": "cpp",
-    "cstring": "cpp"
+    "cstring": "cpp",
+    "ostream": "cpp"
   }
 }
