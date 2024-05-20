@@ -1,10 +1,10 @@
-## WELCOME!
+# WELCOME!
 
 This is a collection of the main programs I have written. Below is a description of what you can expect in each of the main folders. Each folder contains C++ and Python versions, with a few having Rust versions as well (more will be added in the future).
 
 
 
-[CALCULATORS]:
+## CALCULATORS
 - `coinTotal`: prompts the user to input a price, and the program will calculate and output the minimum amount of coins for each type (quarter, dime, nickel, penny) required to meet the price (Note: as of 5.20.2024, this does not work 100% accurate)
 
 - `factorialGeoseriesCalc`: performs a factorial or geoseries calculation based on a number given from input
@@ -25,23 +25,23 @@ This is a collection of the main programs I have written. Below is a description
 
 
 
-[GAMES]:
+## GAMES
 - Hangman
 - Tic-tac-toe
 
 
 
-[LIBRARIES]:
+## LIBRARIES
 A merged collection of the programs in `Calculators` to be used as header files in other programs
 
 
 
-[TESTFILES]:
+## TESTFILES
 A collection of test files used when debugging and testing code
 
 
 
-[TOOLS]:
+## TOOLS
 - `compAlgSort`: takes random values from a data file and puts them into an array and calls user-specified sorting algorithms to sort the array from least to greatest. The program outputs the frequency of the swap statements and the number of elements moved
 
 - `create_test`: generates a test file of user-selected datatypes (stored in seaprate TestFiles  directory) where the user specifies the number of values, range of values used, and the datatype. Valid data types are: integers, doubles, floats, characters, and strings. All data types can be used with optional matrix construction except strings (will be fixed in a future update)
