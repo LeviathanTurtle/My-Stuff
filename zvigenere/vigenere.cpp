@@ -28,6 +28,7 @@
 
 using namespace std;
 #define ALPHABET_LENGTH 26
+#define DEFAULT_CHAR '\0'
 
 typedef char VigenereTable[ALPHABET_LENGTH][ALPHABET_LENGTH];
 
@@ -65,7 +66,7 @@ const string ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 int main(int argc, char* argv[])
 {
     // check CLI arg usage
-    if (argc < 1 || argc > 2) {
+    if (argc > 2) {
         cerr << "Uasge: ./<exe name> [-d] <token>\nwhere:\n    -d      - optional, enable debug "
              << "output\n    <token> - keyword used to generate the keyed alphabet in the vigenere"
              << " cipher" << endl;
@@ -73,19 +74,13 @@ int main(int argc, char* argv[])
     }
 
     // 
-    bool finished = false;
-    if (!strcmp(argv[1],"-d")) {
+    if (argc == 2 && !strcmp(argv[1],"-d"))
         // debug
         DEBUG = true;
 
-        while (!finished)
-            action(finished);
-    } else {
-        // not debug
-
-        while (!finished)
-            action(finished);
-    }
+    bool finished = false;
+    while (!finished)
+        action(finished);
 
     return 0;
 }
@@ -238,7 +233,7 @@ void action(bool& finished)
     // main vars defined here because the uses vary in the switch/case
     string keyed_alphabet;
     // init to null so we can tell if it has been successfully updated
-    VigenereTable table = { { '\0 '} };
+    VigenereTable table = { { DEFAULT_CHAR } };
     VigenereTable* vigenere_table = &table;
 
     switch (choice) {
@@ -305,7 +300,7 @@ void action(bool& finished)
 
             string cipher_text = encode(vigenere_table, plaintext, plaintext_keyword);
 
-            printf("The ciphertext for the word %s is %s\n",plaintext,cipher_text);
+            printf("The ciphertext for the word %s is %s\n",plaintext.c_str(),cipher_text.c_str());
 
             break;
         }
@@ -373,7 +368,7 @@ VigenereTable* inputVigenereTable(const string& filename)
         printf("Entering inputVigenereTable...\n");
     
     // init to null so we can tell if it has been successfully updated
-    VigenereTable table = { { '\0 '} };
+    VigenereTable table = { { DEFAULT_CHAR } };
     VigenereTable* vigenere_table = &table;
 
     // open file
@@ -449,7 +444,7 @@ string encode(const VigenereTable* vigenere_table, const string& plaintext, stri
         plaintext_keyword = plaintext_keyword.substr(0, plaintext.length());
     
     // the actual encoding bit
-    for (int i=0; i<plaintext.length(); i++) {
+    for (size_t i=0; i<plaintext.length(); i++) {
         char p_target = plaintext[i];
         char k_target = plaintext_keyword[i];
 
@@ -516,7 +511,7 @@ string decode(const VigenereTable* vigenere_table, const string& ciphertext, con
     if (DEBUG)
         printf("Entering decode...\n");
 
-
+    return ciphertext;
 
     if (DEBUG)
         printf("Exiting decode...\n");
