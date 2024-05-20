@@ -1,3 +1,5 @@
+// taken from rosetta code
+
 #include <windows.h>
 #include <iostream>
 #include <string>

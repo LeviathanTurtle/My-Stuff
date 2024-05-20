@@ -1,3 +1,5 @@
+// taken from rosetta code
+
 use GameState::{ComputerWin, Draw, PlayerWin, Playing};
  
 use rand::prelude::*;

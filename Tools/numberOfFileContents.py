@@ -3,7 +3,7 @@
 # CSC1710
 # 3.13.2024
 #  
-# This program reads through the contents of a file and counts how many itmes are in it.
+# This program reads through the contents of a file and counts how many items are in it.
 # 
 # [USAGE]:
 # To run: python3 numberOfFileContents.py <filename>
