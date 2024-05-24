@@ -27,7 +27,6 @@ This is a collection of the main programs I have written. Below is a description
 
 ## GAMES
 - Hangman
-- Tic-tac-toe
 
 
 
@@ -61,3 +60,5 @@ A collection of test files used when debugging and testing code
 - `soccerStats`: will store a soccer player's name, position, number of games played, total goals made, number of shots taken, and total number of minutes played. It will then compute the shot percentage and output the information in a formatted table
 
 - `tempConv`: creates a temperature conversion chart (between Celsius and Kelvin) based on a degree given in Fahrenheit, incrementing by a value imput by the user
+
+- `vigenere`: functions as a vigenere encoder/decoder. The user can chose to create a normal vigenere cipher or one using a keyed alphabet, as well as inputting from a file. This program offers printing and dumping functionalities, allowing the user to use the generated cipher elsewhere
