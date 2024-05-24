@@ -7,10 +7,10 @@
  * ~/discrete/prog2
  * 
  * [DESCRIPTION]:
- * This program takes random values from a data file and puts them into an
- * array. The program then calls user-specified sorting algorithms to
- * sort the array from least to greatest. The program outputs the
- * frequency of the swap statements and the number of elements moved.
+ * This program takes random values from a data file and puts them into an array. The program then
+ * calls user-specified sorting algorithms to sort the array from least to greatest. The program
+ * outputs the frequency of the swap statements and the number of elements moved. The binary was
+ * last compiled on 5.24.2024.
  * 
  * [USAGE]:
  * To compile: g++ compAlgSort.cpp -Wall -o compAlgSort
@@ -105,7 +105,7 @@ int main()
    // ============================================================ TIMEVAL
 
    struct timeval startTime, stopTime;
-   double /*start, stop,*/ diff;
+   double /*start, stop,*/ diff = 0;
 
    gettimeofday(&startTime, NULL);
    loadSort(data, results, diff, sortAmt, sortNum);

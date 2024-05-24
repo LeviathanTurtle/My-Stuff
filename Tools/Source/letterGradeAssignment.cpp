@@ -7,9 +7,9 @@
  * 
  * 
  * [DESCRIPTION]:
- * This program takes a data file from argv and processes a number of students'
- * test grade (number of students is also provided in argv). The program then
- * assigns a letter grade to the student based on their (one) test score.
+ * This program takes a data file from argv and processes a number of students' test grade (number
+ * of students is also provided in argv). The program then assigns a letter grade to the student
+ * based on their (one) test score. The binary was last compiled on 5.24.2024.
  *
  *
  * [COMPILE/RUN]:
@@ -152,13 +152,13 @@ void assignGrade(studentType* array, const int& numStudents)
 int findNameSize(studentType* array, const int& numStudents)
 {
     //int largest = strlen(array[0].studentFName) + strlen(array[0].studentLName);
-    int largest = strlen(array[0].studentFName + array[0].studentLName);
+    size_t largest = array[0].studentFName.length() + array[0].studentLName.length();
 
     for(int i=1; i<numStudents; i++)
         //if(strlen(array[0].studentFName)+strlen(array[0].studentLName) > largest)
-        if(strlen(array[i].studentFName + array[i].studentLName) > largest)
+        if(array[i].studentFName.length() + array[i].studentLName.length() > largest)
             //largest = strlen(array[0].studentFName) + strlen(array[0].studentLName);
-            largest = strlen(array[i].studentFName + array[i].studentLName);
+            largest = array[i].studentFName.length() + array[i].studentLName.length();
     
     return largest;
 }
@@ -170,7 +170,7 @@ void printRows(studentType* array, const int& numStudents, const int& largestNam
     const int spacing = largestName+2;
     
     for(int i=0; i<numStudents; i++)
-        cout << array[i].studentFName << " " array[i].studentLName 
+        cout << array[i].studentFName << " " << array[i].studentLName 
              << setw(spacing) << array[i].testScore << setw(12) 
              << array[i].grade << endl;
 }

@@ -8,17 +8,15 @@
  * 
  * 
  * [DESCRIPTION]:
- * This program generates a test file of random datatypes (stored in TestFiles
- * of current directory) where the user specifies the number of values [number
- * of cases], range of values used [range], and the datatype [type]. Valid data
- * types are: integers, doubles, floats, characters, and strings. All data
- * types can be used with matrix construction except strings. Using these
- * values, the program will create and write to a file. The size of the data N
- * (how many values in the file) is first number and is separated by a new
- * line, while the next N values (data) are separated by a space. If the
- * optional -m flag is present, the program will output the data in matrix
- * form: first the dimensions, then the data. Matrix output is limited to
- * numerical datatypes and characters.
+ * This program generates a test file of random datatypes (stored in TestFiles of current
+ * directory) where the user specifies the number of values [number of cases], range of values
+ * used [range], and the datatype [type]. Valid data types are: integers, doubles, floats,
+ * characters, and strings. All data types can be used with matrix construction except strings.
+ * Using these values, the program will create and write to a file. The size of the data N (how
+ * many values in the file) is first number and is separated by a new line, while the next N values
+ * (data) are separated by a space. If the optional -m flag is present, the program will output the
+ * data in matrix form: first the dimensions, then the data. Matrix output is limited to numerical
+ * datatypes and characters. The binary was last compiled on 5.24.2024.
  * Revision hitory and notes are at the bottom.
  * 
  * 

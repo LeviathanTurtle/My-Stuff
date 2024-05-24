@@ -8,7 +8,7 @@
  *
  * [DESCRIPTION]:
  * This program calculates and outputs information pertaining to coffee sales based on an input 
- * file. 
+ * file. The binary was last compiled on 5.24.2024.
  *
  *
  * [COMPILE/RUN]:
@@ -34,10 +34,6 @@
 using namespace std;
 
 
-personalSales loadStruct(char*);
-void dump(char*, char*);
-
-
 struct personalSales {
     string firstName;
     string lastName;
@@ -50,6 +46,10 @@ struct personalSales {
     int cups;
     double cupCost;
 };
+
+
+personalSales loadStruct(char*);
+void dump(char*, char*);
 
 
 int main (int argc, char* argv[])
@@ -142,9 +142,12 @@ void dump(char* inputFileName, char* outputFileName)
     }
 
     // read output into the output file
-    outputFile << inputFile;
+    char ch;
+    while (inputFile.get(ch))
+        outputFile.put(ch);
 
-    // close output file
+    // close files
+    inputFile.close();
     outputFile.close();
 }
 

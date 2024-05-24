@@ -4,8 +4,8 @@
  * Created: 1.10.2020
  * ~/csc1710/lab7/wadsworthlab7.cpp
  * 
- * This program creates a temperature conversion chart based on a degree given
- * in Fahrenheit, incrementing by a value imput by the user.
+ * This program creates a temperature conversion chart based on a degree given in Fahrenheit,
+ * incrementing by a value imput by the user. The binary was last compiled on 5.24.2024.
  * 
  * Usage: 
  * To compile: g++ tempConv.cpp -Wall -o <exe name>

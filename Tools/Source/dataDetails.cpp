@@ -8,10 +8,10 @@
  * 
  * 
  * [DESCRIPTION]:
- * This program loads an array from a file and sorts the data. It then outputs
- * the size of the data, median, minimum, maximum. It will then prompt a to
- * search the data for a value, and output the number of occurences. The end of
- * the data in the file is noted by a value of -1.
+ * This program loads an array from a file and sorts the data. It then outputs the size of the
+ * data, median, minimum, maximum. It will then prompt a to search the data for a value, and output
+ * the number of occurences. The end of the data in the file is noted by a value of -1. The binary
+ * was last compiled on 5.24.2024.
  * 
  * 
  * [COMPILE/RUN]:
@@ -39,7 +39,7 @@ using namespace std;
 #define MAX_SIZE 1000
 
 // function prototypes
-void loadArray(double[], const char*, const int&);
+void loadArray(double[], const char*, int&);
 void printArray(double[], const int&);
 void sortArray(double[], const int&);
 double median(double[], const int&);

@@ -6,10 +6,10 @@
  *
  *
  * [DESCRIPTION]:
- * This program will store a soccer player's name, position, number of games 
- * played, total goals made, number of shots taken, and total number of minutes
- * played. It will then compute the shot percentage and output the information
- * in a formatted table.
+ * This program will store a soccer player's name, position, number of games played, total goals
+ * made, number of shots taken, and total number of minutes played. It will then compute the shot
+ * percentage and output the information in a formatted table. The binary was last compiled on
+ * 5.24.2024.
  *
  *
  * [COMPILE/RUN]:

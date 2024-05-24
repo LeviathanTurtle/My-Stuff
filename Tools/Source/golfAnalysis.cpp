@@ -7,10 +7,10 @@
  * 
  * 
  * [DESCRIPTION]:
- * This program analyzes a file consisting of golf data (file structure below).
- * It finds and outputs the player with the lowest number of strokes for the
- * game. The number of players and holes can be different than the number of
- * players and holes in the input file, that can be adjusted at runtime.
+ * This program analyzes a file consisting of golf data (file structure below). It finds and
+ * outputs the player with the lowest number of strokes for the game. The number of players and
+ * holes can be different than the number of players and holes in the input file, that can be
+ * adjusted at runtime. The binary was last compiled on 5.24.2024.
  * 
  * 
  * [COMPILE/RUN]:
@@ -153,17 +153,15 @@ int main(int argc, char* argv[])
     int lowest = sums[0];
     // index in array of winning player
     int winningPlayerIndex = 0;
-    // array index
-    int i = 1;
 
-    for(i; i<playerCount; i++)
+    for(int i=1; i<playerCount; i++)
         // find the lowest score, making note of index in array
         if(lowest > sums[i]) {
             lowest = sums[i];
             winningPlayerIndex = i;
         }
 
-    cout << "The winner is " << names[i] << " with a score of " << lowest << endl;
+    cout << "The winner is " << names[winningPlayerIndex] << " with a score of " << lowest << endl;
 
     return 0;
 }
