@@ -143,11 +143,12 @@ bool isInString(const string& str, char c)
         if (currentChar == c)
             return true; // char in string
     */
-    // search for first occurence in str, returning its index
-    return str.find(c) != string::npos;
 
     if (DEBUG)
         printf("Exiting isInString...\n");
+
+    // search for first occurence in str
+    return str.find(c) != string::npos;
 
     //return false; // char not in string
 }
@@ -317,8 +318,7 @@ VigenereTable* fileGenVigenereTable(const string& filename)
 
 
 /* main function to print the vigenere table
- * pre-condition: finished and initialized booleans must be initialized, VigenereTable type must be
- *                defined, and 
+ * pre-condition:  
  * 
  * post-condition: nothing is returned, the user selects a function to execute (encode, decode,
  *                 print, etc) or sets boolean finished to true, exiting the function
@@ -722,7 +722,7 @@ string decode(const VigenereTable* vigenere_table, string ciphertext, string pla
 
     // re-add whitespaces
     for (size_t index : ciphertext_whitespace_indices)
-        if (index < ciphertext.length())
+        if (index < plaintext.length())
             plaintext.insert(index, 1, ' ');
 
     if (DEBUG)
@@ -740,6 +740,9 @@ string decode(const VigenereTable* vigenere_table, string ciphertext, string pla
 */
 pair<string, vector<size_t>> removeWhitespaces(const string& str)
 {
+    if (DEBUG)
+        printf("Entering removeWhitespaces...\n");
+        
     // copy var
     string result;
     // vector to store indices of all whitespaces
@@ -751,6 +754,9 @@ pair<string, vector<size_t>> removeWhitespaces(const string& str)
             result += str[i];
         else // it is a whitespace, add its index to the vector
             whitespace_indices.push_back(i);
+    
+    if (DEBUG)
+        printf("Exiting removeWhitespaces...\n");
 
     // return a pair containing the new string (without whitespaces) and the vector of whitespace
     // indices
