@@ -543,7 +543,7 @@ void mapSort(map<string, double>& config)
         printf("Entering mapSort...\n");
 
     // create a vector copy because maps cannot be sorted
-    vector<pair<string, double>> vec(config.begin(), config.end());
+    vector<pair<string, double> > vec(config.begin(), config.end());
 
     // sort vector based on double (lambda func)
     sort(vec.begin(), vec.end(),
