@@ -33,7 +33,7 @@ NOTE: all binaries were compiled in `bash`. If you want to run them with Windows
 
 
 ## LIBRARIES
-A merged collection of the programs in `Calculators` to be used as header files in other programs
+A merged collection of the programs in `Calculators` to be used as header files in other programs. This is not complete yet, but will he soon
 
 
 
