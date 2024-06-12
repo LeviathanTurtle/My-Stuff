@@ -2,7 +2,7 @@
 
 This is a collection of the main programs I have written. Below is a description of what you can expect in each of the main folders. Each folder contains C++ and Python versions, with a few having Rust versions as well (more will be added in the future).
 
-NOTE: all binaries were compiled in `bash`. If you want to run them with Windows CMD / Powershell, you will need to re-compile them. Instructions to do so are in each program's opening documentation.
+NOTE: all binaries have been removed until I find a better portability solution.
 
 
 
