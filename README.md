@@ -33,7 +33,7 @@ NOTE: all binaries have been removed until I find a better portability solution.
 
 
 ## LIBRARIES
-A merged collection of the programs in `Calculators` to be used as header files in other programs
+A merged collection of the programs in `Calculators` to be used as header files in other programs. This is not complete yet, but will he soon
 
 
 
