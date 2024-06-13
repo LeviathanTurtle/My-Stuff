@@ -6,8 +6,8 @@
  * arbitrary location
  * 
  * This program calculates a final grade based on 4 labs, 3 quizzes, and one program and test
- * grade. The percentages are fixed, but can be adjusted in the code below. The binary was last
- * compiled on 5.24.2024.
+ * grade. The percentages are fixed, but can be adjusted in the code below. This is an older and
+ * simpler version than final_grade_calc. The binary was last compiled on 5.24.2024.
  * 
  * Usage:
  * To compile: g++ finalGrade.cpp -Wall -o <exe name>
