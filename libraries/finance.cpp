@@ -9,6 +9,7 @@
 #include "finance.h"
 #include <iostream>
 #include <tuple>
+#include <iomanip>      // setprecision
 #include <type_traits>  // static_assert
 
 
@@ -71,4 +72,64 @@ int finance::moneyCalculator(const int& count_1, const int& count_5, const int& 
     static_assert(std::is_arithmetic<std::remove_reference_t<decltype(count_100)>>::value, "$100 denominations must be an integer type");
 
     return count_1 + (5*count_5) + (10*count_10) + (20*count_20) + (50*count_50) + (100*count_100);
+}
+
+
+/* function to 
+ * pre-condition: 
+ * 
+ * post-condition: 
+*/
+void finance::genInvestmentTable(const double& principle_amount, double& interest_rate, const double interest_rate_change=0, const double& time, const double& deposit)
+{
+    // ensure all numerical params are of valid types
+    // principle 
+    static_assert(std::is_arithmetic<std::remove_reference_t<decltype(principle_amount)>>::value, "Principle amount must be a float type");
+    // interest rate
+    static_assert(std::is_arithmetic<std::remove_reference_t<decltype(interest_rate)>>::value, "Interest rate must be a float type");
+    // time
+    static_assert(std::is_arithmetic<std::remove_reference_t<decltype(principle_amount)>>::value, "Changing deposit amount must be a float type");
+    // deposit
+    static_assert(std::is_arithmetic<std::remove_reference_t<decltype(deposit)>>::value, "Deposit amount must be a float type");
+    // changing interest
+    static_assert(std::is_arithmetic<std::remove_reference_t<decltype(interest_rate_change)>>::value, "Changing interest rate must be a float type");
+
+    // ========================================================================
+    // TABLE
+
+    // convert time (in years) to months
+    int time_months = static_cast<int>(time) * 12;
+    // loop control var
+    int t = 1;
+    // var to hold current investment value
+    double value_of_investment = FLT_MIN;
+    // var to keep track of the month for changing interest
+    int count = 0;
+
+    // show 2 decimal places
+    std::cout << std::fixed << std::showpoint << std::setprecision(2);
+
+    std::cout << std::setw(35) << "Investment Table\n\n"/* << std::endl << std::endl*/;
+    std::cout << "  Month  |  Total Invested ($)  | Value of Investment ($) \n";
+    std::cout << "----------------------------------------------------------\n";
+
+    // table for changing interest
+    do {
+        // A = p + (p*r*t) + (t*d)
+        value_of_investment = principle_amount + (principle_amount*interest_rate*time_months) + (time_months*deposit);
+        std::cout << std::setw(5) << time_months << std::setw(5) << "|" << std::setw(14) 
+                  << time_months*deposit << std::setw(9) << "|" << std::setw(16) 
+                  << value_of_investment << "\n";
+        t++;
+
+        // for changing interest
+        if (interest_rate_change != 0) {
+            count++;
+            if (count % 12 == 0)
+                interest_rate += interest_rate_change;
+        }
+    } while (t <= time_months);
+
+    std::cout << "------------------------------------------------------\n\n"/* << endl << " " << endl*/;
+    std::cout << "Your capital gain will be $" << value_of_investment - principle_amount << " in " << time_months/12 << " years\n" << std::endl;
 }

@@ -14,11 +14,12 @@
 
 class finance {
     private:
-        int x;
+        
 
     public:
         std::tuple<int, int, int, int> findCoinTotal(double);
         int moneyCalculator(const int&, const int&, const int&, const int&, const int&, const int&);
+        void genInvestmentTable(const double&, double&, const double, const double&, const double&);
 };
 
 #endif
