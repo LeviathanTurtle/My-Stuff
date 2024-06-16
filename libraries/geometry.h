@@ -9,6 +9,7 @@
 #ifndef GEOMETRY
 #define GEOMETRY
 
+
 class geometry {
     private:
         double a, b, c;

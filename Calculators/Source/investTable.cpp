@@ -106,12 +106,12 @@ int main ()
     // show 2 decimal places
     cout << fixed << showpoint << setprecision(2);
 
+    cout << setw(35) << "Investment Table" << endl << " " << endl;
+    cout << "  Month  |  Total Invested ($)  | Value of Investment ($) " << endl;
+    cout << "----------------------------------------------------------" << endl;
+
     // table for changing interest
     if (inp == "yes") {
-        cout << setw(35) << "Investment Table" << endl << " " << endl;
-        cout << "  Month  |  Total Invested ($)  | Value of Investment ($) " << endl;
-        cout << "----------------------------------------------------------" << endl;
-
         while (t <= y) {
             A = p + (p*r*t) + (t*d);
             cout << setw(5) << t << setw(5) << "|" << setw(13) << t*d << setw(10) << "|" << setw(16) << A << endl;
@@ -123,10 +123,6 @@ int main ()
     }
     // table for constant interest
     else {
-        cout << setw(35) << "Investment Table" << endl << " " << endl;
-        cout << "  Month  |  Total Invested ($)  | Value of Investment ($) " << endl;
-        cout << "----------------------------------------------------------" << endl;
-
         while (t <= y) {
 	         A = p + (p*r*t) + (t*d);
             cout << setw(5) << t << setw(5) << "|" << setw(14) << t*d << setw(9) << "|" << setw(16) << A << endl;
