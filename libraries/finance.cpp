@@ -75,10 +75,12 @@ int finance::moneyCalculator(const int& count_1, const int& count_5, const int& 
 }
 
 
-/* function to 
- * pre-condition: 
+/* function to generate an investment table
+ * pre-condition: principle amount, interest rate, interest rate change, length of time, and
+ *                deposit must all be initialized to positive non-zero floats
  * 
- * post-condition: 
+ * post-condition: the table is output detailing the total amount invested and the value of the
+ *                 investment for each time step
 */
 void finance::genInvestmentTable(const double& principle_amount, double& interest_rate, const double interest_rate_change=0, const double& time, const double& deposit)
 {
@@ -133,3 +135,4 @@ void finance::genInvestmentTable(const double& principle_amount, double& interes
     std::cout << "------------------------------------------------------\n\n"/* << endl << " " << endl*/;
     std::cout << "Your capital gain will be $" << value_of_investment - principle_amount << " in " << time_months/12 << " years\n" << std::endl;
 }
+
