@@ -85,8 +85,7 @@ class calculator {
             T sum=0;
 
             // ensure count starts at 0
-            if (count != 0)
-                count = 0;
+            count = 0;
 
             // check if x is divisible by y
             if( max % increment == 0) {

@@ -57,7 +57,7 @@ long int calculator::factorial(const int& endpoint, const bool& double_factorial
 {
     // check that the user's endpoint is valid. Will probably update this later to be more dynamic
     if (endpoint < 0 || endpoint > 1000) {
-        std::cerr << "Not valid, endpoint integer must be between 0 and 1,000\n";
+        //std::cerr << "Not valid, endpoint integer must be between 0 and 1,000\n";
         throw std::invalid_argument("invalid endpoint");
     }
 
@@ -110,15 +110,4 @@ double calculator::geoseries(double a, const int& num_terms, double r=0.5)
 
     return sum;
 }
-
-
-/* function to 
- * pre-condition: 
- * 
- * post-condition: 
-*/
-
-
-
-
 
