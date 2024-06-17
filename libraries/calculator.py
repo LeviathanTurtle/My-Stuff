@@ -95,9 +95,8 @@ class calculator:
     #                count must be initialized (will be reset to 0 in case of invalid value),
     #                multiples must be intialized to an empty vector
     # 
-    # post-condition: if there are no multiples, false is returned, otherwise true is returned and
-    #                 the count parameter is updated with however many multiples there are as well
-    #                 as the 'multiples' vector paramter being updated with each multiple
+    # post-condition: if there are no multiples, false is returned, otherwise a tuple is returned
+    #                 containing True, the amount of multiples, and a list of each multiple
     def isMultiple(max: Union[int, float], increment: Union[int, float]) -> Tuple[bool, int, List[Union[int, float]]]:
         # type checking for arithmetic operations
         if not (isinstance(max, (int, float)) and isinstance(increment, (int, float))):
