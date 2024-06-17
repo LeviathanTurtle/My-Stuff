@@ -25,8 +25,8 @@ std::tuple<int, int, int, int> finance::findCoinTotal(double total)
 {
     // check amount, must be > 0
     if(total <= 0) {
-        std::cerr << "error: amount must be greater than 0.\n";
-        throw std::invalid_argument("invalid total");
+        //std::cerr << "error: amount must be greater than 0.\n";
+        throw std::invalid_argument("invalid total, amount must be greater than 0");
     }
 
     // convert dollars to cents to avoid floating-point issues
@@ -76,21 +76,21 @@ int finance::moneyCalculator(const int& count_1, const int& count_5, const int& 
 
 
 /* function to generate an investment table
- * pre-condition: principle amount, interest rate, interest rate change, length of time, and
+ * pre-condition: principal amount, interest rate, interest rate change, length of time, and
  *                deposit must all be initialized to positive non-zero floats
  * 
  * post-condition: the table is output detailing the total amount invested and the value of the
  *                 investment for each time step
 */
-void finance::genInvestmentTable(const double& principle_amount, double& interest_rate, const double interest_rate_change=0, const double& time, const double& deposit)
+void finance::genInvestmentTable(const double& principal_amount, double& interest_rate, const double interest_rate_change=0, const double& time, const double& deposit)
 {
     // ensure all numerical params are of valid types
-    // principle 
-    static_assert(std::is_arithmetic<std::remove_reference_t<decltype(principle_amount)>>::value, "Principle amount must be a float type");
+    // principal 
+    static_assert(std::is_arithmetic<std::remove_reference_t<decltype(principal_amount)>>::value, "principal amount must be a float type");
     // interest rate
     static_assert(std::is_arithmetic<std::remove_reference_t<decltype(interest_rate)>>::value, "Interest rate must be a float type");
     // time
-    static_assert(std::is_arithmetic<std::remove_reference_t<decltype(principle_amount)>>::value, "Changing deposit amount must be a float type");
+    static_assert(std::is_arithmetic<std::remove_reference_t<decltype(principal_amount)>>::value, "Changing deposit amount must be a float type");
     // deposit
     static_assert(std::is_arithmetic<std::remove_reference_t<decltype(deposit)>>::value, "Deposit amount must be a float type");
     // changing interest
@@ -118,7 +118,7 @@ void finance::genInvestmentTable(const double& principle_amount, double& interes
     // table for changing interest
     do {
         // A = p + (p*r*t) + (t*d)
-        value_of_investment = principle_amount + (principle_amount*interest_rate*time_months) + (time_months*deposit);
+        value_of_investment = principal_amount + (principal_amount*interest_rate*time_months) + (time_months*deposit);
         std::cout << std::setw(5) << time_months << std::setw(5) << "|" << std::setw(14) 
                   << time_months*deposit << std::setw(9) << "|" << std::setw(16) 
                   << value_of_investment << "\n";
@@ -133,6 +133,6 @@ void finance::genInvestmentTable(const double& principle_amount, double& interes
     } while (t <= time_months);
 
     std::cout << "------------------------------------------------------\n\n"/* << endl << " " << endl*/;
-    std::cout << "Your capital gain will be $" << value_of_investment - principle_amount << " in " << time_months/12 << " years\n" << std::endl;
+    std::cout << "Your capital gain will be $" << value_of_investment - principal_amount << " in " << time_months/12 << " years\n" << std::endl;
 }
 

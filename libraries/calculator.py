@@ -34,12 +34,12 @@ class calculator:
                 #return -1
             
             for i in range(1,endpoint+1):
-                prod = prod * i
+                prod *= i
         # normal factorial
         else:
             for i in range(1,endpoint+1):
-                prod = prod * i
-                i = i + 2
+                prod *= i
+                i += 2
         
         return prod
     
@@ -57,8 +57,8 @@ class calculator:
         sum: float = 0.0
         
         for _ in range(num_terms):
-            sum = sum + a
-            a = a * r
+            sum += a
+            a *= r
         
         return sum
     
@@ -71,7 +71,7 @@ class calculator:
     # post-condition: depending on the operation specified (assuming the operation is valid), the
     #                 sum, difference, product, or quotient is returned, otherwise an error is
     #                 output and a relevant exception is thrown
-    def fourFunction(operand_1: Union[int, float], operand_2: Union[int, float], operation: str):
+    def fourFunction(operand_1: Union[int, float], operand_2: Union[int, float], operation: str) -> Union[int, float]:
         if not (isinstance(operand_1, (int, float)) and isinstance(operand_2, (int, float))):
             raise TypeError("Operands must be an arithmetic type")
 

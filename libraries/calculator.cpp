@@ -58,7 +58,7 @@ long int calculator::factorial(const int& endpoint, const bool& double_factorial
     // check that the user's endpoint is valid. Will probably update this later to be more dynamic
     if (endpoint < 0 || endpoint > 1000) {
         //std::cerr << "Not valid, endpoint integer must be between 0 and 1,000\n";
-        throw std::invalid_argument("invalid endpoint");
+        throw std::invalid_argument("Invalid endpoint, integer must be between 0 and 1,000");
     }
 
     long int prod = INT_MIN;
@@ -67,7 +67,7 @@ long int calculator::factorial(const int& endpoint, const bool& double_factorial
     if (double_factorial) {
         // additional check unique to double factorials
         if (endpoint%2 == 0) {
-            std::cerr << "Not valid, endpoint integer must be odd and between 0 and 1,000\n";
+            std::cerr << "Invalid endpoint, integer must be between 0 and 1,000\n";
             return -1;
         }
 
@@ -98,10 +98,10 @@ double calculator::geoseries(double a, const int& num_terms, double r=0.5)
 {
     // check common ratio of choice
     // TODO: re-check this
-    if (r >= 0)
+    if (r <= 0)
         r = 0.5;
 
-    double sum = FLT_MIN;
+    double sum = 0;
 
     for (int i=0; i<num_terms; i++) {
         sum += a;
