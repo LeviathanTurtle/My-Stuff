@@ -17,17 +17,23 @@
 
 from requests import get
 
-# ask the user for the amount of jokes they'd like to generate
-num_jokes = input("How many jokes would you like to generate: ")
 
-# query the API
-response = get(f'https://v2.jokeapi.dev/joke/Any?format=txt&amount={num_jokes}')
+def main():
+    # ask the user for the amount of jokes they'd like to generate
+    num_jokes = input("How many jokes would you like to generate: ")
 
-# successful response code
-if response.status_code == 200:
-    # output
-    print(response.text)
-# query unsuccessful
-else:
-    # output error code
-    print(f"Error: {response.status_code}")
+    # query the API
+    response = get(f'https://v2.jokeapi.dev/joke/Any?format=txt&amount={num_jokes}')
+
+    # successful response code
+    if response.status_code == 200:
+        # output
+        print(response.text)
+    # query unsuccessful
+    else:
+        # output error code
+        print(f"Error: {response.status_code}")
+
+
+if __name__ == "__main__":
+    main()

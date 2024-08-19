@@ -53,247 +53,81 @@
 # 5 - invalid data type was used
 
 # --- IMPORTS + GLOBAL VARS -------------------------------------------------------------
-"""
-#include <iostream>     // in/out
-#include <cstring>      // strcmp()
-#include <string>       // atoi(), to_string()
-#include <fstream>      // writing to files
-#include <cstdlib>      // popen(), pclose()
-using namespace std;
-
-bool DEBUG = false;
-char alphabet[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-"""
-import sys         # argv
-import subprocess  # executing bash commands
-import random      # random number gen
-import shutil      # moving files
+from sys import argv, stderr, exit
+from subprocess import check_output, CalledProcessError, PIPE
+from random import randint, uniform, choice
+from shutil import move
+from typing import Optional
 
 # boolean for debug output (detailed execution)
-DEBUG = False
-MATRIX = False
+DEBUG: bool = False
+MATRIX: bool = False
 # charcter bank for strings
-ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+ALPHABET: str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 # --- FUNCTIONS -------------------------------------------------------------------------
 # --- EXECUTE COMMAND ---------------------------
-"""
-int executeCommand(const string&);
-int executeCommand(const string& command)
-{
-    if(DEBUG)
-        cout << "\nbeginning method: executeCommand\n";
+# pre-condition: test_lib must be a valid directory path as a string
+# post-condition: the function returns the count of files in the directory as an integer or None if
+#                 an error occurs during command execution
+def execute_command(test_lib: str) -> Optional[int]:
+    """Execute a shell command to count the number of files in a directory."""
     
-    FILE* pipe = popen(command.c_str(), "r");
-
-    if(!pipe) {
-        cerr << "failed to open pipe (popen() failed)).\n";
-        exit(3);
-    }
-
-    int result; // variable for command result
-
-    if(fscanf(pipe, "%d", &result) != 1) {
-        cerr << "failed to read integer from command output.\n";
-        exit(4);
-    }
-
-    pclose(pipe);
-
-    if(DEBUG)
-        cout << "\nend method: executeCommand\n";
-
-    return result;
-}
-"""
-# the function takes a single argument (the shell command) and opens a pipe to execute said command
-# pre-condition: the command must be an initialized string in main
-# 
-# post-condition: the function has opened a pipe, executed a command, and returns the output of
-#                 said command, which should be an int
-def executeCommand(test_lib) -> int:
     if DEBUG:
-        print("\nbeginning method: executeCommand\n")
+        print("Entering execute_command...")
         
     try:
         # execute the bash command
-        result = subprocess.check_output(["ls",test_lib, "|", "wc", "-l"], universal_newlines=True, stderr=subprocess.PIPE, shell=True)
-        
-        # convert to int
-        #count = int(result.strip())
+        result: str = check_output(
+            f"ls {test_lib} | wc -l", 
+            universal_newlines=True, 
+            stderr=PIPE, 
+            shell=True
+        )
         
         if DEBUG:
-            print("\nend method: executeCommand\n")
-        
-        #return count
+            print("Exiting execute_command.")
         return int(result.strip())
     
     # handle errors if any
-    except subprocess.CalledProcessError as e:
+    except CalledProcessError as e:
         print("Error executing command:", e)
         
         if DEBUG:
-            print("\nend method: executeCommand\n")
-            
+            print("Exiting execute_command.")
         return None
 
+
 # --- LOAD MATRIX -------------------------------
-"""
-void loadMatrix(const int&, const int&, const char*);
-void loadMatrix(const int& N, const int& T, const char* datatype)
-{
-    if(DEBUG)
-        cout << "\nbeginning method: loadMatrix\n";
+# pre-condition: N and T must be a positive integer value, and datatype must be of type INT, FLOAT,
+#                or STRING
+# post-condition: a matrix file is created and moved to the "../TestFiles" directory, or the
+#                 program exits if invalid input or errors occur during file creation
+def load_matrix(n: int, t: int, datatype: str) -> None:
+    """Load a matrix with specified dimensions and data type, and save it to a file."""
     
-    int M;
-    cout << "enter second matrix dimension: ";
-    cin >> M;
-
-    if(M <= 0) {
-        cerr << "error: matrix dimension must be > 0 (provided size: " << M << ").\n";
-        exit(2);
-    }
-    
-    cout << "\nYou have chosen to construct:\n" << "matrix: " << N << "x" << M;
-
-    char ident;
-    cout << "\nWould you like this matrix to be the identity? [Y/n]: ";
-    cin >> ident;
-
-    bool isIdentity = true;
-    switch(ident) {
-        case 'n':
-            isIdentity = false;
-            cout << "\nmax value: " << T;
-            cout << "\ntype: " << datatype;
-            break;
-    }
-    
-    cout << "\nConfirm [Y/n]: ";
-    char conf;
-    cin >> conf;
-
-    if(conf == 'Y') {
-        if(DEBUG)
-            cout << "\nloadMatrix: beginning file write\n";
-
-        int testFileNum = executeCommand("ls TestFiles/matrix-test* | wc -l")+1;
-        ofstream outputFile ("matrix-test"+to_string(testFileNum));
-        
-        if(!outputFile) {
-            cerr << "Failed to create output file (name used: matrix-test"
-                 << testFileNum << ")." << endl;
-            exit(5);
-        }
-
-        if(N == M)
-            outputFile << N << endl;
-        else
-            outputFile << N << " " << M << endl;
-
-        if(isIdentity) {
-            if(N==M) {
-                for(int i=0; i<N; i++) {
-                    for(int j=0; j<M; j++)
-                        if(i == j)
-                            outputFile << 1 << " ";
-                        else
-                            outputFile << 0 << " ";
-                    outputFile << endl;
-                }
-            }
-            else {
-                cerr << "error: identity matrices must be equal (matrix must be square)\n";
-                exit(2);
-            }
-        }
-
-        if(strcmp(datatype,"INT") == 0)
-            for(int i=0; i<N; i++) {
-                for(int j=0; j<M; j++)
-                    outputFile << rand()%T << " ";
-                outputFile << endl;
-            }
-        else if(strcmp(datatype,"DOUBLE") == 0)
-            for(int i=0; i<N; i++) {
-                for(int j=0; j<M; j++)
-                    outputFile << (double)(rand()%T)/(double)(rand()%T) << " "; // REFINE THIS
-                outputFile << endl;
-            }
-        else if(strcmp(datatype,"FLOAT") == 0)
-            for(int i=0; i<N; i++) {
-                for(int j=0; j<M; j++)
-                    outputFile << (float)(rand()%T)/(float)(rand()%T) << " "; // REFINE THIS
-                outputFile << endl;
-            }
-        else if(strcmp(datatype,"CHAR") == 0)
-            for(int i=0; i<N; i++) {
-                for(int j=0; j<M; j++)
-                    outputFile << alphabet[rand()%sizeof(alphabet)] << " ";
-                outputFile << endl;
-            }
-        else {
-            cerr << "error: not a valid type for this program, must be INT, "
-                 << "DOUBLE, FLOAT, CHAR, or STRING" << endl;
-            exit(6);
-        }
-
-        outputFile.close();
-
-        string moveFile = "mv matrix-test"+to_string(testFileNum)+" TestFiles";
-        system(moveFile.c_str());
-
-        if(DEBUG)
-            cout << "\nloadMatrix: end file write\n";
-    }
-    else if(conf == 'n') {
-        cout << "You have chosen to quit the program. Quitting...\n\n";
-        exit(0); // not quite accurate
-    }
-    else {
-        cout << "input not valid, respond with 'Y' or 'n': ";
-        cin >> conf;
-    }
-
-    if(DEBUG)
-        cout << "\nend method: loadMatrix\n";
-}
-"""
-# this function creates a file and writes to it the matrix dimension N. If the matrix is not square
-# (i.e. N != M), then M is also output. The next N lines are M <numerical datatype>s or characters
-# separated by a space. 
-# 
-# pre-condition: N and T must be defined and initialized to an integer value, and datatype must be
-#                initialized to a string or char*
-#
-# post-condition: nothing in main has changed. the function created an output file and wrote to it
-#                 the matrix dimensions and values
-def loadMatrix(n: int, t: int, datatype: str):
     if DEBUG:
-        print("\nbeginning method: loadMatrix\n")
+        print("Entering load_matrix...")
         
     # prompt for M
     m = int(input("enter second matrix dimension: "))
     # CHECK M
     if m <= 0:
-        sys.stderr.write(f"error: matrix dimension must be > 0 (provided size: {m}).\n")
+        stderr.write(f"error: matrix dimension must be > 0 (provided size: {m}).\n")
         exit(2)
     
     # CONFIRMATION
     print(f"\nYou have chosen to construct:\nmatrix: {n}x{m}")
     
     # check if user wants to create an identity matrix
-    ident = input("\nWould you like this matrix to be the identity? [Y/n]: ")
-    # assume true, will override if false
-    is_identity = True
-    if ident == 'n':
-        is_identity = False
-        print("\nmax value:",t)
-        print("\ntype:",datatype)
+    is_identity: bool = input("\nWould you like this matrix to be the identity? [Y/n]: ") != 'n'
+    
+    print("\nmax value: ",t)
+    print("\ntype: ",datatype)
     
     conf = input("\nConfirm? [Y/n]: ")
     # check confirmation
-    while conf != 'Y' and conf != 'n':
+    while conf not in ('Y', 'n'):
         conf = input("error: please provide [Y/n]: ")
     
     # --- MAIN LOOP -----------------------------
@@ -304,10 +138,11 @@ def loadMatrix(n: int, t: int, datatype: str):
         if DEBUG:
             print("\nloadMatrix: beginning file write\n")
             
-        test_file_num = executeCommand("../TestFiles/matrix-test*")+1
-        with open(f"matrix-test{test_file_num}", 'w') as file:
-            # if the file cannot be created, terminate
-            try:
+        test_file_num = execute_command("../TestFiles/matrix-test*")+1
+        file_name: str = f"matrix-test{test_file_num}"
+        
+        try:
+            with open(file_name, 'w') as file:
                 # write number of cases N to file if N = M, then the matrix is square, and only one
                 # dimension will be output. otherwise, output both dimensions
                 if n == m:
@@ -316,166 +151,90 @@ def loadMatrix(n: int, t: int, datatype: str):
                     file.write(f"{n} {m}\n")
                     
                 # create identity
-                if is_identity:
-                    if n==m:
-                        for i in range(n):
-                            for j in range(m):
-                                if i==j:
-                                    file.write("1 ")
-                                else:
-                                    file.write("0 ")
-                            file.write("\n")
-                    else:
-                        sys.stderr.write("error: identity matrices must be equal (matrix must be square).\n")
-                        exit(2)
-                
-                # integer gen
-                if datatype == "INT" or datatype == "int":
-                    for _ in range(n):
-                        for _ in range(m):
-                            file.write(str(random.randint(0,t-1)) + " ")
+                if is_identity and n == m:
+                    for i in range(n):
+                        for j in range(m):
+                            file.write("1 " if i == j else "0 ")
                         file.write("\n")
-                # float gen
-                elif datatype == "FLOAT" or datatype == 'float':
-                    for _ in range(n):
-                        for _ in range(m):
-                            file.write(str(random.uniform(0,t)) + " ")
-                        file.write("\n")
-                # char gen
-                elif datatype == "CHAR" or datatype == "char":
-                    for _ in range(n):
-                        for _ in range(m):
-                            file.write(random.choice(ALPHABET) + " ")
-                        file.write("\n")
-                # string gen
-                elif datatype == "STRING" or datatype == "string":
-                    # define path to 'word bank'
-                    dictionary_path = "../Dictionaries/words-alpha.txt"
-                    
-                    # read dictionary
-                    with open(dictionary_path, "r") as dict_file:
-                        possible_strings = [line.strip() for line in dict_file]
-                    
-                    for _ in range(n):
-                        for _ in range(m):
-                            file.write(random.choice(possible_strings) + " ")
-                        file.write("\n")
-                # user did not specify a valid data type (for this program)
+                elif is_identity:
+                    stderr.write("Error: Identity matrices must be square.\n")
+                    exit(2)
                 else:
-                    sys.stderr.write("error: not a valid type for this program, must be INT, DOUBLE, FLOAT, CHAR, or STRING")
-                    exit(5)
-            
-            except IOError:
-                sys.stderr.write(f"Failed to create output file (name used: matrix-test{test_file_num}).")
-                exit(4)
-    
+                    _write_matrix_data(file, n, m, t, datatype)
+        except IOError:
+            stderr.write(f"Failed to create output file (name used: {file_name}).\n")
+            exit(4)
+        
+        # move file to appropriate directory -- out of main logic to avoid moving the file while it
+        # is open
+        move(file_name, "../TestFiles")     
     else:
         print("You have chosen to not load the matrix. Quitting...\n")
+        if DEBUG:
+            print("Exiting load_matrix.")
         exit(0) # not quite accurate
         
-    # move file to appropriate directory -- out of main logic to avoid moving the file while it is
-    # open
-    shutil.move(f"matrix-test{test_file_num}", "../TestFiles")
-        
     if DEBUG:
-        print("\nend method: loadMatrix\n")
+        print("Exiting load_matrix.")
+
+
+# --- WRITE MATRIX DATA -------------------------
+# pre-condition: file is an open file object, n, m, t are integers, datatype is of type INT, FLOAT,
+#                or STRING
+# post-condition: matrix data is written to the file
+def _write_matrix_data(file, n: int, m: int, t: int, datatype: str) -> None:
+    """Helper function to write matrix data to a file based on the datatype."""
+    
+    if DEBUG:
+        print("Entering _write_matrix_data...")
+    
+    if datatype.lower() == "int":
+        for _ in range(n):
+            for _ in range(m):
+                file.write(f"{randint(0, t-1)} ")
+            file.write("\n")
+    elif datatype.lower() == "float":
+        for _ in range(n):
+            for _ in range(m):
+                file.write(f"{uniform(0, t):.6f} ")
+            file.write("\n")
+    elif datatype.lower() == "char":
+        for _ in range(n):
+            for _ in range(m):
+                file.write(choice(ALPHABET) + " ")
+            file.write("\n")
+    elif datatype.lower() == "string":
+        dictionary_path: str = "../Dictionaries/words-alpha.txt"
+        with open(dictionary_path, "r") as dict_file:
+            possible_strings = [line.strip() for line in dict_file]
+        for _ in range(n):
+            for _ in range(m):
+                file.write(choice(possible_strings) + " ")
+            file.write("\n")
+    else:
+        stderr.write("Error: Invalid datatype for this program. Must be INT, FLOAT, CHAR, or STRING.\n")
+        exit(5)
+
+    if DEBUG:
+        print("Exiting _write_matrix_data.")
+
 
 # --- LOAD FILE ---------------------------------
-"""
-void loadFile(const int&, const int&, const char*);
-void loadFile(const int& N, const int& T, const char* datatype)
-{
-    if(DEBUG)
-        cout << "\nbeginning method: loadFile\n";
+# pre-condition: n is a positive integer, t is an integer specifying the range/length of values,
+#                datatype is of type INT, FLOAT, or STRING
+# post-condition: a data file is created and moved to the "../TestFiles" directory, or the program
+#                 exits if invalid input or errors occur during file creation.
+def load_file(n: int, t: int, datatype: str) -> None:
+    """Load a file with specified number of values and data type, and save it to a file."""
     
-    cout << "\nYou have chosen:\n" << "number of values: " << N;
-    cout << "\nmax value: " << T;
-    cout << "\n\nConfirm [Y/n]: ";
-    char conf;
-    cin >> conf;
-    
-    if(conf == 'Y') {
-        int testFileNum = executeCommand("ls TestFiles/test* | wc -l")+1;
-
-        ofstream outputFile ("test"+to_string(testFileNum));
-
-        if(!outputFile) {
-            cerr << "Failed to create output file (name used: test"
-                 << testFileNum << ")." << endl;
-            exit(5);
-        }
-
-        outputFile << N << endl;
-
-        if(strcmp(datatype,"INT") == 0)
-            for(int i=0; i<N; i++)
-                outputFile << rand()%T << " "; // change " " to \n or endl if  
-        else if(strcmp(datatype,"DOUBLE") == 0)// by newline, may update later
-            for(int i=0; i<N; i++)
-                outputFile << (double)(rand()%T)/(double)(rand()%T) << " "; // REFINE THIS
-        else if(strcmp(datatype,"FLOAT") == 0)
-            for(int i=0; i<N; i++)
-                outputFile << (float)(rand()%T)/(float)(rand()%T) << " "; // REFINE THIS
-        else if(strcmp(datatype,"CHAR") == 0)
-            for(int i=0; i<N; i++)
-                outputFile << alphabet[rand()%sizeof(alphabet)] << " ";
-        else if(strcmp(datatype,"STRING") == 0) {
-            if(T == -1) {
-                for(int i=0; i<N; i++) {
-                    for(size_t j=0; j<rand()%sizeof(alphabet); j++)
-                        outputFile << alphabet[rand()%sizeof(alphabet)];
-                    outputFile << endl;
-                }
-            }
-            else {
-                for(int i=0; i<N; i++) {
-                    for(int j=0; j<T; j++)
-                        outputFile << alphabet[rand()%sizeof(alphabet)];
-                    outputFile << endl;
-                }
-            }
-        }
-        else {
-            cerr << "error: not a valid type for this program, must be INT, "
-                 << "DOUBLE, or FLOAT" << endl;
-            exit(6);
-        }
-        
-        outputFile.close();
-
-        string moveFile = "mv test"+to_string(testFileNum)+" TestFiles";
-        system(moveFile.c_str());
-    }
-    else if(conf == 'n') {
-        cout << "You have chosen to quit the program. Quitting...\n\n";
-        exit(0); // not quite accurate
-    }
-    else {
-        cout << "input not valid, respond with 'Y' or 'n': ";
-        cin >> conf;
-    }
-
-    if(DEBUG)
-        cout << "\nend method: loadFile\n";
-}
-"""
-# this function creates a file and first writes to it the amount of data in the file N. The next
-# line consists N <numerical datatype>s or characters separated by a space. Strings are generated
-# at a random length and separated by a new line.
-# pre-condition: N and T must be defined and initialized to an integer value, and datatype must be
-#                initialized to a string or char*
-# 
-# post-condition: nothing in main has changed. the function created an output file and wrote to it
-#                 the amount of data and each data value
-def loadFile(n,t,datatype):
     if DEBUG:
-        print("\nbeginning method: loadFile\n")
+        print("Entering load_file...")
         
     # confirmation
     print("\nYou have chosen:\nnumber of values:",n,"\nmax value:",t)
     conf = input("\n\nConfirm [Y/n]: ")
     # check confirmation
-    while conf != 'Y' and conf != 'n':
+    while conf not in ('Y', 'n'):
         conf = input("error: please provide [Y/n]: ")
     
     # this is what the user wants to do
@@ -489,65 +248,21 @@ def loadFile(n,t,datatype):
 
         # For example, if the command returns 2 (meaning 2 files are in the TestFiles directory),
         # then a file will be created named "test3".
-        test_file_num = executeCommand("../TestFiles/test*")+1
+        test_file_num = execute_command("../TestFiles/test*")+1
         # check if none for exit
-        if type(test_file_num) == None:
+        if test_file_num is None:
             print("error: unable to progress without command output")
             exit(3)
         
+        file_name: str = f"test{test_file_num}"
+        
         try:
-            with open("test"+str(test_file_num)) as file:
+            with open(file_name, 'w') as file:
                 # write number of cases to file
-                file.write(n,"\n")
-                
-                # integer
-                if datatype == "INT" or datatype == "int":
-                    for _ in range(n):
-                        file.write(str(random.randint(0,t-1)) + " ") # change " " to \n if data 
-                # float                                              # needs to be separated by
-                elif datatype == "FLOAT" or datatype == "float":     # newline, may update later
-                    for _ in range(n):
-                        file.write(str(random.uniform(0,t)) + " ")
-                # char
-                elif datatype == "CHAR" or datatype == "char":
-                    for _ in range(n):
-                        file.write(str(random.choice(ALPHABET)) + " ")
-                # string
-                elif datatype == "STRING" or datatype == "string":
-                    # word bank
-                    if t == -1:
-                        # define path to 'word bank'
-                        dictionary_path = "../Dictionaries/words-alpha.txt"
-                        
-                        # read dictionary
-                        with open(dictionary_path, "r") as dict_file:
-                            possible_strings = [line.strip() for line in dict_file]
-                        
-                        for _ in range(n):
-                            file.write(random.choice(possible_strings) + " ")
-                    # uniform string length
-                    elif t == -2:
-                        t = int(input("Enter the length of the strings you want: "))
-                        
-                        # print n words
-                        for _ in range(n):
-                            # get random char
-                            for _ in range(t):
-                                file.write(ALPHABET[random.randint(len(ALPHABET))] + " ")
-                    # variable string length
-                    else:
-                        # print n words
-                        for _ in range(n):
-                            # get random char
-                            for _ in range(random.randint(len(ALPHABET))):
-                                file.write(ALPHABET[random.randint(len(ALPHABET))] + " ")
-                
-                else:
-                    sys.stderr.write("error: not a valid type for this program, must be INT, DOUBLE, or FLOAT\n")
-                    exit(5)
-            
+                file.write(f"{n}\n")
+                _write_file_data(file, n, t, datatype)
         except IOError:
-            sys.stderr.write(f"Failed to create output file (name used: test{test_file_num}).\n")
+            stderr.write(f"Failed to create output file (name used: test{test_file_num}).\n")
             exit(4)
         
     else:
@@ -555,249 +270,106 @@ def loadFile(n,t,datatype):
         exit(0) # not quite accurate
     
     # use CLI to move generated file to appropriate directory
-    shutil.move(f"test{test_file_num}", "../TestFiles")
+    move(f"test{test_file_num}", "../TestFiles")
     # could remove this if directory included in file creation command
         
     if DEBUG:
-        print("\nend method: loadFile\n")
+        print("Exiting load_file...")
 
-# --- MAIN ------------------------------------------------------------------------------
-# --- CHECK CLI ARGS ----------------------------
-"""
-int main(int argc, char* argv[])
-{
-    if(argc < 4 || argc > 6) {
-        cerr << "error: must have 4, 5, or 6 arguments: exe, -d flag (optional)"
-             << ", -m flag (optional), number of cases, range of values, "
-             << "datatype. only " << argc << " arguments were provided." << endl;
-        return 1; // return 1 (stdout) vs. return 2 (stderr)?
-    }
-"""
-# check if I/O redirection is used correctly (must be 4, 5, or 6 flags) 4 required flags, +2
-# optional (6)
-if len(sys.argv) < 4 or len(sys.argv) > 6:
-    sys.stderr.write(f"""error: invalid arguments, {len(sys.argv)} provided.
-                     Usage: python3 create_test-<version>.py [-d] [-m] <number of cases> <range> <type>""")
 
-# --- INTRODUCTION ------------------------------
-"""
-    cout << "This program generates a test file (./TestFiles) where the "
-         << "user specifies the number of values, range, and type\n";
-"""
-print("""This program generates a test file (./TestFiles) where the user specifies the number of
-      values, range, and type\n""")
-
-# --- CONFIRMATION ------------------------------
-"""
-    cout << "Do you want to run this program? [Y/n]: ";
-    char confirmation;
-    cin >> confirmation;
-
-    if(confirmation == 'n') {
-        cout << "terminating...\n";
-        exit(0);
-    }
-"""
-confirmation = input("Do you want to run this program? [Y/n]: ")
-# if declined, terminate
-if confirmation == 'n':
-    print("terminating...\n")
-    exit(0)
-    # using 0 for exit because it is successful - user specified would normally use >0 if for error
-
-# --- VAR SETUP ---------------------------------
-"""
-    int N, T;
-"""
-# number of cases, range of values created here because if -m is present, then the values in argv
-# shift
-t: int
-n: int
-
-# --- LOGIC BASED ON CLI ARGS -----------------------------------------------------------
-# --- DEBUG FLAG --------------------------------
-"""
-    if(strcmp(argv[1],"-d") == 0 || strcmp(argv[2],"-d") == 0) {
-        DEBUG = true;
-
-        if(strcmp(argv[1],"-m") == 0 || strcmp(argv[2],"-m") == 0) {
-
-            N = atoi(argv[3]);
-            T = atoi(argv[4]);
-
-            if(N <= 0) {
-                cerr << "error: matrix dimension must be > 0 (provided size: " << N << ").\n";
-                exit(2);
-            }
-
-            if(T <= 0 && strcmp(argv[5],"CHAR") != 0) {
-                cerr << "error: range of values must be > 0 (provided length: " << T << ").\n";
-                exit(2);
-            }
-
-            loadMatrix(N,T,argv[5]);
-        }
-        """
-# if -d specified, enable debug output first comparison is how flags should be ordered, second is
-# contingency for if the user swaps -d and -m
-if sys.argv[1] == '-d' or sys.argv[2] == '-d':
-    # d IS PRESENT
-    DEBUG = True
+# --- WRITE FILE DATA ---------------------------
+# pre-condition: file is an open file object, n is an integer representing the number of values, t
+#                is an integer representing the range or length of values, datatype is one of INT,
+#                FLOAT, or STRING
+# post-condition: data is written to the file
+def _write_file_data(file, n: int, t: int, datatype: str) -> None:
+    """Helper function to write data to a file based on the datatype."""
     
-    # same contingency here
-    if sys.argv[1] == '-m' or sys.argv[2] == '-m':
-        # BOTH -d AND -m FLAGS ARE PRESENT: N = argv[3]
-        MATRIX = True
-        
-        # convert CLI arguments to ints, atoi (notes)
-        n = int(sys.argv[3])
-        t = int(sys.argv[4])
-        
-        # CHECK N
-        if n <= 0:
-            sys.stderr.write(f"error: matrix dimension must be > 0 (provided size: {n}).\n")
-            exit(2)
-        # CHECK T
-        # range of numerical values, so must be > 0
-        # can ignore whatever T is if we are processing characters
-        if t <= 0 and sys.argv[5] != "CHAR":
-            sys.stderr.write(f"error: range of values must be > 0 (provided length: {t}).\n")
-            exit(2)
-        
-        # construct matrix test file
-        loadMatrix(n,t,sys.argv[5])
-        
-# ---  --------------------------------
-        """
-        else {
-            N = atoi(argv[2]);
-            T = atoi(argv[3]);
-
-            if(N <= 0) {
-                cerr << "error: amount of data must be > 0 (provided length: " << N << ").\n";
-                exit(2);
-            }
-
-            if(strcmp(argv[4],"CHAR") != 0)
-                if(T == 0 || T < -1) {
-                    cerr << "error: range of values must not equal 0 or be less "
-                         << "than -1 (provided length: " << T << ").\n";
-                    exit(2);
-                }
-
-            loadFile(N,T,argv[4]);
-        }
-    }
-    """
+    if DEBUG:
+        print("Entering _write_file_data...")
+    
+    if datatype.lower() == "int":
+        for _ in range(n):
+            file.write(f"{randint(0, t-1)} ")
+    elif datatype.lower() == "float":
+        for _ in range(n):
+            file.write(f"{uniform(0, t):.6f} ")
+    elif datatype.lower() == "char":
+        for _ in range(n):
+            file.write(choice(ALPHABET) + " ")
+    elif datatype.lower() == "string":
+        dictionary_path: str = "../Dictionaries/words-alpha.txt"
+        with open(dictionary_path, "r") as dict_file:
+            possible_strings = [line.strip() for line in dict_file]
+        for _ in range(n):
+            file.write(choice(possible_strings) + " ")
     else:
-        # ONLY -d IS PRESENT: N = argv[2]
-        n = int(sys.argv[2])
-        t = int(sys.argv[3])
-        
-        # CHECK N
-        if n <= 0:
-            sys.stderr.write(f"error: matrix dimension must be > 0 (provided length: {n}).\n")
-            exit(2)
-        # CHECK T
-        # if the type is not a char, then ignore (char does not need length)
-        if sys.argv[4] != "CHAR":
-            # includes strings, so special case -1 must pass check
-            if t == 0 or t < -1:
-                sys.stderr.write(f"error: range of values must not equal 0 or be less than -1 (provided length: {t}).\n")
-                exit(2)
-        
-        # load test file
-        loadFile(n,t,sys.argv[4])
+        stderr.write("Error: Invalid datatype for this program. Must be INT, FLOAT, CHAR, or STRING.\n")
+        exit(5)
     
-# ---  --------------------------------
-    """
-    else {
-        if(strcmp(argv[1],"-m") == 0) {
-            N = atoi(argv[2]);
-            T = atoi(argv[3]);
+    if DEBUG:
+        print("Exiting _write_file_data.")
 
-            if(N <= 0) {
-                cerr << "error: matrix dimension must be > 0 (provided size: " << N << ").\n";
-                exit(2);
-            }
-        
-            if(T <= 0 && strcmp(argv[4],"CHAR") != 0) {
-                cerr << "error: range of values must be > 0 (provided length: " << T << ").\n";
-                exit(2);
-            }
 
-            loadMatrix(N,T,argv[4]);
-        }
-        """
-else:
-    # d IS NOT PRESENT
-    
-    # since -d is not present, only one flag to check
-    if sys.argv[1] == 'm':
-        # ONLY -m IS PRESENT: N = argv[2]
+def main():
+    # --- CHECK CLI ARGS ------------------------
+    # check if I/O redirection is used correctly (must be 4, 5, or 6 flags) 4 required flags, +2
+    # optional (6)
+    if len(argv) < 4 or len(argv) > 6:
+        stderr.write(f"""error: invalid arguments, {len(argv)} provided.
+        Usage: python3 create_test-<version>.py [-d] [-m] <number of cases> <range> <type>""")
+        exit(1)
+
+    # --- INTRODUCTION --------------------------
+    print("""This program generates a test file (./TestFiles) where the user specifies the number
+          of values, range, and type\n""")
+
+    # --- CONFIRMATION --------------------------
+    confirmation = input("Do you want to run this program? [Y/n]: ")
+    # if declined, terminate
+    if confirmation == 'n':
+        print("terminating...\n")
+        exit(0)
+        # using 0 for exit because it is successful - user specified would normally use >0 if for
+        # error
+
+    # --- VAR SETUP -----------------------------
+    # number of cases, range of values created here because if -m is present, then the values in
+    # argv shift
+    t: int
+    n: int
+
+    # --- DEBUG FLAG --------------------------------
+    # if -d specified, enable debug output first comparison is how flags should be ordered, second
+    # is contingency for if the user swaps -d and -m
+    if '-d' in argv:
+        DEBUG = True
+
+    if '-m' in argv:
         MATRIX = True
-        
-        n = int(sys.argv[2])
-        t = int(sys.argv[3])
     
-        # CHECK N
-        if n <= 0:
-            sys.stderr.write(f"error: matrix dimension must be > 0 (provided size: {n}).\n")
-            exit(2)
-        # CHECK T
-        # range of numerical values, so must be > 0
-        # can ignore whatever T is if we are processing characters
-        if t <= 0 and sys.argv[5] != "CHAR":
-            sys.stderr.write(f"error: range of values must be > 0 (provided length: {t}).\n")
-            exit(2)
-        
-        # construct matrix test file
-        loadMatrix(n,t,sys.argv[4])
-        
-# ---  -------------------------------- 
-        """
-        else {
-            N = atoi(argv[1]);
-            T = atoi(argv[2]);
+    n = int(argv[-3])
+    t = int(argv[-2])
+    datatype: str = argv[-1]
 
-            if(N <= 0) {
-                cerr << "error: amount of data must be > 0 (provided length: " << N << ").\n";
-                exit(2);
-            }
+    # check dimension args
+    if n <= 0:
+        stderr.write(f"Error: Dimension must be > 0 (provided size: {n}).\n")
+        exit(2)
 
-            if(strcmp(argv[3],"CHAR") != 0)
-                if(T == 0 || T < -1) {
-                    cerr << "error: range of values must not equal 0 or be less "
-                         << "than -1 (provided length: " << T << ").\n";
-                    exit(2);
-                }
+    # check numerical range and string length args
+    if t <= 0 and datatype.lower() != "char":
+        stderr.write(f"Error: Range of values must be > 0 (provided length: {t}).\n")
+        exit(2)
 
-            loadFile(N,T,argv[3]);
-        }
-    }
-    
-    return 0;
-}
-    """
+    if MATRIX:
+        load_matrix(n, t, datatype)
     else:
-        n = int(sys.argv[1])
-        t = int(sys.argv[2])
-        
-        # CHECK N
-        if n <= 0:
-            sys.stderr.write(f"error: matrix dimension must be > 0 (provided length: {n}).\n")
-            exit(2)
-        # CHECK T
-        # if the type is not a char, then ignore (char does not need length)
-        if sys.argv[4] != "CHAR":
-            # includes strings, so special case -1 must pass check
-            if t == 0 or t < -1:
-                sys.stderr.write(f"error: range of values must not equal 0 or be less than -1 (provided length: {t}).\n")
-                exit(2)
+        load_file(n, t, datatype)
 
-        # load test file
-        loadFile(n,t,sys.argv[3])
 
+if __name__ == "__main__":
+    main()
 
 
 # REVISION HISTORY
@@ -817,6 +389,8 @@ else:
 #                       functions.
 # 
 # Updated: 4.03.2024 -- translated to Python and added string generation.
+# 
+# Updated: 8.17.2024 -- function decomposition and PEP 8 Compliance
 
 
 # BACKGROUND ON BASH COMMANDS IN THIS PROGRAM -- C++

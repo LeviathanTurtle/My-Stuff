@@ -3,7 +3,9 @@
 # CSC1710
 # Created: 1.12.2021
 # Doctored: 11.2.2023
+# 
 # Python-ized: 3.30.2024
+# Updated 8.17.2024: function decomposition and PEP 8 Compliance
 # 
 # [DESCRIPTION]:
 # This program will store a soccer player's name, position, number of games played, total goals
@@ -24,186 +26,107 @@
 # 2 - file unable to be opened or created
 
 # --- IMPORTS ---------------------------------------------------------------------------
-"""
-#include <iostream>
-#include <iomanip>
-#using namespace std;
-
-#define MAX_SIZE 30
-"""
-import sys
+from sys import argv, stderr, exit
 from dataclasses import dataclass
+from typing import List
 
-MAX_SIZE = 30
+MAX_SIZE: int = 30
+DEBUG: bool = False
+
 
 # --- OBJECTS ---------------------------------------------------------------------------
-"""
-struct player {
-    string name;
-    string position;
-    int games;
-    int goals;
-    int shots;
-    int minutes;
-};
-"""
 @dataclass
-class player:
-    name: str
-    position: str
-    games: int
-    goals: int
-    shots: int
-    minutes: int
+class Player:
+    name: str = ""
+    position: str = ""
+    games: int = 0
+    goals: int = 0
+    shots: int = 0
+    minutes: int = 0
+
 
 # --- FUNCTIONS -------------------------------------------------------------------------
 # --- LOAD DATA ---------------------------------
-"""
-void loadData(const char*, player[], int&);
-void loadData(const char* filename, player array[], int& count)
-{
-    ifstream inputFile (filename);
-
-    if(!inputFile) {
-        cerr << "error: file unable to be opened or created (provided name: " << filename << ").\n";
-        exit(2);
-    }
-    
-    string name, position;
-    int games, goals, shots, minutes;
-    inputFile >> name >> position >> games >> goals >> shots >> minutes;
-
-    while (cin && count < MAX_SIZE) {
-        array[count].name = name;
-        array[count].position = position;
-        array[count].games = games;
-        array[count].goals = goals;
-        array[count].shots = shots;
-        array[count].minutes = minutes;
-
-        count++;
-        inputFile >> name >> position >> games >> goals >> shots >> minutes;
-    }
-
-    inputFile.close();
-}
-"""
-# this function reads in data about players (name, position, total games played, goals, shots made,
-# and minutes played. Store data in an array.
 # Pre-condition: the player array references the array that will be loaded
 #                with the player data
 # Post-condition: the player array will be loaded with the data found in
 #                 the data file, but not exceeding the max of 30
 # Assumption: if the player's name can be read, assume that the position,
 #             games played, goals, shots, and minutes played follows.
-def loadData(filename, array, count) -> int:
-    # open file
-    with open(filename, 'r') as file:
-        # check file was able to be opened
-        if not file:
-            sys.stderr.write(f"error: file unable to be opened or created (provided name: {filename}).")
-            exit(2)
-        
-        # get first player + stats
-        name, position, games, goals, shots, minutes = file.readline().split()
-        
-        # get the rest of the players + stats
-        for _ in range(count, MAX_SIZE):
-            array[count].name = name
-            array[count].position = position
-            array[count].games = int(games)
-            array[count].goals = int(goals)
-            array[count].shots = int(shots)
-            array[count].minutes = int(minutes)
-            
-            data = file.readline().split()
-            if not data:
-                break
-            name, position, games, goals, shots, minutes = data
+def load_data(filename: str, players: List[Player], start_count: int) -> int:
+    """Loads player data from a file into the players array."""
     
+    if DEBUG:
+        print("Entering load_data...")
+        
+    # open file
+    try:
+        with open(filename, 'r') as file:
+            # get the players + stats
+            for count in range(start_count, MAX_SIZE):
+                data = file.readline().split()
+                if not data:
+                    break
+                
+                players[count].name = data[0]
+                players[count].position = data[1]
+                players[count].games = int(data[2])
+                players[count].goals = int(data[3])
+                players[count].shots = int(data[4])
+                players[count].minutes = int(data[5])
+    except FileNotFoundError:
+        stderr.write(f"Error: File '{filename}' not found")
+        exit(2)
+    
+    if DEBUG:
+        print("Exiting load_data.")
     return count
 
-# --- PRINT DATA --------------------------------
-"""
-void printData(player[], const int&);
-void printData(player team[], const int& n)
-{
-    cout << fixed << showpoint << setprecision(2); 
-    
-    cout << setw(10) << right << "HPU Women's Soccer Stats" << endl;
-    cout << setw(11) << left << "Name" << setw(12) << left << "Position";
-    cout << setw(4) << right << "GP" << setw(4) << right << "G";
-    cout << setw(6) << right << "SH" << setw(7) << right << "Mins";
-    cout << setw(8) << right << "Shot%" << endl << endl;
-    
-    for (int i=0; i<n; i++) {
-        cout << left << setw(11) << team[i].name;
-        cout << left << setw(12) << team[i].position;
-        cout << right << setw(4) << team[i].games;
-        cout << right << setw(4) << team[i].goals;
-        cout << right << setw(6) << team[i].shots;
-        cout << right << setw(7) << team[i].minutes;
 
-        if(team[i].shots == 0)
-            cout << right << setw(8) << "0.0%" << endl;
-        else
-            cout << right << setw(7) << team[i].goals*100 / team[i].shots; << "%" << endl;
-    }
-}
-"""
-# this function output player data stored in the array (name, position, total games played, goals,
-# shots made, and minutes played)
+# --- PRINT DATA --------------------------------
 # Pre-condition: the player array (team[]) is loaded with player data for n
 #                players
 # Post-condition: the player array will be printed, no changes made
-def printData(team, n):
+def print_data(players: List[Player], count: int) -> None:
+    """Prints the soccer statistics of the players."""
+    
+    if DEBUG:
+        print("Entering print_data...")
+        
     # titles
     print(f"{'HPU Soccer Stats':>10}")
     print(f"{'Name':<11}{'Position':<12}{'GP':>4}{'G':>4}{'SH':>6}{'Mins':>7}{'Shot %':>8}")
     
     # individual data
-    for i in range(0,n):
-        print(f"{team[i].name:<11}{team[i].position:<12}{team[i].games:>4}{team[i].goals:>4}{team[i].shots:>6}{team[i].minutes:>7}", end="")
-
-        if(team[i].shots == 0): # this is to avoid dividing by 0
-            print(f"{'0.0%':>8}")
-        else:
-            print(f"{team[i].goals * 100 / team[i].shots:>7.2f}%")
-
-# --- MAIN ------------------------------------------------------------------------------
-# --- CHECK CLI ARGS ----------------------------
-"""
-int main (int argc, char* argv[])
-{
-    if(argc != 2) {
-        cerr << "error: CLI args used incorrectly. Proper execution: ./exe <input file>.\n";
-        exit(1);
-    }
-"""
-# check that CLI args are used correctly
-if len(sys.argv) != 2:
-    sys.stderr.write("Usage: python3 soccerStats.py <input file>")
-    exit(1)
-
-# --- LOAD AND PRINT ----------------------------
-"""
-    player db[MAX_SIZE];
-    int count = 0;
+    for i in range(count):
+        shot_percentage = (f"{players[i].goals*100 / players[i].shots:>7.2f}%" if players[i].shots != 0 else "0.0%")
+        
+        print(f"{players[i].name:<11}{players[i].position:<12}"
+              f"{players[i].games:>4}{players[i].goals:>4}"
+              f"{players[i].shots:>6}{players[i].minutes:>7}"
+              f"{shot_percentage:>8}")
     
-    loadData(argv[1],db,count);
-    printData(db,count);
-    
-    cout << endl << "Player count: " << count << endl;
-    
-    return 0;
-}
-"""
-# database array
-db = [player() for _ in range(MAX_SIZE)]
+    if DEBUG:
+        print("Exiting print_data.")
 
-# load array, keeping array size
-count = loadData(sys.argv[1],db,0)
-printData(db,count)
 
-print(f"Player count: {count}")
+def main():
+    # --- CHECK CLI ARGS ------------------------
+    # check that CLI args are used correctly
+    if len(argv) != 2:
+        stderr.write("Usage: python3 soccerStats.py <input file>")
+        exit(1)
 
+    # --- LOAD AND PRINT ------------------------
+    # database array
+    players: List[Player] = [Player() for _ in range(MAX_SIZE)]
+
+    # load array, keeping array size
+    player_count = load_data(argv[1],players,0)
+    print_data(players,player_count)
+
+    print(f"Player count: {player_count}")
+
+
+if __name__ == "__main__":
+    main()

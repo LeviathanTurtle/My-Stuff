@@ -3,7 +3,9 @@
 # CSC1710
 # Created: 9.16.2020
 # Doctored: 11.2.2023
+# 
 # Python-ized: 3.30.2024
+# Updated 8.17.2024: function decomposition and PEP 8 Compliance
 # 
 # [DESCRIPTION]:
 # This program calculates and outputs information pertaining to coffee sales based on an input file
@@ -20,146 +22,85 @@
 
 
 # --- IMPORTS ---------------------------------------------------------------------------
-"""
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <iomanip>
-using namespace std;
-"""
-import sys
+from sys import argv, stderr, exit
 from dataclasses import dataclass
 
+DEBUG: bool = False
+
+
 # --- OBJECTS ---------------------------------------------------------------------------
-"""
-struct personalSales {
-    string firstName;
-    string lastName;
-    string department;
-    double salary;
-    double bonus;
-    double taxes;
-    double distance;
-    double time;
-    int cups;
-    double cupCost;
-};
-"""
 @dataclass
-class personalSales:
-    first_name: str
-    last_name: str
-    department: str
-    salary: float
-    bonus: float
-    taxes: float
-    distance: float
-    time: float
-    cups: int
-    cup_cost: float
+class PersonalSales:
+    first_name: str = ""
+    last_name: str = ""
+    department: str = ""
+    salary: float = 0.0
+    bonus: float = 0.0
+    taxes: float = 0.0
+    distance: float = 0.0
+    time: float = 0.0
+    cups: int = 0
+    cup_cost: float = 0.0
+
 
 # --- FUNCTIONS -------------------------------------------------------------------------
-# --- LOAD STRUCT -------------------------------
-"""
-personalSales loadStruct(char*);
-personalSales loadStruct(char* inputFile)
-{
-    personalSales person;
-
-    ifstream inputFile (inputFile);
-
-    if(!inputFile) {
-        cerr << "error: file unable to be opened or created.\n";
-        exit(2);
-    }
-
-    inputFile >> person.firstName;
-    inputFile >> person.lastName;
-    inputFile >> person.department;
-    cout << "Name: " << person.first << " " << person.last << ", Department: "
-         << person.department << endl;
-
-    cout << fixed << showpoint << setprecision(2);
-    inputFile >> person.salary;
-    inputFile >> person.bonus;
-    inputFile >> person.taxes;
-    cout << "Monthly Gross Income: $" << person.salary << ", Bonus: " 
-         << person.bonus << "%, Taxes: " << person.taxes << "%" << endl;
-
-    inputFile >> person.distance;
-    inputFile >> person.time;
-    cout << "Distance traveled: " << person.distance << " miles, "
-         << "Traveling Time: " << person.time << " hours" << endl;
-    cout << "Average Speed: " << person.distance/person.time << " miles per "
-         << "hour" << endl;
-
-    inputFile >> person.cups;
-    inputFile >> person.cupCost;
-    cout << "Number of coffee cups sold: " << person.cups << ", Cost: $" 
-         << person.cupCost << " per cup" << endl;
-    cout << "Sales amount = $" << person.cups*person.cupCost << endl;
-
-    inputFile.close();
-
-    return person;
-}
-"""
-def loadStruct(input_file) -> personalSales:
-    person = personalSales()
+# --- LOAD PERSONAL SALES -----------------------
+# pre-condition: input_file is the path to a file containing personal sales data in a specific 
+#                format
+# post-condition: returns a populated PersonalSales object with data from the file
+def load_personal_sales(input_file: str) -> PersonalSales:
+    """Loads data from a file into a PersonalSales object."""
+    
+    if DEBUG:
+        print("Entering load_personal_sales...")
+        
+    person = PersonalSales()
     
     try:
         with open(input_file,'r') as file:            
             # take first and last values from data file, display in output
-            person.firstName = input_file.readline().strip()
-            person.lastName = input_file.readline().strip()
-            person.department = input_file.readline().strip()
-            print(f"Name: {person.firstName} {person.lastName}, Department: {person.department}")
+            person.first_name = file.readline().strip()
+            person.last_name = file.readline().strip()
+            person.department = file.readline().strip()
+            print(f"Name: {person.first_name} {person.last_name}, Department: {person.department}")
 
             # take salary, bonus, and tax values from data file, display in output, set to display
             # two decimal places
-            person.salary = float(input_file.readline())
-            person.bonus = float(input_file.readline())
-            person.taxes = float(input_file.readline())
+            person.salary = float(file.readline().strip())
+            person.bonus = float(file.readline().strip())
+            person.taxes = float(file.readline().strip())
             print(f"Monthly Gross Income: ${person.salary:.2f}, Bonus: {person.bonus:.2f}%, Taxes: {person.taxes:.2f}%")
 
             # take distance and time values from data file, display in output, calculate mph
-            person.distance = float(input_file.readline())
-            person.time = float(input_file.readline())
+            person.distance = float(file.readline().strip())
+            person.time = float(file.readline().strip())
             print(f"Distance traveled: {person.distance:.2f} miles, Traveling Time: {person.time:.2f} hours")
             print(f"Average Speed: {person.distance/person.time:.2f} miles per hour")
 
             # take cups and cost values from data file, display in output
-            person.cups = int(input_file.readline())
-            person.cupCost = float(input_file.readline())
-            print(f"Number of coffee cups sold: {person.cups}, Cost: ${person.cupCost:.2f} per cup")
-            print(f"Sales amount = ${person.cups*person.cupCost:.2f}")
-            
+            person.cups = int(file.readline().strip())
+            person.cup_cost = float(file.readline().strip())
+            print(f"Number of coffee cups sold: {person.cups}, Cost: ${person.cup_cost:.2f} per cup")
+            print(f"Sales amount = ${person.cups*person.cup_cost:.2f}")
     except IOError:
-        print(f"error: file (name: {input_file}) unable to be opened or created.")    
+        stderr.write(f"error: file (name: {input_file}) unable to be opened or created.")
+        exit(2)
     
+    if DEBUG:
+        print("Exiting load_personal_sales.")
     return person    
 
-# --- DUMP --------------------------------------
-"""
-void dump(char*, char*);
-void dump(char* inputFileName, char* outputFileName)
-{
-    ifstream inputFile (inputFileName);
-    ofstream outputFile (outputFileName);
 
-    if(!inputFile || !outputFile) {
-        cerr << "error: file(s) unable to be opened or created. provided names"
-             << ": input: " << inputFileName << ", output: " << outputFileName 
-             << ".\n";
-        exit(2);
-    }
-
-    outputFile << inputFile;
-
-    outputFile.close();
-}
-"""
-def dump(input_file_name, output_file_name):
+# --- DUMP FILE ---------------------------------
+# pre-condition: input_file_name is the path to the input file, output_file_name is the path to the
+#                output file
+# post-condition: the contents of the input file are written to the output file
+def dump_file(input_file_name: str, output_file_name: str) -> None:
+    """Copies the contents of the input file to the output file."""
+    
+    if DEBUG:
+        print("Entering dump_file...")
+        
     # check files were opened
     try:
         with open(input_file_name, 'r') as input_file, open(output_file_name, 'w') as output_file:
@@ -168,35 +109,26 @@ def dump(input_file_name, output_file_name):
     except IOError:
         print(f"error: file(s) unable to be opened or created (input: {input_file_name}, output: {output_file_name}).")
         exit(2)
+    
+    if DEBUG:
+        print("Exiting dump_file.")
 
-# --- MAIN ------------------------------------------------------------------------------
-# --- CHECK CLI ARGS ----------------------------
-"""
-int main (int argc, char* argv[])
-{
-    if(argc != 3) {
-        cerr << "error: CLI args used incorrectly. Proper order: ./exe <input "
-             << "file> <output file>\n";
-        exit(1);
-    }
-"""
-# check CLI args are used correctly
-if len(sys.argv) != 3:
-    sys.stderr.write("Usage: python3 personalSales.py <input file> <output file>")
-    exit(1)
 
-# --- INPUT + OUTPUT ----------------------------
-"""
-    personalSales person = loadStruct(argv[1]);
+def main():
+    # --- CHECK CLI ARGS ----------------------------
+    # check CLI args are used correctly
+    if len(argv) != 3:
+        stderr.write("Usage: python3 personalSales.py <input file> <output file>")
+        exit(1)
 
-    dump(argv[1],argv[2]);
+    # --- INPUT + OUTPUT ----------------------------
+    # initialize variables
+    person = load_personal_sales(argv[1])
 
-    return 0;
-}
-"""
-# initialize variables
-person = loadStruct(sys.argv[1])
+    # output
+    print(f"\nPersonal sales: {person}")
+    dump_file(argv[1],argv[2])
 
-# output
-dump(sys.argv[1],sys.argv[2])
 
+if __name__ == "__main__":
+    main()

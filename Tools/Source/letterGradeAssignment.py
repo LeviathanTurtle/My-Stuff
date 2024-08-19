@@ -3,7 +3,9 @@
 # CSC1710
 # Created: 11.12.2020
 # Doctored: 11.14.2023
+# 
 # Python-ized: 3.25.2024
+# Updated 8.17.2024: PEP 8 Compliance
 # 
 # [DESCRIPTION]:
 # This program takes a data file from argv and processes a number of students' test grade (number 
@@ -25,244 +27,186 @@
 # 2 - file unable to be opened or created
 
 # --- IMPORTS ---------------------------------------------------------------------------
-"""
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-using namespace std;
-"""
-import sys
+from sys import argv, stderr, exit
 from dataclasses import dataclass
+from typing import List
+
+DEBUG: bool = False
 
 # --- OBJECTS ---------------------------------------------------------------------------
-"""
-struct studentType
-{
-    string studentFName;
-    string studentLName;
-    int testScore;
-    char grade;
-};
-"""
 # data 'struct'
 @dataclass
-class studentType:
-    first_name: str
-    last_name: str
-    test_score: float # changing int to float because I want to include .xx% scores
-    grade: str
+class Student:
+    first_name: str = ""
+    last_name: str = ""
+    test_score: float = 0.0 # float because I want to include .xx% scores
+    grade: str = ""
+
 
 # --- FUNCTIONS -------------------------------------------------------------------------
 # --- READ ARRAY --------------------------------
-"""
-void readArray(studentType*, const int&, char*);
-void readArray(studentType* array, const int& numStudents, char* filename)
-{
-    ifstream file (filename);
+# pre-condition: students is a list of Student objects, num_students is the number of students to
+#                read, filename is the name of the file containing student data
+# post-condition: each student in the array is populated with first name, last name, and test score
+def read_array(students: List[Student], num_students: int, filename: str) -> None:
+    """Assign a letter grade to each student based on their test score."""
     
-    for(int i=0; i<numStudents; i++) {
-        file >> array[i].studentFName;
-        file >> array[i].studentLName;
-        file >> array[i].testScore;
-    }
-
-    file.close();
-}
-"""
-# function to read student data into array
-def readArray(array, num_students, filename):
+    if DEBUG:
+        print("Entering read_array...")
+        
     # open the data file
     with open(filename, 'r') as file:
         # iterate over each student in the array
         for i in range(num_students):
             # read data
-            array[i].first_name = file.readline().strip()
-            array[i].last_name = file.readline().strip()
-            array[i].test_score = float(file.readline().strip())
+            students[i].first_name = file.readline().strip()
+            students[i].last_name = file.readline().strip()
+            students[i].test_score = float(file.readline().strip())
+    
+    if DEBUG:
+        print("Exiting read_array.")
+
 
 # --- ASSIGN GRADE ------------------------------
-"""
-void assignGrade(studentType*, const int&);
-void assignGrade(studentType* array, const int& numStudents)
-{
-    for(int i=0; i<numStudents; i++) {
-        if(array[i].testScore >= 90 && array[i].testScore <= 100)
-            array[i].grade = 'A';
-        else if(array[i].testScore >= 80 && array[i].testScore < 90)
-            array[i].grade = 'B';
-        else if(array[i].testScore >= 70 && array[i].testScore < 80)
-            array[i].grade = 'C';
-        else if(array[i].testScore >= 60 && array[i].testScore < 70)
-            array[i].grade = 'D';
-        else
-            array[i].grade = 'F';
-    }
-}
-"""
-# function to assign relevant grade to each student
-def assignGrade(array, num_students):
-    for i in range(0,num_students):
-        if(array[i].test_score >= 90 and array[i].test_score <= 100):
-            array[i].grade = 'A'
-        elif(array[i].test_score >= 80 and array[i].test_score < 90):
-            array[i].grade = 'B'
-        elif(array[i].test_score >= 70 and array[i].test_score < 80):
-            array[i].grade = 'C'
-        elif(array[i].test_score >= 60 and array[i].test_score < 70):
-            array[i].grade = 'D'
+# pre-condition: students is a list of Student objects, num_students is the number of students in
+#                the array
+# post-condition: each student in the array is assigned a letter grade based on their test score
+def assign_grade(students: List[Student], num_students: int) -> None:
+    """Assign a letter grade to each student based on their test score."""
+    
+    if DEBUG:
+        print("Entering assign_grade...")
+        
+    for i in range(num_students):
+        if 90 <= students[i].test_score <= 100:
+            students[i].grade = 'A'
+        elif 80 <= students[i].test_score < 90:
+            students[i].grade = 'B'
+        elif 70 <= students[i].test_score < 80:
+            students[i].grade = 'C'
+        elif 60 <= students[i].test_score < 70:
+            students[i].grade = 'D'
         else:
-            array[i].grade = 'F'
+            students[i].grade = 'F'
+    
+    if DEBUG:
+        print("Exiting assign_grade.")
 
 # --- FIND NAME SIZE ----------------------------
-"""
-int findNameSize(studentType*, const int&);
-int findNameSize(studentType* array, const int& numStudents)
-{
-    int largest = strlen(array[0].studentFName + array[0].studentLName);
-
-    for(int i=1; i<numStudents; i++)
-        if(strlen(array[i].studentFName + array[i].studentLName) > largest)
-            largest = strlen(array[i].studentFName + array[i].studentLName);
+# pre-condition: students is a list of Student objects, num_students is the number of students in
+#                the array
+# post-condition: returns the length of the longest full name (first name + last name)
+def find_largest_name_size(students: List[Student], num_students: int) -> int:
+    """Find the size of the largest combined first and last name in the array."""
     
-    return largest;
-}
-"""
-# function to return the size of the largest name string
-def findLargestNameSize(array, num_students) -> int:
-    largest = len(array[0].first_name + array[0].last_name)
+    if DEBUG:
+        print("Entering find_largest_name_size...")
+        
+    largest = len(students[0].first_name + students[0].last_name)
     
     for i in range(1,num_students):
-        if(len(array[i].first_name + array[i].last_name) > largest):
-            largest = len(array[i].first_name + array[i].last_name)
+        full_name_length = len(students[i].first_name + students[i].last_name)
+        if(full_name_length > largest):
+            largest = full_name_length
     
+    if DEBUG:
+        print("Exiting find_largest_name_size.")
     return largest
     
+
 # --- PRINT ROWS --------------------------------
-"""
-void printRows(studentType*, const int&, const int&);
-void printRows(studentType* array, const int& numStudents, const int& largestName)
-{
-    const int spacing = largestName+2;
+# pre-condition: students is a list of Student objects, num_students is the number of students in
+#                the array, largest_name_size is the length of the longest full name in the array
+# post-condition: outputs the names, test scores, and grades of all students
+def print_rows(students: List[Student], num_students: int, largest_name_size: int) -> None:
+    """Print the list of students with their test scores and grades."""
     
-    for(int i=0; i<numStudents; i++)
-        cout << array[i].studentFName << " " array[i].studentLName 
-             << setw(spacing) << array[i].testScore << setw(12) 
-             << array[i].grade << endl;
-}
-"""
-# function to print the test grade
-def printRows(array, num_students, largest_name):
-    spacing = largest_name + 2
+    if DEBUG:
+        print("Entering print_rows...")
+        
+    spacing = largest_name_size + 2
     
     for i in range(0,num_students):
-        print(f"{array[i].first_name} {array[i].last_name:<{spacing}} {array[i].test_score:<12} {array[i].grade}")
-        
+        print(f"{students[i].first_name} {students[i].last_name:<{spacing}} {students[i].test_score:<12} {students[i].grade}")
+    
+    if DEBUG:
+        print("Exiting print_rows.")
+
 
 # --- HIGHEST SCORE -----------------------------
-"""
-int highestScore(studentType*, const int&);
-int highestScore(studentType* array, const int& numStudents)
-{
-    int max = array[0].testScore;
+# pre-condition: students is a list of Student objects, num_students is the number of students in
+#                the array
+# post-condition: returns the highest test score found in the array
+def highest_score(students: List[Student], num_students: int) -> float:
+    """Determine the highest test score among all students."""
     
-    for(int i=1; i<numStudents; i++)
-        if(array[i].testScore > max)
-            max = array[i].testScore;
-
-    return max;
-}
-"""
-# function to print highest test score
-def highestScores(array, num_students) -> int:
-    max = array[0].test_score
+    if DEBUG:
+        print("Entering highest_score...")
+        
+    max_score = students[0].test_score
     
     for i in range(1,num_students):
-        if(array[i].test_score > max):
-            max = array[i].test_score
+        if(students[i].test_score > max_score):
+            max_score = students[i].test_score
     
-    return max
+    if DEBUG:
+        print("Exiting highest_score.")
+    return max_score
+
 
 # --- STUDENT SCORE -----------------------------
-"""
-void studentScores(studentType*, const int&, const int);
-void studentScores(studentType* array, const int& numStudents, int maxScore)
-{
-    cout << "Student(s) with the highest score (" << maxScore << "): " << endl;
-
-    for(int i=0; i<numStudents; i++)
-        if(array[i].testScore == maxScore)
-            cout << array[i].studentFName << " " << array[i].studentLName << endl;
-}
-"""
-# function to print names of students with highest test score
-def studentScores(array, num_students, max_score):
+# pre-condition: students is a list of Student objects, num_students is the number of students in
+#                the array, max_score is the highest test score in the array
+# post-condition: outputs the names of students who achieved the highest score
+def student_scores(students: List[Student], num_students: int, max_score: float) -> None:
+    """Print the names of the students who achieved the highest test score."""
+    
+    if DEBUG:
+        print("Entering highest_score...")
+        
     print(f"Student(s) with the highest score ({max_score}): ")
     
-    for i in range(0,num_students):
-        if(array[i].test_score == max_score):
-            print(f"{array[i].first_name} {array[i].last_name}")
-
-# --- MAIN ------------------------------------------------------------------------------
-# --- CHECK CLI ARGS ----------------------------
-"""
-int main(int argc, char* argv[])
-{
-    if(argc != 3) {
-        cerr << "error: CLI args invalid. Enter: ./REPLACETHIS <number of "
-             << "students> <data file>.\n";
-        exit(1);
-    }
-"""
-if len(sys.argv) < 3:
-    sys.stderr.write("Usage: python3 letterGradeAssignment.py <number of students> <data file>")
-    exit(1)
-
-# --- SETUP VARS --------------------------------
-"""
-    const int numStudents = atoi(argv[1]);
+    for i in range(num_students):
+        if(students[i].test_score == max_score):
+            print(f"{students[i].first_name} {students[i].last_name}")
     
-    studentType* students = new studentType [numStudents];
-"""
-# get number of students to process from CL
-num_students = int(sys.argv[1])
-# define stuct variable, file variable, open data file
-students = [studentType() for _ in range(num_students)]
+    if DEBUG:
+        print("Exiting highest_score.")
 
-# --- READ ARRAY --------------------------------
-"""
-    readArray(students,numStudents,argv[2]);
-"""
-# read in array
-readArray(students,num_students,sys.argv[2])
 
-# --- ASSIGN LETTER GRADE -----------------------
-"""
-    assignGrade(students,numStudents);
-"""
-# assign letter grade
-assignGrade(students,num_students)
 
-# --- FIND LARGEST NAME -------------------------
-"""
-    const int largestNameSize = findLargestNameSize(students, numStudents);
-"""
-# find the largest name size for spacing in output
-largest_name_size = findLargestNameSize(students,num_students)
+def main():
+    # --- CHECK CLI ARGS ------------------------
+    if len(argv) < 3:
+        stderr.write("Usage: python3 letterGradeAssignment.py <number of students> <data file>")
+        exit(1)
 
-# --- CATEGORIES --------------------------------
-"""
-    cout << "Student Name" << setw(20) << "Test Score" << setw(10) << "Grade" << endl << endl;
-    printRows(students,numStudents,largestNameSize);
-"""
-print(f"{'Student Name':<20} {'Test Score':<10} {'Grade'}")
-printRows(students,num_students,largest_name_size)
+    # --- SETUP VARS ----------------------------
+    # get number of students to process from CL
+    num_students = int(argv[1])
+    # define stuct variable, file variable, open data file
+    students: List[Student] = [Student() for _ in range(num_students)]
 
-# --- HIGHEST SCORE -----------------------------
-"""
-    studentScores(students,numStudents,highestScore(students,numStudents));
+    # --- READ ARRAY ----------------------------
+    # read in array
+    read_array(students,num_students,argv[2])
 
-    return 0;
-}
-"""
-# show highest score
-studentScores(students,num_students,highestScores(students,num_students))
+    # --- ASSIGN LETTER GRADE -------------------
+    # assign letter grade
+    assign_grade(students,num_students)
+
+    # --- FIND LARGEST NAME ---------------------
+    # find the largest name size for spacing in output
+    largest_name_size = find_largest_name_size(students,num_students)
+
+    # --- CATEGORIES ----------------------------
+    print(f"{'Student Name':<{largest_name_size+2}} {'Test Score':<12} {'Grade'}")
+    print_rows(students,num_students,largest_name_size)
+
+    # --- HIGHEST SCORE -------------------------
+    # show highest score
+    student_scores(students,num_students,highest_score(students,num_students))
+
+
+if __name__ == "__main__":
+    main()

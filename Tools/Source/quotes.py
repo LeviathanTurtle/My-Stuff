@@ -21,28 +21,34 @@
 
 from requests import get
 
-# query the API
-response = get('https://zenquotes.io/api/random')
 
-# successful response code
-if response.status_code == 200:
-    # store response in var
-    json_response = response.json()
-    
-    # check that the response is a list and contains at least 1 element
-    if isinstance(json_response, list) and len(json_response) > 0:
-        # take out the first element
-        quote_data = json_response[0]
-        # extract the quote, with a default message if not found
-        quote = quote_data.get('q', 'No quote found')
-        # extract the quote author, with a default if not found
-        author = quote_data.get('a', 'Unknown author')
-        # output result
-        print(f'"{quote}" - {author}')
+def main():
+    # query the API
+    response = get('https://zenquotes.io/api/random')
+
+    # successful response code
+    if response.status_code == 200:
+        # store response in var
+        json_response = response.json()
+        
+        # check that the response is a list and contains at least 1 element
+        if isinstance(json_response, list) and len(json_response) > 0:
+            # take out the first element
+            quote_data = json_response[0]
+            # extract the quote, with a default message if not found
+            quote = quote_data.get('q', 'No quote found')
+            # extract the quote author, with a default if not found
+            author = quote_data.get('a', 'Unknown author')
+            # output result
+            print(f'"{quote}" - {author}')
+        else:
+            # in case no quote was found
+            print("No quote found in the response.")
+    # query unsuccessful
     else:
-        # in case no quote was found
-        print("No quote found in the response.")
-# query unsuccessful
-else:
-    # output error code
-    print(f"Error: {response.status_code}")
+        # output error code
+        print(f"Error: {response.status_code}")
+
+
+if __name__ == "__main__":
+    main()

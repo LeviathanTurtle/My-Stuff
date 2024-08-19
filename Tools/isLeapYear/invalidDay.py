@@ -6,35 +6,8 @@
 # About: 
 #   This is the header and implementation file for the invalidDay class
 
-# --- IMPORTS -----------------------------------
-"""
-#include <iostream>
-using namespace std;
-"""
 
 # --- CLASS -------------------------------------
-"""
-class invalidDay
-{
-   private:
-      string message;
-   public:
-      invalidDay()
-      {
-         message = "invalid day";
-      }
-      
-      invalidDay(string str)
-      {
-         message = str;
-      }
-
-      string huh()
-      {
-         return message;
-      }
-};
-"""
 class invalidDay:
     #   <var> -> public
     #  _<var> -> protected

@@ -2,7 +2,10 @@
 # William Wadsworth + Kolt Byers
 # Created: 11.29.2021
 # Doctored: 10.15.2023
+# 
 # Python-ized: 4.23.2024
+# Updated 8.17.2024: function decomposition and PEP 8 Compliance
+# 
 # CSC 2342
 # 
 # [DESCRIPTION]:
@@ -14,46 +17,25 @@
 # To run: python3 compAlgSort
 
 # --- IMPORTS ---------------------------------------------------------------------------
-"""
-#include <iostream>
-#include <fstream>
-#include <iomanip>
-#include <sys/time.h>
-using namespace std;
+from time import time
+from typing import List
 
-#define MAX 100000
-"""
-import time
-
-MAX = 100000
+MAX: int = 100000
+DEBUG: bool = False
 
 # --- FUNCTIONS -------------------------------------------------------------------------
-# all function variable spots are the same,
-#     exceptions: loadSort and loadArray
-
 # --- BUBBLE SORT 1 -----------------------------
-"""
-void bubble1(int*, int, long long int[]);
-void bubble1(int* a, int n, long long int output[])
-{
-   for (int i = 0; i < n-1; i++)
-      for (int j = 0; j < n - 1; j++) {
-         output[0]++;
-         if (a[j] > a[j + 1]) {
-            int temp = a[j];
-            output[1]++;
-            a[j] = a[j + 1];
-            output[1]++;
-            a[j + 1] = temp;
-            output[1]++;
-         }
-      }
-}
-"""
-# sorts n values in a[] and increments designated counters in output[]
+# pre-condition: a is a list of integers, n is the length of a, output is a list of 2 integers
+# post-condition: a is sorted in ascending order, output[0] contains the frequency count of
+#                 comparisons, output[1] contains the count of element movements
 
-#   bubble1(array, amount, results)
-def bubble1(a, n, output):
+#   bubble1(array,        amount, results)
+def bubble1(a: List[int], n: int, output: List[int]) -> None:
+    """Perform bubble sort on the list `a` and update `output` with frequency and movement counts."""
+   
+    if DEBUG:
+        print("Entering bubble1...")
+      
     for _ in range(n-1):
         for j in range(n-1):
             output[0] += 1 # if frequency counter
@@ -64,28 +46,22 @@ def bubble1(a, n, output):
                 output[1] += 1
                 a[j+1] = temp
                 output[1] += 1 # elements moved  counter
+   
+    if DEBUG:
+        print("Exiting bubble1.")
 
 # --- BUBBLE SORT 2 -----------------------------
-"""
-void bubble2(int*, int, long long int[]);
-void bubble2(int* a, int n, long long int output[])
-{
-   for (int i = 0; i < n-1; i++)
-      for (int j = 0; j < n - i-1; j++) {
-         output[2]++;
-         if (a[j] > a[j + 1]) {
-            int temp = a[j];
-            output[3]++;
-            a[j] = a[j + 1];
-            output[3]++;
-            a[j + 1] = temp;
-            output[3]++;
-         }
-      }
-}
-"""
-# sorts n values in a[] and increments designated counters in output[]
-def bubble2(a, n, output):
+# pre-condition: a is a list of integers, n is the length of a, output is a list of 4 integers
+# post-condition: a is sorted in ascending order, output[2] contains the frequency count of
+#                 comparisons, output[3] contains the count of element movements
+
+#   bubble2(array,        amount, results)
+def bubble2(a: List[int], n: int, output: List[int]) -> None:
+    """Perform bubble sort (variant) on the list `a` and update `output` with frequency and movement counts."""
+   
+    if DEBUG:
+        print("Entering bubble2...")
+      
     for _ in range(n-1):
         for j in range(n-1):
             output[2] += 1
@@ -96,75 +72,46 @@ def bubble2(a, n, output):
                 output[3] += 1
                 a[j+1] = temp
                 output[3] += 1
+   
+    if DEBUG:
+        print("Exiting bubble2.")
 
 # --- MERGE SORT --------------------------------
-"""
-void mergeSort(int*, long long int[], int, int);
-void mergeSort(int* a, long long int output[], int start, int end)
-{
-   output[4]++;
-   if (start < end) {
-      int middle = start + (end-start)/2;
-      mergeSort(a, output, start, middle);
-      mergeSort(a, output, middle + 1, end);
-      merge(a, output, start, middle, end);
-   }
-}
-"""
-# splits a[] (via merge method process) in half recursively, increments designated counters in
-# output[], calls merge
-def mergeSort(a, output, start, end):
+# pre-condition: a is a list of integers, n is the length of a, output is a list of 4 integers
+# post-condition: a is sorted in ascending order, output[4] contains the frequency recursive calls,
+#                 output[5] contains the count of element movements
+def merge_sort(a: List[int], output: List[int], start: int, end: int) -> None:
+    """Perform merge sort on the list `a` and update `output` with frequency and movement counts."""
+   
+    if DEBUG:
+        print("Entering merge_sort...")
+      
     output[4] += 1
     if start < end:
-        middle = start + (end-start)/2
-        mergeSort(a, output, start, middle)
-        mergeSort(a, output, middle+1, end)
+        middle = start + (end-start) // 2
+        merge_sort(a, output, start, middle)
+        merge_sort(a, output, middle+1, end)
         merge(a, output, start, middle, end)
+   
+    if DEBUG:
+        print("Exiting merge_sort.")
 
 # --- MERGE -------------------------------------
-"""
-void merge(int*, long long int[], int, int, int);
-void merge(int* m, long long int output[], int front, int midL, int back)
-{
-   int T[MAX];
-   int L1 = front;
-   int R1 = midL;
-   int L2 = midL + 1;
-   int R2 = back;
-   int n = front;
-   while (L1 <= R1 && L2 <= R2)
-      if (m[L1] < m[L2]) {
-         T[n++] = m[L1++];
-         output[5]++;
-       }
-       else {
-          T[n++] = m[L2++];
-          output[5]++;
-       }
-   while (L1 <= R1) {
-      T[n++] = m[L1++];
-      output[5]++;
-   }
-   while (L2 <= R2) {
-      T[n++] = m[L2++];
-      output[5]++;
-   }
-   for (int i = front; i <= back; i++) {
-      m[i] = T[i];
-      output[5]++;
-   }
-}
-"""
-# reassembles split arrays in sorted order (least to greatest), increments designated counters in
-# output[]
-def merge(m, output, front, midL, back):
-    t = [MAX]
-    l1 = front
-    r1 = midL
-    l2 = midL+1
-    r2 = back
-    n = front
-    
+# pre-condition: m is a list of integers, output is a list of 6 integers, front, midL, and back are
+#                indices defining the segments to merge
+# post-condition: the segment of m from front to back is sorted, output[5] contains the count of
+#                 element movements
+def merge(m: List[int], output: List[int], front: int, midL: int, back: int) -> None:
+    """Merge two sorted segments of list `m` into a single sorted segment."""
+   
+    if DEBUG:
+        print("Entering merge...")
+      
+    t = [MAX] * (back - front + 1)
+    l1, r1 = front, midL
+    l2, r2 = midL + 1, back
+    n = 0
+   
     while l1 <= r1 and l2 <= r2:
         if m[l1] < m[l2]:
             t[n] = m[l1]
@@ -187,70 +134,34 @@ def merge(m, output, front, midL, back):
         l2 += 1
         output[5] += 1
     
-    # back+1 because it's <=
-    for i in range(front,back+1):
-        m[i] = t[i]
+    for i in range(front, back + 1):
+        m[i] = t[i - front]
         output[5] += 1
+   
+    if DEBUG:
+        print("Exiting merge.")
 
 # --- LOAD SORT ---------------------------------
-"""
-void loadSort(int*, long long int[], double, int, int);
-void loadSort(int* data, long long int results[], double time, int sortAmt, int sortNum)
-{
-   
-   long int methFreq = 0;
-   long int elmtMov = 0;
-
-   if (sortNum == 1) {
-      bubble1(data, sortAmt, results);
-      methFreq = results[0];
-      elmtMov = results[1];
-   }
-   else if (sortNum == 2) {
-      bubble2(data, sortAmt, results);
-      methFreq = results[2];
-      elmtMov = results[3];
-   }
-   else if (sortNum == 3) {
-      int start = 0;
-      int end = sortAmt-1;
-      mergeSort(data, results, start, end);
-
-      methFreq = results[4] - 1;
-      elmtMov = results[5];
-   }
-   else {
-      cout << "error: invalid sort method number: ";
-      cin >> sortAmt;
-   }
-
-   if (sortNum == 3) {
-      cout << "Results:" << endl << endl;
-      cout << "  n: " << sortAmt << endl
-           << "  sort: " << sortNum << endl
-           << "  recursive calls: " << methFreq << endl
-           << "  elements moved: " << elmtMov << endl;
-   }
-   else {
-       cout << "Results:" << endl << endl;
-       cout << "  n: " << sortAmt << endl
-            << "  sort: " << sortNum << endl
-            << "  if frequency: " << methFreq << endl
-            << "  elements moved: " << elmtMov << endl;
-   }
-}
-"""
 # asks user for sorting algorithm, calls designated function, outputs everything except time
-def loadSort(data, results, sortAmt, sortNum):
+# pre-condition: data is a list of integers, results is a list of 6 integers, sortAmt is the number
+#                of elements in data, sortNum is an integer specifying the sorting algorithm (1, 2,
+#                or 3).
+# post-condition: results is updated with counts based on the sort performed
+def load_sort(data: List[int], results: List[int], sortAmt: int, sortNum: int) -> None:
+    """Load data and perform the specified sort, updating results with counts."""
+    
+    if DEBUG:
+        print("Entering load_sort...")
+      
     # input validation
     while sortNum < 1 and sortNum > 3:
         sortNum = int(input(f"error: invalid sort method number ({sortNum}): "))
-        
+      
     # run sort, store selected store frequency in variable
-    methFreq = 0
+    methFreq: int = 0
     # same thing with elements moved
-    elmtMov = 0
-    
+    elmtMov: int = 0
+   
     # call bubble sort 1 if specified
     if sortNum == 1:
         bubble1(data,sortAmt,results)
@@ -263,15 +174,13 @@ def loadSort(data, results, sortAmt, sortNum):
         elmtMov = results[3]
     # call merge sort if specified
     elif sortNum == 3:
-        start = 0
-        end = sortAmt-1
-        
-        mergeSort(data,results,start,end)
-        # qwuhtiuqwbtiuowqb4utiqbwuigbqw34uigbquio34bgquio34
-        # tf is that ^
+        start: int = 0
+        end: int = sortAmt-1
+      
+        merge_sort(data,results,start,end)
         methFreq = results[4]-1
         elmtMov = results[5]
-        
+      
     # output results
     if sortNum == 3:
         # results output for merge
@@ -280,147 +189,75 @@ def loadSort(data, results, sortAmt, sortNum):
         # results output for bubble
         print(f"Results:\n\n  n: {sortAmt}\n  sort: {sortNum}\n  if frequency: {methFreq}\n  elements moved: {elmtMov}\n")
 
+    if DEBUG:
+       print("Exiting load_sort.")
+
 # --- LOAD ARRAY --------------------------------
-"""
-void loadArray(string, int*, int);
-void loadArray(string dataFile, int* array, int amount)
-{
-   ifstream file (dataFile);
-
-   for (int i = 0; i < amount; i++)
-      file >> array[i];
-
-   cout << "data file successfully loaded" << endl;
-   file.close();
-}
-"""
 # load array definition: loads values from data file
-def loadArray(dataFile, array, amount):
+# pre-condition: dataFile is the path to the file to write, array is a list of integers, amount is
+#                the number of elements in array 
+# post-condition: the file dataFile contains the integers from array
+def load_array(dataFile: str, array: List[int], amount: int) -> None:
+    """Load an array of integers into a file."""
+    
+    if DEBUG:
+        print("Entering load_array...")
+      
     with open(dataFile, 'w') as file:
         for i in range(amount):
-            file.write(array[i])
-    
-    print("data file successfully loaded")
+            file.write(f"{array[i]}\n")
+   
+    print("Data file successfully loaded")
+   
+    if DEBUG:
+        print("Exiting load_array.")
 
-# --- MAIN ------------------------------------------------------------------------------
-# --- SELECT DATASET ----------------------------
-"""
-int main()
-{
-    string dataResp;
-    cout << "Enter the dataset: ";
-    cin >> dataResp;
 
-    cout << endl;
-"""
-# data array
-#data = [MAX]
+def main():
+    # query dataset, open file
+    dataResp = input("Enter the dataset: ")
+    print("\n")
+      
+    # --- CREATE DATASET ------------------------
+    # query number of processed items
+    sortAmt = int(input("Enter the number of random numbers to process [0, 100,000]: "))
+    sortAmt = min(max(sortAmt, 0), MAX)
 
-# query dataset, open file
-dataResp = input("Enter the dataset: ")
-print("\n")
-    
-# --- CREATE DATASET ----------------------------
-"""
-int* data;
-if(typeid(sortAmt) == typeid(int))
-   data = new int[sortAmt];
-else
-   data = new int[MAX];
+    data = [0] * sortAmt
 
-loadArray(dataResp, data, sortAmt);
-"""
-# query number of processed items
-sortAmt = 10 # default 10, ignore faulty input = reduce headaches
-sortAmt = int(input("Enter the number of random numbers to process [0, 100,000]: "))
+    # load array with data
+    load_array(dataResp,data,sortAmt)
 
-# dynamically create data array
-#if type(sortAmt) == type(int):
-if isinstance(sortAmt, int):
-   # use user input for size
-   data = [0] * sortAmt
-else:
-   # user input size bad, default to #define
-   data = [0] * MAX
+    # --- SORT, RESULTS SETUP -------------------
+    # query sort method number
+    sortNum = int(input("Enter the type of sort (1=bubble1, 2=bubble2, 3=merge): "))
 
-# load array with data
-loadArray(dataResp,data,sortAmt)
+    # results, put in array for ease of use
+    results = [0] * 6
+    # results[0] = bubble1 if frequency
+    #        [1] = bubble1 elements moved
+    #        [2] = bubble2 if frequency
+    #        [3] = bubble2 elements moved
+    #        [4] = mergeSort recursive calls
+    #        [5] = mergeSort elements moved
 
-# --- SORT, RESULTS SETUP -----------------------
-"""
-   int sortNum = 1;
-   cout << endl << "Enter the type of sort (1=bubble1,2=bubble2,3=merge): ";
-   cin >> sortNum;
-   cout << endl;
+    # --- TIMEVAL -------------------------------
+    startTime = time()
+    load_sort(data,results,sortAmt,sortNum)
+    stopTime = time()
 
-   long long int results[6] = { 0 };
-   /*
-   results[0] = bubble1 if frequency
-          [1] = bubble1 elements moved
-          [2] = bubble2 if frequency
-          [3] = bubble2 elements moved
-          [4] = mergeSort recursive calls
-          [5] = mergeSort elements moved
-   */
-"""
-# query sort method number   
-sortNum = 1 # default 1, more less headaches is good
-sortNum = int(input("Enter the type of sort (1=bubble1, 2=bubble2, 3=merge): "))
+    diff = stopTime - startTime
 
-# results, put in array for ease of use
-results = [0] * 6
-# results[0] = bubble1 if frequency
-#        [1] = bubble1 elements moved
-#        [2] = bubble2 if frequency
-#        [3] = bubble2 elements moved
-#        [4] = mergeSort recursive calls
-#        [5] = mergeSort elements moved
+    # --- OUTPUT --------------------------------
+    print(f"  time: {diff:.5f} seconds")
 
-# --- TIMEVAL -----------------------------------
-"""
-   struct timeval startTime, stopTime;
-   double /*start, stop,*/ diff;
+    # choice to output sorted array
+    yn = input("Output the sorted list? [y/n]: ").strip().lower()
+    if yn == 'y':
+        for i in range(sortAmt):
+            print(f"{data[i]} ")
+    print("\n")
 
-   gettimeofday(&startTime, NULL);
-   loadSort(data, results, diff, sortAmt, sortNum);
-   gettimeofday(&stopTime, NULL);
 
-/*
-   start = startTime.tv_sec + (startTime.tv_usec / 1000000.0);
-   stop = stopTime.tv_sec + (startTime.tv_usec / 1000000.0);
-   diff = stop - start;
-*/    
-   diff = stopTime.tv_sec - startTime.tv_sec;
-   diff += (stopTime.tv_usec - startTime.tv_usec) / 1000000.0;
-"""
-startTime = time.time()
-loadSort(data,results,sortAmt,sortNum)
-stopTime = time.time()
-
-diff = stopTime - startTime
-
-# --- OUTPUT ------------------------------------
-""" 
-   cout << "  time: " << fixed << /*showpoint <<*/ setprecision(10)
-        << diff << " seconds " << endl;
-
-   string yn = "n";
-   cout << endl << "Output the sorted list (y/n): ";
-   cin >> yn;
-   if (yn == "y")
-      for (int i = 0; i < sortAmt; i++)
-         cout << data[i] << " ";
-   cout << endl;
-
-   test.close();
-   return 0;
-}
-"""
-print(f"  time: {diff:.5f} seconds")
-
-# choice to output sorted array
-yn = chr(input("Output the sorted list? [y/n]: "))
-if yn == 'y':
-   for i in range(sortAmt):
-      print(f"{data[i]} ")
-print("\n")
+if __name__ == "__main__":
+    main()

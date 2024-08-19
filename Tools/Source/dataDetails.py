@@ -3,8 +3,10 @@
 # CSC1710
 # Created: 11.5.2020
 # Doctored: 10.25.2023
-# Updated: 10.25.2023 -- added average function
+# Updated 10.25.2023: added average function
+# 
 # Python-ized: 3.31.2024
+# Updated 8.17.2024: function decomposition and PEP 8 Compliance
 # 
 # [DESCRIPTION]:
 # This program loads an array from a file and sorts the data. It then outputs the size of the data,
@@ -24,52 +26,28 @@
 
 
 # --- IMPORTS ---------------------------------------------------------------------------
-"""
-#include <iostream>
-#include <fstream>
-#include <string>
-using namespace std;
-
-#define MAX_SIZE 1000
-"""
-import sys
+from sys import argv, stderr, exit
 from typing import List, Tuple
 
-MAX_SIZE = 1000
+MAX_SIZE: int = 1000
+DEBUG: bool = False
 
 # --- FUNCTIONS -------------------------------------------------------------------------
 # --- LOAD ARRAY --------------------------------
-"""
-void loadArray(double[], const char*, const int&);
-void loadArray(double nums[], const char* filename, int& size)
-{
-	ifstream dataFile (filename);
- 
-	if(!dataFile) {
-		cerr << "error: file unable to be opened or created (provided name: "
-		     << filename << ").\n";
-		exit(2);
-	}
-	
-	int index = 0;
-
-    dataFile >> nums[index];
-
-    while (nums[index] != -1) {
-        size++;
-		index++;
-        dataFile >> nums[index];
-    }
-
-	dataFile.close();
-}
-"""
-# this function creates an input file of a name that is passed as a parameter from main. If the
-# file was opened successfully, it reads in the data while keeping note of the size of the array.
-def loadArray(filename,size) -> Tuple[List[float], int]:
+# pre-condition: filename is a valid path to a file containing float numbers, size is an integer
+#                starting at 0, representing the initial size of the array
+# post-condition: returns a tuple containing the list of floats and the size of the array. The file
+#                 is read until either a -1 is encountered, or the maximum size (MAX_SIZE) is
+#                 reached. If the file cannot be opened, the program exits with an error
+def load_array(filename: str, size: int) -> Tuple[List[float], int]:
+    """Load an array of floats from a file."""
+    
+    if DEBUG:
+        print("Entering load_array...")
+    
     # numbers array
     nums: List[float] = []
-    size = 0
+    size: int = 0
     
     try:
         # open user-specified file
@@ -87,281 +65,164 @@ def loadArray(filename,size) -> Tuple[List[float], int]:
                 size += 1
                 
     except IOError:
-        sys.stderr.write(f"error: file unable to be opened or created (provided name: {filename})")
+        stderr.write(f"error: file unable to be opened or created (provided name: {filename})")
         exit(2)
 
+    if DEBUG:
+        print("Exiting load_array.")
     return nums, size
 
+
 # --- PRINT ARRAY -------------------------------
-"""
-void printArray(double[], const int&);
-void printArray(double numbers[], const int& size)
-{
-	for(int i=0; i<size; i++)
-		cout << "nums[" << i << "] = " << numbers[i] << endl;
-}
-"""
-# this function takes an array and its size as parameters, and outputs each value in said array
-# along with its location.
-def printArray(numbers, size):
+# pre-condition: numbers is a list of floats, size is the number of elements to be printed from the
+#                list
+# post-condition: the elements of the list up to the specified size are printed
+def print_array(numbers, size):
+    """Print the elements of the array."""
+    
+    if DEBUG:
+        print("Entering print_array...")
+        
     for i in range(size):
         print(f"nums[{i}] = {numbers[i]}")
+    
+    if DEBUG:
+        print("Exiting print_array.")
+
 
 # --- SORT ARRAY --------------------------------
-"""
-void sortArray(double[], const int&);
-void sortArray(double numArray[], const int& size)
-{
-	int hold;
-
-	for (int pass = 1; pass < size; pass++)
-		for (int i = 0; i < size - pass; i++)
-			if (numArray[i] > numArray[i+1]) {
-				hold = numArray[i];
-				numArray[i] = numArray[i+1];
-				numArray[i+1] = hold;
-			}
-}
-"""
-# this function takes an array and its size as parameters and then sorts the array.
-def sortArray(num_array, size):
-    # temp variable for swap
-    hold: float
+# pre-condition: num_array is a list of floats, size is the number of elements in the list
+# post-condition: the list is sorted in place in ascending order
+def sort_array(num_array: List[float], size: int) -> None:
+    """Sort the array in ascending order using the bubble sort algorithm."""
     
-    for i in range(1,size):
-        for j in range(0,size-i):
+    if DEBUG:
+        print("Entering sort_array...")
+    
+    for i in range(size-1):
+        for j in range(0,size-i-1):
             # is the current value larger than the next?
-            if num_array[i] > num_array[i+1]:
+            if num_array[j] > num_array[j+1]:
                 # swap numbers
-                num_array[i], num_array[i+1] = num_array[i+1], num_array[i]
+                num_array[j], num_array[j+1] = num_array[j+1], num_array[j]
+    
+    if DEBUG:
+        print("Exiting sort_array.")
+
 
 # --- MEDIAN ------------------------------------
-"""
-double median(double[], const int&);
-double median(double array[], const int& size)
-{
-	double med;
-	
-	if (size % 2 != 0) {
-		med = array[size/2];
-		cout << "nums[" << size/2 << "] = ";
-	}
-	else {
-		cout << "(nums[" << size/2 << "] + nums[" << (size/2)-1 << "]) / 2 = ";
-		med = (array[size/2] + array[(size/2)-1]) / 2;
-	}
-
-	return med;
-}
-"""
-# this function takes an array and its size as parameters. The function will then calculate and
-# return the median value along with its location in the array. The function assumes the array is
-# already sorted.
-def median(array, size) -> float:
-    med: float
+# pre-condition: num_array is a list of floats, size is the number of elements in the list
+# post-condition: the list is sorted in place in ascending order
+def median(array: List[float], size: int) -> float:
+    """Calculate the median of the sorted array."""
     
-    # if the size is odd, pick the middle value
-    if size%2 != 0:
-        med = array[size/2]
-        #print(f"nums[{size/2}] = ")
-    # if the size is even, average the two middle values
+    if DEBUG:
+        print("Entering median...")
+        
+    if size % 2 != 0:
+        if DEBUG:
+            print("Exiting median.")
+        return array[size // 2]
     else:
-        med = (array[size/2] + array[(size/2)-1]) / 2
-        #print(f"(nums[{size/2}] + nums[{(size/2)-1}]) / 2 = ")
-    
-    return med
+        if DEBUG:
+            print("Exiting median.")
+        return (array[size // 2] + array[(size // 2) - 1]) / 2
+
 
 # --- AVERAGE -----------------------------------
-"""
-double average(double[], const int&);
-double average(double array[], const int& size)
-{
-	double sum = 0;
-
-	for(int i=0; i<size; i++)
-		sum += array[i];
-
-	return sum/size;
-}
-"""
-# this function takes an array and its size as parameters. The function will then calculate and
-# return the average of the values in the array.
-def average(array, size) -> float:
-    sum = 0
+# pre-condition: array is a list of floats, size is the number of elements in the list
+# post-condition: returns the average of the elements in the array
+def average(array: List[float], size: int) -> float:
+    """Calculate the average of the array."""
     
-    for i in range(size):
-        sum += array[i]
+    if DEBUG:
+        print("Entering average...")
+        
+    total_sum: float = sum(array[:size])
     
-    return sum/size
+    if DEBUG:
+        print("Exiting average.")
+    return total_sum/size
+
 
 # --- MINIMUM -----------------------------------
-"""
-double minimum(double[]);
-double minimum(double array[])
-{
-	cout << "nums[0] = ";
-
-	return array[0];
-}
-"""
-# this function takes an array and its size as parameters. The function will then return the lowest
-# value and its location in the array. The function assumes the array is already sorted.
-def minimum(array) -> float:
-    #print("nums[0] = ")
+# pre-condition: array is a list of floats
+# post-condition: returns the smallest value in the array
+def minimum(array: List[float]) -> float:
+    """Find the minimum value in the array."""
+    
     return array[0]
 
-# --- MAXIMUM -----------------------------------
-"""
-double maximum(double[], const int&);
-double maximum(double array[], const int& size)
-{
-	cout << "nums[" << size-1 << "] = ";
 
-	return array[size-1];
-}
-"""
-# this function takes an array and its size as parameters. The function will then return the
-# largest value and its location in the array. The function assumes the array is already sorted.
-def maximum(array, size) -> float:
-    #print(f"nums[{size-1}] = ")
+# --- MAXIMUM -----------------------------------
+# pre-condition: array is a list of floats, size is the number of elements in the list
+# post-condition: returns the largest value in the array
+def maximum(array: List[float], size: int) -> float:
+    """Find the maximum value in the array."""
+    
     return array[size-1]
 
+
 # --- SEARCH ARRAY ------------------------------
-"""
-int searchArray(double[], const int&, const int&);
-int searchArray(double array[], const int& searchItem, const int& size)
-{
-	int matches = 0;
-
-	for(int i=0; i<size; i++)
-		if (array[i] == searchItem)
-			matches++;
-
-	return matches;
-}
-"""
-# this function takes an array, the size of the array, and a number. The function will search the
-# array for said number and return the number of occurrences. 
-def searchArray(array, search_item, size) -> float:
-    matches = 0
+# pre-condition: array is a list of floats, search_item is the float value to search for, size is
+#                the number of elements in the list
+# post-condition: returns the number of times search_item appears in the array
+def search_array(array, search_item, size) -> float:
+    """Search for occurrences of a value in the array."""
     
-    for i in range(size):
-        if array[i] == search_item:
-            matches += 1
-    
-    return matches
+    return array[:size].count(search_item)
 
-# --- MAIN ------------------------------------------------------------------------------
-# --- CHECK CLI ARGS ----------------------------
-"""
-    if(argc != 2) {
-        cerr << "error: arguments must be: exe and filename.\n";
-        exit(1);
-    }
-"""
-# check if argv is used correctly (2 args)
-if len(sys.argv) != 2:
-    sys.stderr.write("error: invalid arguments (Usage: python3 dataDetails.py <file name>)")
-    exit(1)
 
-# --- INTRODUCTION ------------------------------
-"""
-int main(int argc, char* argv[])
-{	
-    cout << "This program loads an array from a file and sorts the data. It "
-	     << "then outputs the size of the data, median, minimum, maximum. It "
-		 << "will then prompt a to search the data for a value, and output the"
-		 << " number of occurences." << endl << endl;
-"""
-# introduction to program
-print("""This program loads an array from a file and sorts the data. It then outputs the size of
-      the data, median, minimum, maximum. It will then prompt a to search the data for a value, and
-      output the number of occurences.""")
+def main():
+    # --- CHECK CLI ARGS ------------------------
+    # check if argv is used correctly (2 args)
+    if len(argv) != 2:
+        stderr.write("error: invalid arguments (Usage: python3 dataDetails.py <file name>)")
+        exit(1)
 
-# --- CONFIRMATION ------------------------------
-"""
-    cout << "Do you want to run this program? [Y/n]: ";
-    char confirmation;
-    cin >> confirmation;
+    # --- INTRODUCTION --------------------------
+    # introduction to program
+    print("""This program loads an array from a file and sorts the data. It then outputs the size
+          of the data, median, minimum, maximum. It will then prompt a to search the data for a
+          value, and output the number of occurences.""")
 
-    if(confirmation == 'n') {
-        cout << "terminating...\n";
-        exit(0);
-    }
-"""
-confirmation = input("Do you want to run this program? [Y/n]: ")
-# if declined, terminate
-if confirmation == 'n':
-    print("terminating...")
-    exit(0)
+    # --- CONFIRMATION --------------------------
+    confirmation = input("Do you want to run this program? [Y/n]: ")
+    # if declined, terminate
+    if confirmation == 'n':
+        print("terminating...")
+        exit(0)
 
-# --- VARS --------------------------------------
-"""
-	double nums[MAX_SIZE];
+    # --- VARS ----------------------------------
+    size: int = 0
+    # NOTE: DATA IS TERMINATED BY -1
 
-	int size = 0;
-"""
-# nums declaration moved to loadArray function
+    # --- FILE READING --------------------------
+    # read in values from file
+    nums, size = load_array(argv[1],size)
 
-size = 0
-# NOTE: DATA IS TERMINATED BY -1
+    # --- PRE + POST SORT -----------------------
+    # pre sort
+    print("PRE-SORT ARRAY (RAW)")
+    print_array(nums,size)
+    # sort
+    sort_array(nums,size)
+    # post sort
+    print("POST-SORT ARRAY (EDITED)")
+    print_array(nums,size)
 
-# --- FILE READING ------------------------------
-"""
-	loadArray(nums,argv[1],size);
-"""
-# read in values from file
-nums, size = loadArray(sys.argv[1],size)
+    # --- ARRAY ACTIONS -------------------------
+    print(f"""\nSize: {size} values\n\nMedian: {median(nums,size)}\n\nMinimum value: {minimum(nums)}\n
+          Maximum value: {maximum(nums,size)}\nAverage value: {average(nums,size)}""")
 
-# --- PRE + POST SORT ---------------------------
-"""
-	cout << "PRE-SORT ARRAY (RAW)" << endl;
-	printArray(nums, size);
 
-	sortArray(nums, size);
+    # --- SEARCH --------------------------------
+    # variable for checking cadence of number
+    num_search = float(input("Enter a number: "))
 
-	cout << endl << "POST-SORT ARRAY (EDITED)" << endl;
-	printArray(nums, size);
-"""
-# pre sort
-print("PRE-SORT ARRAY (RAW)")
-printArray(nums,size)
-# sort
-sortArray(nums,size)
-# post sort
-print("POST-SORT ARRAY (EDITED)")
-printArray(nums,size)
+    # show how many occurrences 
+    print(f"Number of occurences of the float {num_search}: {search_array(nums,num_search,size)}")
 
-# --- ARRAY ACTIONS -----------------------------
-"""
-	cout << endl;
-	cout << "Size: " << size << " values" << endl << endl;
-	cout << "Median: " << median(nums,size) << endl;
-	cout << "Minimum: " << minimum(nums) << endl;
-	cout << "Maximum: " << maximum(nums,size) << endl;
-	cout << "\nAverage: " << average(nums,size) << endl;
-"""
-print(f"\nSize: {size} values\n")
-print("Median:",median(nums,size))
-print("\nMinimmum value:",minimum(nums))
-print("Maximum value:",maximum(nums,size))
-print("Average value:",average(nums,size))
 
-# --- SEARCH ------------------------------------
-"""
-	int numSearch;
-	cout << endl << "Enter number: ";
-	cin >> numSearch;
-
-	cout << "Number of occurrences of the integer " << numSearch << ": " 
-	     << searchArray(nums, numSearch, size) << endl;
-
-	return 0;
-}
-"""
-# variable for checking cadence of number
-num_search = float(input("Enter a number: "))
-
-# show how many occurrences 
-print(f"Number of occurences of the float {num_search}: {searchArray(nums,num_search,size)}")
-
+if __name__ == "__main__":
+    main()

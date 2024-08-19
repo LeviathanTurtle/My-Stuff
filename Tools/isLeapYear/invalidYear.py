@@ -6,11 +6,6 @@
 # About: 
 #   This is the header and implementation file for the invalidYear class
 
-# --- IMPORTS -----------------------------------
-"""
-#include <iostream>
-using namespace std;
-"""
 
 # --- CLASS -------------------------------------
 class invalidYear:

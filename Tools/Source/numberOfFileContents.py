@@ -2,6 +2,7 @@
 # William Wadsworth
 # CSC1710
 # 3.13.2024
+# Updated 8.17.2024: function decomposition and PEP 8 Compliance
 #  
 # This program reads through the contents of a file and counts how many items are in it.
 # 
@@ -15,78 +16,57 @@
 
 
 # --- IMPORTS ---------------------------------------------------------------------------
-"""
-#include <iostream>
-#include <fstream>
-#include <sys/time.h>
-using namespace std;
-"""
-from time import time#, clock_gettime
-import sys
+from time import time
+from sys import argv, stderr, exit
 
-# 2 args: exe file
-# --- MAIN ------------------------------------------------------------------------------
-# --- ARG CHECK ---------------------------------
+DEBUG: bool = False
 
-if len(sys.argv) < 2:
-    print("Usage: python3 numberOfFileContents.py filename")
-    sys.exit(1)
 
-# --- TIME BEGIN --------------------------------
-"""
-int main(int argc, char* argv[])
-{
-    struct timeval startTime, stopTime;
-    double start, stop, diff;
-    gettimeofday(&startTime,NULL);
-"""
-startTime = time()
-
-# --- INPUT FILE + MAIN LOOP --------------------
-"""
-    ifstream file (argv[1]);
+# pre-condition: filename is the name of the file to be read
+# post-condition: returns the total number of words in the file
+def count_words_in_file(filename: str) -> int:
+    """Counts the number of words in the specified file."""
     
-    int size=0;
-    while(file.peek() != EOF) {
-        if(file.peek() == '\n')
-            size++;
-        file.get();
-    }
-    file.close();
-"""
-inputFile = sys.argv[1]
-
-size = 0
-try:
-    with open(inputFile, 'r') as file:
-        for line in file:
-            items = line.split()
-            size += len(items)
-
-except FileNotFoundError:
-    print(f"File '{inputFile}' not found.")
-    sys.exit(2)
+    if DEBUG:
+        print("Entering count_words_in_file...")
+    
+    word_count: int = 0
+    
+    try:
+        with open(filename, 'r') as file:
+            for line in file:
+                word_count += len(line.split())
+    except FileNotFoundError:
+        stderr.write(f"Error: File '{filename}' not found.\n")
+        exit(2)
+    
+    if DEBUG:
+        print("Exiting count_words_in_file.")
+    return word_count
 
 
-# --- TIME END ----------------------------------
-"""
-    gettimeofday(&stopTime,NULL);
-    start = startTime.tv_sec + (startTime.tv_usec/1000000.0);
-    stop = stopTime.tv_sec + (stopTime.tv_usec/1000000.0);
+def main():
+    # --- ARG CHECK -----------------------------
+    # 2 args: exe file
+    if len(argv) != 2:
+        stderr.write("Usage: python3 numberOfFileContents.py <filename>")
+        exit(1)
 
-    diff = stop - start;
-"""
-stopTime = time()
-diff = stopTime - startTime
+    # --- INPUT FILE ----------------------------
+    filename = argv[1]
+    
+    # --- TIME BEGIN ----------------------------
+    startTime = time()
 
-# --- END OUTPUT --------------------------------
-"""
-    cout << "size of file: " << size << endl;
-    cout << "time elapsed: " << diff << "s" << endl;
-"""
-print(f"size of file: {size}")
-print(f"time elapsed: {diff} s")
+    word_count = count_words_in_file(filename)
+
+    # --- TIME END ------------------------------
+    stopTime = time()
+
+    # --- END OUTPUT ----------------------------
+    print(f"size of file: {word_count}")
+    print(f"time elapsed: {stopTime-startTime}s")
 
 
-#    return 0;
-#}
+if __name__ == "__main__":
+    main()
