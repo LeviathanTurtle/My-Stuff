@@ -548,13 +548,18 @@ def remove_whitespaces(string: str) -> Tuple[str, List[int]]:
 def main():
     # check CLI arg usage
     if len(argv) > 2:
-        stderr.write("""Uasge: ./<exe name> [-d] <token>\nwhere:\n
+        stderr.write("""Usage: python3 vigenere.py [-d] <token>\nwhere:\n
                          -d      - optional, enable debug output""")
         exit(1)
 
     # check if -d is present
-    if len(argv) == 2 and argv[1] == "-d":
-        DEBUG = True
+    if len(argv) == 2:
+        if argv[1] == "-d":
+            DEBUG = True
+        else:
+            stderr.write("""Usage: python3 vigenere.py [-d] <token>\nwhere:\n
+                         -d      - optional, enable debug output""")
+            exit(1)
 
     action()
 

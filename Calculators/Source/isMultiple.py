@@ -3,7 +3,9 @@
 # CSC1710
 # Created: 10.11.2020
 # Doctored: 10.12.2023
+# 
 # Python-ized: 3.16.2024
+# Updated 8.18.2024: PEP 8 Compliance
 #  
 # [SUMMARY]:
 # This program takes two integers X and Y and determines if X is a multiple of Y. The integers are
@@ -31,65 +33,35 @@
 # 1 - incorrect CLI argument usage
 
 
-# --- IMPORTS ---------------------------------------------------------------------------
-"""
-#include <iostream>
-using namespace std;
-"""
-import sys
+from sys import argv, exit
 
-# --- MAIN ------------------------------------------------------------------------------
-# --- CHECK CLI ---------------------------------
-"""
-int main(int argc, char* argv[])
-{
-    if(argc != 3) {
-        cerr << "error: invalid number of arguments. " << argc << " provided.\n";
-        exit(1);
-    }
-"""
-if len(sys.argv) < 3:
-    print("Usage: python3 isMultiple.py <X> <Y>")
-    sys.exit(1)
 
-# --- SETUP VARS --------------------------------
-"""
-    int sum=0, count=0;
+def main():
+    # --- CHECK CLI -----------------------------
+    if len(argv) < 3:
+        print("Usage: python3 isMultiple.py <X> <Y>")
+        exit(1)
 
-    int x = atoi(argv[1]);
-    int y = atoi(argv[2]);
-"""
-# convert char* to integer
-x = int(sys.argv[1])
-y = int(sys.argv[2])
+    # --- SETUP VARS ----------------------------
+    # convert to integer
+    x = int(argv[1])
+    y = int(argv[2])
 
-count = 0
+    count: int = 0
 
-# --- DO THING ----------------------------------
-"""
-    if( x % y == 0) {
-        while(sum < x) {
-            sum += y;
-            cout << sum << endl;
-            count++;
-        }
+    # --- DO THING ------------------------------
+    # check if x is divisible by y
+    if x%y == 0:
+        # calculation of multiples
+        for sum in range(0,x+1,y):
+            print(sum)
+            count += 1
+        
+        # output results
+        print(f"\n{x} has {count} multiples of {y}")
+    else:
+        print(f"{x} has no multiples of {y}")
 
-        cout << endl << x << " has " << count << " multiples of " << y << endl;
-    }
-    else
-        cout << x << " has no multiples of " << y << endl;
 
-    return 0;
-}
-"""
-# check if x is divisible by y
-if(x%y == 0):
-    # calculation of multiples
-    for sum in range(0,x+1,y):
-        print(sum)
-        count += 1
-    
-    # output results
-    print(f"\n{x} has {count} multiples of {y}")
-else:
-    print(f"{x} has no multiples of {y}")
+if __name__ == "__main__":
+    main()
