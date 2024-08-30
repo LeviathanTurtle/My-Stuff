@@ -15,6 +15,13 @@
 #include <stdexcept>
 #include <vector>
 #include <type_traits>  // static_assert
+#include <tuple>
+#include <complex>
+#include <cmath>
+#include <variant>
+
+// new type that can be a tuple of two roots, a singular root, or a tuple of two complex roots
+using Roots = std::variant<std::tuple<double, double>, double, std::tuple<std::complex<double>, std::complex<double>>>;
 
 class calculator {
     private:
@@ -36,7 +43,6 @@ class calculator {
          * pre-condition: operand_1 and operand_2 parameters must be initialized with values. If
          *                dividing, operand_2 cannot be 0. operation parameter must be initialized 
          *                to a non-empty string
-         * 
          * post-condition: depending on the operation specified (assuming the operation is valid), 
          *                 the sum, difference, product, or quotient is returned, otherwise an 
          *                 error is output and a relevant exception is thrown
@@ -72,7 +78,6 @@ class calculator {
          * pre-condition: max and increment must be initialized to positive non-zero numerical
          *                values, count must be initialized (will be reset to 0 in case of invalid
          *                value), multiples must be intialized to an empty vector
-         * 
          * post-condition: if there are no multiples, false is returned, otherwise true is returned
          *                 and the count parameter is updated with however many multiples there are
          *                 as well as the 'multiples' vector paramter being updated with each
@@ -100,7 +105,37 @@ class calculator {
             } else return false;
         }
 
+        /* function to solve the quadratic equation and returns its roots
+         * pre-condition: a, b, and c are real numbers (doubles), a must not be zero (a ≠ 0), as it
+         *                would not be a quadratic equation
+         * post-condition: If the discriminant is positive, returns two distinct real roots as a
+         *                 tuple of doubles. If the discriminant is zero, returns one real root as
+         *                 a double. If the discriminant is negative, returns two complex roots as
+         *                 a tuple of complex numbers
+        */
+        template <typename T>
+        Roots quadratic(const T& a, const T& b, const T& c)
+        {
+            // calculate discriminant
+            double discriminant = b*b - 4*a*c;
 
+            // this determines what type of root(s) we have
+            if (discriminant > 0) {
+                // two roots
+                double root1 = (-b + std::sqrt(discriminant)) / (2*a);
+                double root2 = (-b - std::sqrt(discriminant)) / (2*a);
+                return std::make_tuple(root1, root2);
+            } else if (discriminant == 0) {
+                return -b / (2*a);
+            } else {
+                // one part is imaginary
+                double real_part = -b / (2*a);
+                double imaginary_part = std::sqrt(-discriminant) / (2*a);
+                std::complex<double> root1(real_part, imaginary_part);
+                std::complex<double> root2(real_part, -imaginary_part);
+                return std::make_tuple(root1, root2);
+            }
+        }
 };
 
 #endif
