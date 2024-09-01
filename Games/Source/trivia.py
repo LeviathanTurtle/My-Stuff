@@ -8,8 +8,8 @@
 # 
 # USAGE:
 # python3 trivia.py [-d] [-c] [-mc] <num_questions>
+# Run 'python3 trivia.py' with "-h" or "--help" for argument descriptions
 
-from sys import argv, stderr, exit
 from argparse import ArgumentParser
 from requests import get
 from html import unescape
@@ -130,10 +130,6 @@ def displayQuestion(
 
 
 def main():
-    if len(argv) > 4:
-        stderr.write("Usage: python3 trivia.py [-d] [-c] [-mc] <num_questions>")
-        exit(1)
-    
     parser = ArgumentParser(description="Trivia game with optional flags.")
     parser.add_argument("-d", "--debug", action="store_true", help="Enable debug mode.")
     parser.add_argument("-c", "--correct", action="store_true", help="Display only correct answer.")
