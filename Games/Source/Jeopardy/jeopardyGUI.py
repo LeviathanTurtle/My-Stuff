@@ -23,7 +23,7 @@
 from sys import stderr, exit
 from argparse import ArgumentParser       # parse runtime args without spaghetti logic
 from random import sample, shuffle        # random category, mix answers
-from typing import List                   # variable and function type hinting
+from typing import Optional, List         # variable and function type hinting
 
 API_TOKEN: str = ""
 MAX_CATEGORIES: int = 6
@@ -437,6 +437,8 @@ class MyLayout(GridLayout):
         # set cols
         self.cols = MAX_CATEGORIES
         
+        # todo: team scores in cols 2 and 5
+        
         # --- CATEGORIES AND VARIABLES --------------
         # pick 6 random numbers from the range 9-32
         selected_category_indices = sample(list(range(9,33)), MAX_CATEGORIES)
@@ -477,47 +479,54 @@ class MyLayout(GridLayout):
                     bold=True
                 )
                 # bind button
-                button.bind(on_press=lambda instance, category=category: self.press(instance,category))
+                button.bind(on_press=lambda instance, btn=button, category=category: self.press(btn,category))
+                # todo: pass the question button to checkAnswer
                 self.add_widget(button)
                 self.buttons.append((button, category))
     
     # pre-condition: 
     # post-condition: 
-    def press(self, instance, category):
-        self.question_amount = instance.text
-        self.category_name = category
-        self.category_index = self.name_to_number[category]
+    def press(self, question_button, category) -> None:
+        self.question_amount = question_button.text         # monetary value (includes '$')
+        #self.category_name = category                       # category name
+        self.category_index = self.name_to_number[category] # category index
         #if debug:
-        print(f"Pressed {self.question_amount} in category {self.category_name} (index {self.category_index})")
+        print(f"Pressed {self.question_amount} in category {category} (index {self.category_index})")
         
         # query api for data
+        # todo : move to function?
         try:
             self.question, self.correct_answer, self.incorrect_answers = self.api_token.getQuestion(
                 category=self.category_index,
-                question_amount=self.question_amount
-            )
+                question_amount=self.question_amount)
         except ValueError as ve:
-            print(f"Error fetching question: {ve}")
+            stderr.write(f"Error fetching question: {ve}")
             return
         except ConnectionError as ce:
-            print(f"Network error: {ce}")
+            stderr.write(f"Network error: {ce}")
             return
         # Check that we got valid info
-        if not self.question or not self.correct_answer or not self.incorrect_answers:
-            print("Error: Missing question or answer data.")
+        if not self.question:
+            stderr.write("Error: Missing question data.")
+            return
+        elif not self.correct_answer or not self.incorrect_answers:
+            stderr.write("Error: Missing answer data.")
             return
         
-        # display
-        self.displayQuestion()
+        self.displayQuestion(question_button)
     
     # pre-condition: 
     # post-condition: 
-    def displayQuestion(self, is_steal=False):
-        # 
-        if not is_steal:
-            self.steal_attempted = False
+    def displayQuestion(self, question_button, is_steal=False):
+        #if not is_steal:
+            # it is not a steal opportunity
+        #    self.steal_attempted = False
         if is_steal:
+            # it is a steal opportunity
             print(f"Steal opportunity for {self.current_team}!")
+        else:
+            # it is not a steal opportunity
+            self.steal_attempted = False
         
         all_answers = self.incorrect_answers + [self.correct_answer]
         
@@ -538,7 +547,7 @@ class MyLayout(GridLayout):
         # todo: line wrapping and ensure it does not exceed button size
         for answer in all_answers:
             answer_button = Button(text=answer,font_size=25, size_hint_y=None, height=50)
-            answer_button.bind(on_press=lambda instance, ans=answer: self.checkAnswer(ans, self.correct_answer, popup))
+            answer_button.bind(on_press=lambda instance, ans=answer: self.checkAnswer(ans,popup,question_button))
             box.add_widget(answer_button)
 
         # Create the popup
@@ -546,6 +555,7 @@ class MyLayout(GridLayout):
         popup_title = f"{self.current_team}, select your answer"
         popup = Popup(
             title=popup_title,
+            #text_size=20,
             content=box,
             auto_dismiss=False,
             size_hint=(0.8, 0.8)
@@ -554,10 +564,12 @@ class MyLayout(GridLayout):
     
     # pre-condition: 
     # post-condition: 
-    def checkAnswer(self, selected_answer, correct_answer, popup):
+    def checkAnswer(self, selected_answer, popup, question_button):
         # Check if the selected answer is correct
-        if selected_answer == correct_answer:
+        if selected_answer == self.correct_answer:
             result_text = "Correct!"
+            # swap teams for next turn
+            self.current_team = self.team2 if self.current_team == self.team1 else self.team1
             
             # Display result in a new popup
             result_popup = Popup(
@@ -567,16 +579,23 @@ class MyLayout(GridLayout):
             result_popup.open()
 
             # Close the question popup
-            popup.dismiss() 
+            popup.dismiss()
+            
+            # todo: this disables the answer buttons
+            # disable button
+            question_button.disabled = True
+            question_button.background_color = (0.5,0.5,0.5,1) # change color to indicate not valid
+            # or hide button
+            #question_button.opacity = 0
+            #question_button.disabled = True
         else:
-            # Handle incorrect answer and check for steal opportunity
             popup.dismiss()
             if not self.steal_attempted:
-                # Allow a single steal attempt
+                # it is a steal attempt
                 self.steal_attempted = True
                 # Switch to the other team for stealing
                 self.current_team = self.team2 if self.current_team == self.team1 else self.team1
-                self.displayQuestion(is_steal=True)
+                self.displayQuestion(question_button,is_steal=True)
             else:
                 # End question if the steal has already been attempted
                 result_popup = Popup(
@@ -585,7 +604,10 @@ class MyLayout(GridLayout):
                     size_hint=(0.5, 0.5)
                 )
                 result_popup.open()
-                popup.dismiss()  # Close the question popup
+                popup.dismiss()
+                # clear the button
+                question_button.disabled = True
+                question_button.background_color = (0.5,0.5,0.5,1)
 
 
 class JeopardyApp(App):
@@ -599,7 +621,8 @@ if __name__ == '__main__':
 
 # todo:
 # - change teams after correct
-# - remove buttons for used questions
+    # - remove buttons for used questions
+    # NOTE: button goes mainWindow -> press -> displayQuestion -> checkAnswer
 # - display points
 # - api token filename var
 # - add CLI arg flags
