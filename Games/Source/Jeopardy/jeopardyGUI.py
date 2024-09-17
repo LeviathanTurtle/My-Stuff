@@ -340,7 +340,7 @@ from kivy.uix.button import Button
 #from kivy.properties import ObjectProperty
 from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
-#from kivy.core.window import Window
+from kivy.core.window import Window
 
 from jeopardy_api import JeopardyAPI
 
@@ -434,6 +434,9 @@ class MyLayout(GridLayout):
     # pre-condition: 
     # post-condition: 
     def mainWindow(self):
+        # set window size
+        Window.size = (780,400)
+        
         # set cols
         self.cols = MAX_CATEGORIES
         
@@ -452,16 +455,14 @@ class MyLayout(GridLayout):
         
         # add widgets
         for category in self.selected_category_names:
-            #self.add_widget(Label(text=category))
             category_label = Label(
                 text=category,
                 font_size=18,
                 size_hint_y=None,
                 height=80,
-                text_size=(120, None), # Set width constraint for wrapping
+                text_size=(150, None),
                 halign='center',
-                valign='middle'
-            )
+                valign='middle')
             self.add_widget(category_label)
         
         # add buttons for each value in each category
@@ -472,15 +473,14 @@ class MyLayout(GridLayout):
                 button = Button(
                     text=f"${value}",
                     size_hint=(None, None),
-                    height=60, # 50
-                    width=120, # 75
+                    height=64,
+                    width=130,
                     background_color=(0, 0, 1, 1),  # Blue background similar to Jeopardy
                     color=(1, 1, 0, 1),  # Yellow text color
-                    bold=True
-                )
+                    bold=True)
                 # bind button
+                # NOTE: button goes mainWindow -> press -> displayQuestion -> checkAnswer for removal
                 button.bind(on_press=lambda instance, btn=button, category=category: self.press(btn,category))
-                # todo: pass the question button to checkAnswer
                 self.add_widget(button)
                 self.buttons.append((button, category))
     
@@ -539,8 +539,7 @@ class MyLayout(GridLayout):
             height=150,
             text_size=(self.width*0.8,None),
             halign='center',
-            valign='middle'
-        )
+            valign='middle')
         box.add_widget(question_label)
         
         # Create buttons for each answer
@@ -552,14 +551,11 @@ class MyLayout(GridLayout):
 
         # Create the popup
         # todo: make title bigger
-        popup_title = f"{self.current_team}, select your answer"
         popup = Popup(
-            title=popup_title,
-            #text_size=20,
+            title=f"{self.current_team}, select your answer",
             content=box,
             auto_dismiss=False,
-            size_hint=(0.8, 0.8)
-        )
+            size_hint=(0.8, 0.8))
         popup.open()
     
     # pre-condition: 
@@ -601,8 +597,7 @@ class MyLayout(GridLayout):
                 result_popup = Popup(
                     title='Result',
                     content=Label(text="Incorrect."),
-                    size_hint=(0.5, 0.5)
-                )
+                    size_hint=(0.5, 0.5))
                 result_popup.open()
                 popup.dismiss()
                 # clear the button
@@ -621,8 +616,6 @@ if __name__ == '__main__':
 
 # todo:
 # - change teams after correct
-    # - remove buttons for used questions
-    # NOTE: button goes mainWindow -> press -> displayQuestion -> checkAnswer
 # - display points
 # - api token filename var
 # - add CLI arg flags
