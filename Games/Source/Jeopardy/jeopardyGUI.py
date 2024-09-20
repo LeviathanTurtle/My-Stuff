@@ -1,31 +1,20 @@
 # William Wadsworth
-# Created: 7.22.2024
-# Initial release: 7.28.2024
-# Updated 8.16.2024: PEP 8 Compliance
-# Updated 8.24.2024: added token persistence via external file
-# Updated 8.29.2024: now uses Argparse instead of spaghetti logic for runtime arguments, moved team
-#                    answering logic to external function, reduced global variables
+# Created: .2024
+# Initial release: .2024
 # 
 # This script is Jeopardy with Trivia questions via the Trivia API from Open Trivia Database
 # (documentation: https://opentdb.com/api_config.php). Notes about use of the API will be found in
 # the documentation, and a simple demonstration can be found in trivia.py. Debug output is labeled
-# with '--'. An internet connection is required for the program to work. Note that if a token file
-# is present, the program will overwrite the old token with the new one.
+# with '[DEBUG]'. An internet connection is required for the program to work. Note that if a token
+# file is present, the program will overwrite the old token with the new one.
 # 
-# Usage: python3 jeopardy.py [-token <filename>] [-d] [-c] [-mc]
-# Run 'python3 jeopardy.py' with "-h" or "--help" for argument descriptions
-# 
-# Potential planned features:
-# - timer
-# - sound effects?
-# - tab autocomplete?
+# Usage: python3 jeopardyGUI.py
 
-from sys import stderr, exit
-from argparse import ArgumentParser       # parse runtime args without spaghetti logic
+from sys import stderr#, exit
+#from argparse import ArgumentParser       # parse runtime args without spaghetti logic
 from random import sample, shuffle        # random category, mix answers
-from typing import Optional, List         # variable and function type hinting
+#from typing import Optional, List         # variable and function type hinting
 
-API_TOKEN: str = ""
 MAX_CATEGORIES: int = 6
 # var for each level of question
 MONETARY_VALUES = [100,200,300,400,500]
@@ -58,31 +47,16 @@ CATEGORY_NAMES = {
 }
 
 
-class Team:
-    def __init__(self, name: str) -> None:
-        """Represents a trivia team."""
-        self.name = name
-        self.score = 0
-
-    # pre-condition: points must be initialized to a non-negative integer
-    # post-condition: adds the specified points to the team's score
-    def updateScore(self, points: int) -> None:
-        """Update the team's score by the given points."""
-        self.score += points
-
-    def __str__(self) -> str:
-        return f"{self.name}: {self.score} points"
-
 
 # --- LIBRARY -----------------------------------
-
+"""
 # pre-condition: none
 # post-condition: each team name and score is output
 def displayScores(
     teams: List[Team],
     debug: bool = False
 ) -> None:
-    """Display the current scores of all teams."""
+    ""Display the current scores of all teams.""
     
     if debug:
         print("--Entering display_scores...")
@@ -100,20 +74,9 @@ def displayScores(
 def allQuestionsAnswered(
     table: List[List[str]],
 ) -> bool:
-    """Check if all questions have been answered."""
+    ""Check if all questions have been answered.""
     
     return all(item == " " for row in table for item in row)
-
-
-# pre-condition: current_index must be initialized to a positive, non-negative integer
-# post-condition: returns the index of the next team
-def switchTeam(
-    current_index: int,
-    total_teams: int
-) -> int:
-    """Switch to the next team."""
-    
-    return (current_index + 1) % total_teams
 
 
 # pre-condition: 
@@ -126,7 +89,7 @@ def validateAnswer(
     show_multiple_choice: bool,
     debug: bool = False
 ) -> bool: 
-    """Validate the team's answer and update the score if correct."""
+    ""Validate the team's answer and update the score if correct.""
     
     if debug:
         print("--Entering validateAnswer...")
@@ -165,7 +128,8 @@ def validateAnswer(
                 if debug:
                     print("--Exiting validateAnswer.")
                 return False
-    
+"""
+
 
 """
 def main():
@@ -330,7 +294,6 @@ def main():
 
 
 
-
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
@@ -341,8 +304,12 @@ from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.uix.boxlayout import BoxLayout
 from kivy.core.window import Window
+from kivy.clock import Clock
+from kivy.uix.checkbox import CheckBox
 
+from os import path
 from jeopardy_api import JeopardyAPI
+from team import Team
 
 class MyLayout(GridLayout):
     #MAX_CATEGORIES = ObjectProperty(MAX_CATEGORIES)
@@ -353,56 +320,80 @@ class MyLayout(GridLayout):
     # init infinite keywords
     # pre-condition: 
     # post-condition: 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         # call grid layout constructor
         super(MyLayout, self).__init__(**kwargs)
         
         ############ INIT CLASS VARS ############
-        # todo: incorporate debug flags and optional filename
+        # todo: incorporate optional filename
+        self.API_TOKEN: str = ""
+        self.DEBUG: bool = False
+        
         self.steal_attempted: bool = False
+        self.previous_winner: str = ""
+        self.token_filename: str = ""
         # we also have the following:
-        # api_token (str)
-        # team1, team2, current_team, question_amount, category_name (str)
+        # team1, team2, current_team (Team),
+        # current_category (str), current_question_points (int)
         # name_to_number (List[int])
         # selected_category_names (List[str])
         # category_index (int)
-        # question, correct_answer, incorrect_answers
+        # question, correct_answer (str), incorrect_answers (List[str])
         # 
         # stuff pertaining to the GUI
         # cols (int), buttons (List), width (int)
+        # team1_score_label, team2_score_label (Label)
+        # team1_turn_label, team2_turn_label
+        
+        self.initPopup()
+    
+    # pre-condition: 
+    # post-condition: 
+    def initPopup(self) -> None:
+        if self.DEBUG:
+            print("[DEBUG] Entering initPopup...")
         
         # init teams popup
         # we need to first create the widgets, then send it to a popup
         # this is the 'top'/outer layout, it should have 1 columns
         team_init_popup = GridLayout(cols=1,spacing=10,padding=10)
         
+        team_init_popup.add_widget(Label(
+            text="Note: Team 1 goes first",color=(1,0,0,1),bold=True,
+            italic=True,underline=True,size_hint_y=None, height=10, valign='middle'))
+        
         # team 1 widgets
-        team_input = GridLayout(cols=2,spacing=10,padding=[10,10])
-        team_input.add_widget(Label(text="Team 1 name:", size_hint_y=None, height=30, valign='middle'))
+        popup_content = GridLayout(cols=3,spacing=10,padding=[10,10])
+        popup_content.add_widget(Label(text="Team 1:", size_hint_y=None, height=30, valign='middle'))
         team_1_input = TextInput(multiline=False, size_hint_y=None, height=30)
-        team_input.add_widget(team_1_input)
+        popup_content.add_widget(team_1_input)
+        # debug checkbox label
+        popup_content.add_widget(Label(text="Debug",size_hint_y=None,height=30,valign="middle"))
         # team 2 widgets
-        team_input.add_widget(Label(text="Team 2 name:", size_hint_y=None, height=30, valign='middle'))
+        popup_content.add_widget(Label(text="Team 2:", size_hint_y=None, height=30, valign='middle'))
         team_2_input = TextInput(multiline=False, size_hint_y=None, height=30)
-        team_input.add_widget(team_2_input)
+        popup_content.add_widget(team_2_input)
+        # debug checkbox
+        popup_content.add_widget(CheckBox(size_hint_y=None,height=30,allow_no_selection=True,
+            ))
+        # active, 
+        # optional filename
+        popup_content.add_widget(Label(text="Filename:",size_hint_y=None,height=30,valign="middle"))
+        filename_input = TextInput(multiline=False,size_hint_y=None,height=30)
+        popup_content.add_widget(filename_input)
+        
         # add to main widget
-        team_init_popup.add_widget(team_input)
+        team_init_popup.add_widget(popup_content)
         
         # this is all button stuff
-        button_container = GridLayout(cols=1,size_hint_y=None, height=50, spacing=10, padding=[100,10])
-        submit_button = Button(
-            text="Done",
-            background_color=(0,1,0,1),
-            size_hint_x=None,
-            width=100,
-            pos_hint={'center': 0.5}
-        )
-        # todo: button is too close to input fields
-        submit_button.bind(on_press=lambda instance: self.saveTeamNames(team_1_input.text, team_2_input.text, popup))
+        button_container = GridLayout(cols=1,size_hint_y=None, height=30,spacing=10)
+        submit_button = Button(text="Done",background_color=(0,1,0,1),size_hint_x=None)
+        submit_button.bind(on_press=lambda instance: self.saveTeamNames(team_1_input.text,team_2_input.text,filename_input,popup))
         button_container.add_widget(submit_button)
-        
         # add button stuff to popup
-        team_init_popup.add_widget(button_container)
+        for i in range(4): # 4 because we have an empty spot in the row above
+            if i == 2: popup_content.add_widget(button_container) # V all this stuff to keep alignment
+            else: popup_content.add_widget(Label(text="",size_hint_y=None,height=30,valign="middle"))
         
         # add button to popup
         popup = Popup(
@@ -410,39 +401,99 @@ class MyLayout(GridLayout):
             title_size='20sp',
             auto_dismiss=False,
             content=team_init_popup,
-            size_hint=(0.45, 0.35),
-            #separator_height=2
-            pos_hint={'center_x': 0.5, 'center_y': 0.5}
-        )
-        # call popup
+            size_hint=(0.50, 0.48), # x,y
+            pos_hint={'center_x': 0.5, 'center_y': 0.5})
         popup.open()
+        
+        if self.DEBUG:
+            print("[DEBUG] Exiting initPopup.")
     
     # pre-condition: 
     # post-condition: 
-    def saveTeamNames(self, team1, team2, popup):
-        # Save or use team names here
-        self.team1 = team1
-        self.team2 = team2
-        self.current_team = team1
-        #if debug:
-        print(f"Team 1: {team1}, Team 2: {team2}")
-        popup.dismiss()
+    def checkboxClick(self, checkbox: CheckBox):
+        if checkbox.active:
+            self.DEBUG = True
+    
+    # pre-condition: 
+    # post-condition: 
+    def saveTeamNames(self, team1: str, team2: str, filename: str, popup: Popup) -> None:
+        if self.DEBUG:
+            print("[DEBUG] Entering saveTeamNames...")
+            
+        #token_filename: str = ""
+        # assume that whatever is here is the possible filename
+        self.token_filename = filename if filename and path.exists(filename) else ""
+        
+        # secret debug and token filename input toggle 
+        #if team1.lower() == "debug":
+        #    print("Debug mode: ON")
+        #    self.DEBUG = True
+        #    popup.dismiss()
+        #    self.initPopup()
+        #    return
 
-        self.api_token: str = JeopardyAPI()
+        # Normal team name entry
+        #if not team1.strip() or not team2.strip():
+        #    print("Error: Both team names must be provided.")
+        #    return  # Return without dismissing popup if names are missing
+        
+        self.team1 = Team(team1)
+        self.team2 = Team(team2)
+        self.current_team = self.team1
+        
+        if self.DEBUG:
+            print(f"[DEBUG] Team 1: {team1}, Team 2: {team2}")
+        popup.dismiss()
+        
+        #print("test1")
+        if self.token_filename:
+            #print("test2")
+            self.API_TOKEN = JeopardyAPI(self.token_filename,self.DEBUG)
+        else:
+            self.API_TOKEN = JeopardyAPI(self.DEBUG)
+        if self.DEBUG:
+            print("[DEBUG] Exiting saveTeamNames.")
         self.mainWindow()
     
     # pre-condition: 
     # post-condition: 
-    def mainWindow(self):
+    def mainWindow(self) -> None:
+        if self.DEBUG:
+            print("[DEBUG] Entering mainWindow...")
+        
         # set window size
-        Window.size = (780,400)
+        Window.size = (780,500)
         
         # set cols
         self.cols = MAX_CATEGORIES
+        self.team1_turn_label = Label(text="^")
+        self.team2_turn_label = Label(text="")
+        self.team1_score_label = Label(text=f"{self.team1.score} pts")
+        self.team2_score_label = Label(text=f"{self.team2.score} pts")
+        # labels defined here so we can update the text later
         
-        # todo: team scores in cols 2 and 5
+        # ROWS
+        # row 1 : team names and points (cols 2,5)
+        # row 2 : current team symbol
+        # row 3 : categories
+        # row 4-8 : buttons
+        
+        # first row: team names and points
+        for i in range(MAX_CATEGORIES):
+            if i == 1: self.add_widget(Label(text=f"Team 1: {self.team1.name}"))
+            elif i == 2: self.add_widget(self.team1_score_label)
+            elif i == 3: self.add_widget(Label(text=f"Team 2: {self.team2.name}"))
+            elif i == 4: self.add_widget(self.team2_score_label)
+            else: self.add_widget(Label(text="")) # be empty
+        # second row: space with current team denoted
+        # init to team 1 on first run
+        for i in range(MAX_CATEGORIES):
+            if i == 1: self.add_widget(self.team1_turn_label)
+            elif i == 3: self.add_widget(self.team2_turn_label)
+            else: self.add_widget(Label(text=""))
         
         # --- CATEGORIES AND VARIABLES --------------
+        # todo : seed rng?
         # pick 6 random numbers from the range 9-32
         selected_category_indices = sample(list(range(9,33)), MAX_CATEGORIES)
         # create a reverse mapping for API call
@@ -450,8 +501,8 @@ class MyLayout(GridLayout):
         # load selected categories into list
         self.selected_category_names = [CATEGORY_NAMES[num] for num in selected_category_indices]
         # init with monetary values for each category
-        #if debug:
-        print(f"Categories: {self.selected_category_names} (indices {selected_category_indices})")
+        if self.DEBUG:
+            print(f"[DEBUG] Categories: {self.selected_category_names} (indices {selected_category_indices})")
         
         # add widgets
         for category in self.selected_category_names:
@@ -475,30 +526,36 @@ class MyLayout(GridLayout):
                     size_hint=(None, None),
                     height=64,
                     width=130,
-                    background_color=(0, 0, 1, 1),  # Blue background similar to Jeopardy
-                    color=(1, 1, 0, 1),  # Yellow text color
+                    background_color=(0, 0, 1, 1),
+                    color=(1, 1, 0, 1),
                     bold=True)
                 # bind button
                 # NOTE: button goes mainWindow -> press -> displayQuestion -> checkAnswer for removal
                 button.bind(on_press=lambda instance, btn=button, category=category: self.press(btn,category))
                 self.add_widget(button)
                 self.buttons.append((button, category))
+        
+        if self.DEBUG:
+            print("[DEBUG] Exiting mainWindow.")
     
     # pre-condition: 
     # post-condition: 
-    def press(self, question_button, category) -> None:
-        self.question_amount = question_button.text         # monetary value (includes '$')
-        #self.category_name = category                       # category name
+    def press(self, question_button: Button, category: str) -> None:
+        if self.DEBUG:
+            print("[DEBUG] Entering press...")
+            
+        self.current_question_points = int(question_button.text.strip('$')) # monetary value (includes '$')
+        self.current_category = category                    # category name
         self.category_index = self.name_to_number[category] # category index
-        #if debug:
-        print(f"Pressed {self.question_amount} in category {category} (index {self.category_index})")
+        if self.DEBUG:
+            print(f"[DEBUG] Pressed {self.current_question_points} in category {category} (index {self.category_index})")
         
         # query api for data
         # todo : move to function?
         try:
-            self.question, self.correct_answer, self.incorrect_answers = self.api_token.getQuestion(
+            self.question, self.correct_answer, self.incorrect_answers = self.API_TOKEN.getQuestion(
                 category=self.category_index,
-                question_amount=self.question_amount)
+                question_amount=self.current_question_points)
         except ValueError as ve:
             stderr.write(f"Error fetching question: {ve}")
             return
@@ -513,31 +570,34 @@ class MyLayout(GridLayout):
             stderr.write("Error: Missing answer data.")
             return
         
+        if self.DEBUG:
+            print(f"Next turn: {self.current_team}\n[DEBUG] Exiting press.")
         self.displayQuestion(question_button)
     
     # pre-condition: 
     # post-condition: 
-    def displayQuestion(self, question_button, is_steal=False):
-        #if not is_steal:
-            # it is not a steal opportunity
-        #    self.steal_attempted = False
-        if is_steal:
-            # it is a steal opportunity
-            print(f"Steal opportunity for {self.current_team}!")
-        else:
-            # it is not a steal opportunity
-            self.steal_attempted = False
+    def displayQuestion(self, question_button: Button, is_steal: bool = False) -> None:
+        if self.DEBUG:
+            print(f"[DEBUG] Entering displayQuestion...\nCurrent turn: {self.current_team}")
         
         all_answers = self.incorrect_answers + [self.correct_answer]
         
-        box = BoxLayout(orientation='vertical',spacing=10,padding=10)
+        #if not is_steal: # it is not a steal opportunity
+        #    self.steal_attempted = False
+        if is_steal: # it is a steal opportunity
+            print(f"Steal opportunity for {self.current_team.name}!")
+        else: # it is not a steal opportunity
+            self.steal_attempted = False
+            shuffle(all_answers)
+        
+        box = BoxLayout(orientation='vertical',spacing=10,padding=[10,20,10,10])
         # todo: ensure line wrapping does not exceed popup box size
         question_label = Label(
             text=self.question,
-            font_size=30,
+            font_size=18,
             size_hint_y=None,
-            height=150,
-            text_size=(self.width*0.8,None),
+            height=100,
+            text_size=(Window.width*0.75,None), # text should wrap at 75% window width
             halign='center',
             valign='middle')
         box.add_widget(question_label)
@@ -545,39 +605,53 @@ class MyLayout(GridLayout):
         # Create buttons for each answer
         # todo: line wrapping and ensure it does not exceed button size
         for answer in all_answers:
-            answer_button = Button(text=answer,font_size=25, size_hint_y=None, height=50)
+            answer_button = Button(text=answer,font_size=18, size_hint_y=None, height=40)
             answer_button.bind(on_press=lambda instance, ans=answer: self.checkAnswer(ans,popup,question_button))
             box.add_widget(answer_button)
 
         # Create the popup
-        # todo: make title bigger
         popup = Popup(
             title=f"{self.current_team}, select your answer",
             content=box,
             auto_dismiss=False,
-            size_hint=(0.8, 0.8))
+            size_hint=(0.9, 0.7),
+            title_size='15sp')
         popup.open()
+        # todo: popup size is off
+        
+        if self.DEBUG:
+            print("[DEBUG] Exiting displayQuestion.")
     
     # pre-condition: 
     # post-condition: 
-    def checkAnswer(self, selected_answer, popup, question_button):
-        # Check if the selected answer is correct
+    def checkAnswer(self, selected_answer: str, popup: Popup, question_button: Button) -> None:
+        if self.DEBUG:
+            print("[DEBUG] Entering checkAnswer...")
+        
         if selected_answer == self.correct_answer:
-            result_text = "Correct!"
-            # swap teams for next turn
-            self.current_team = self.team2 if self.current_team == self.team1 else self.team1
+            # update score
+            self.current_team.updateScore(int(question_button.text.strip('$')),self.DEBUG)
+            # update scores in main window
+            self.team1_score_label.text = f"{self.team1.score} pts"
+            self.team2_score_label.text = f"{self.team2.score} pts"
+            # Schedule UI refresh on the next frame
+            Clock.schedule_once(lambda dt: self.team1_score_label.canvas.ask_update())
+            Clock.schedule_once(lambda dt: self.team2_score_label.canvas.ask_update())
+            
+            # swap teams for next turn (if it is not a steal)
+            if not self.steal_attempted:
+                self.switchTurn()
+            # todo: add logic that prevents turn switching if steal is correct
             
             # Display result in a new popup
             result_popup = Popup(
                 title='Result',
-                content=Label(text=result_text),
+                content=Label(text="Correct!"),
                 size_hint=(0.5, 0.5))
             result_popup.open()
-
-            # Close the question popup
+            
             popup.dismiss()
             
-            # todo: this disables the answer buttons
             # disable button
             question_button.disabled = True
             question_button.background_color = (0.5,0.5,0.5,1) # change color to indicate not valid
@@ -586,11 +660,10 @@ class MyLayout(GridLayout):
             #question_button.disabled = True
         else:
             popup.dismiss()
-            if not self.steal_attempted:
-                # it is a steal attempt
+            if not self.steal_attempted: # it is a steal attempt
                 self.steal_attempted = True
                 # Switch to the other team for stealing
-                self.current_team = self.team2 if self.current_team == self.team1 else self.team1
+                self.switchTurn()
                 self.displayQuestion(question_button,is_steal=True)
             else:
                 # End question if the steal has already been attempted
@@ -599,27 +672,48 @@ class MyLayout(GridLayout):
                     content=Label(text="Incorrect."),
                     size_hint=(0.5, 0.5))
                 result_popup.open()
+                
                 popup.dismiss()
                 # clear the button
                 question_button.disabled = True
                 question_button.background_color = (0.5,0.5,0.5,1)
+        
+        if self.DEBUG:
+            print("[DEBUG] Exiting checkAnswer.")
+        
+    # pre-condition: 
+    # post-condition: 
+    def switchTurn(self) -> None:
+        if self.DEBUG:
+            print("[DEBUG] Entering switchTurn...")
+            
+        # Switch to the other team after the turn ends
+        self.current_team = self.team2 if self.current_team == self.team1 else self.team1
+        #if self.DEBUG:
+        #    print(f"Next team: {self.current_team}")
 
+        # Update the '^' symbol to indicate the current team
+        self.team1_turn_label.text, self.team2_turn_label.text = self.team2_turn_label.text, self.team1_turn_label.text
+        Clock.schedule_once(lambda dt: self.team1_turn_label.canvas.ask_update())
+        Clock.schedule_once(lambda dt: self.team2_turn_label.canvas.ask_update())
+
+        if self.DEBUG:
+            print("[DEBUG] Exiting switchTurn.")
 
 class JeopardyApp(App):
     def build(self):
         return MyLayout()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     JeopardyApp().run()
 
 
 # todo:
-# - change teams after correct
-# - display points
-# - api token filename var
-# - add CLI arg flags
-# - maybe add something in api_token / jeopardyAPI init that checks for internet 
+# problem with switchTurn where it retains a team's turn if their turn was stolen
+# - CLI arg flags
+# - end game popup (play again, symbol denotes previous winner)
+# - something in jeopardy_api init that checks for internet 
 # 
 # sounds? 
 # timer?

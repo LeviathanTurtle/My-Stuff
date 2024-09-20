@@ -2,4 +2,4 @@
 .vscode/tasks.json
 .vscode/c_cpp_properties.json
 Games/Source/Jeopardy/token
-Games/Source/Jeopardy/__pycache__/jeopardy_api.cpython-310.pyc
+Games/Source/Jeopardy/__pycache__/*
