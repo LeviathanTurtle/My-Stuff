@@ -3,3 +3,4 @@
 .vscode/c_cpp_properties.json
 Games/Source/Jeopardy/token
 Games/Source/Jeopardy/__pycache__/*
+Games/Source/Jeopardy/log.txt
