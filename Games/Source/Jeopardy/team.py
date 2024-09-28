@@ -8,12 +8,12 @@ from debug_logger import DebugLogger
 class Team:
     def __init__(self,
         name: str,
-        debug: bool = False
+        #debug: bool = False
     ) -> None:
         self.name = name
         self.score = 0
         #self.DEBUG = debug
-        self.logger = DebugLogger(debug)
+        self.logger = DebugLogger()
 
     # pre-condition: points must be initialized to a non-negative integer
     # post-condition: adds the specified points to the team's score

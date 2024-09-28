@@ -14,10 +14,10 @@ class JeopardyAPI():
     # 
     def __init__(self,
         token_filename: Optional[str] = None,
-        debug: bool = False
+        #debug: bool = False
     ) -> None:
         #self.DEBUG = debug
-        self.logger = DebugLogger(debug)
+        self.logger = DebugLogger()
         
         if self.checkInternet():
             if token_filename: self.getSessionToken(token_filename)

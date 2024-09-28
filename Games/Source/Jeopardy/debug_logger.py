@@ -8,8 +8,8 @@ from colorama import init as colorama_init
 from sys import stdout, stderr
 
 class DebugLogger:
-    def __init__(self, debug: bool) -> None:
-        self.debug = debug
+    def __init__(self) -> None:
+        #self.debug = debug
         colorama_init(autoreset=True)
 
     # pre-condition: 
@@ -32,12 +32,12 @@ class DebugLogger:
             beautified_message += message
             
             # print to terminal if debug mode is on
-            if self.debug: print(beautified_message)
+            #if self.debug: print(beautified_message)
             # add to log file
             self.dump(beautified_message)
         else:
             # ensure the stderr messages are only printed once in debug mode
-            if self.debug and not output == stderr: print(message)
+            #if self.debug and not output == stderr: print(message)
             self.dump(message) # add to log file
         # todo: ensure dump excludes color, and/or '[DEBUG]'
     
