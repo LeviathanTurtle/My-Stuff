@@ -58,7 +58,7 @@ class JeopardyAPI():
         # if a filename is provided, read the file for the token
         if token_filename:
             try: # file stuff
-                self.logger.log(f"Reading from file '{token_filename}'...")
+                self.logger.log(f"Attempting to read from file '{token_filename}'...")
                 with open(token_filename, 'r') as file:
                     file_token = file.read().strip()
             except FileNotFoundError:
@@ -67,16 +67,17 @@ class JeopardyAPI():
             except IOError:
                 #stderr.write(f"Warning: file '{token_filename}' unable to be opened")
                 self.logger.log(f"Warning: file '{token_filename}' unable to be opened",output=stderr)
-        
-        # return the token from the file if it was read
-        if file_token:
-            self.api_token = file_token # update token
             
-            self.logger.log("Exiting getSessionToken.")
-            return self.api_token
-        else: 
-            #stderr.write(f"Error: token read from file '{token_filename}' is invalid")
-            self.logger.log(f"Error: token read from file '{token_filename}' is invalid",output=stderr)
+            # return the token from the file if it was read
+            if file_token:
+                self.api_token = file_token # update token
+                #self.logger.log(f"Successfully read token from file '{token_filename}")
+                
+                self.logger.log("Exiting getSessionToken.")
+                return self.api_token
+            else: 
+                #stderr.write(f"Error: token read from file '{token_filename}' is invalid")
+                self.logger.log(f"Error: token read from file '{token_filename}' is invalid",output=stderr)
         
         # otherwise, assume we still need a token, so generate a new one
         self.logger.log("Generating a new token")
@@ -136,8 +137,9 @@ class JeopardyAPI():
                 self.logger.log("Exiting resetToken.")
                 return self.api_token
             else:
-                self.logger.log(f"Error in resetting token: {data['response_message']}",output=stderr)
-                raise ValueError(f"Error in resetting token: {data['response_message']}")
+                message = data['response_message']
+                self.logger.log(f"Error in resetting token: {message}",output=stderr)
+                raise ValueError(f"Error in resetting token: {message}")
         else:
             self.logger.log(f"HTTP Error: {response.status_code}",output=stderr)
             raise ConnectionError(f"HTTP Error: {response.status_code}")
