@@ -189,6 +189,7 @@ class JeopardyAPI():
                     correct_answer = unescape(question_data['correct_answer'])
                     incorrect_answers = [unescape(ans) for ans in question_data['incorrect_answers']]
                     
+                    self.logger.log(f"Question: {question} ({correct_answer})")
                     self.logger.log("Exiting getQuestion.")
                     return question, correct_answer, incorrect_answers
                 # reset token if expired or all questions used
@@ -200,3 +201,8 @@ class JeopardyAPI():
             else:
                 self.logger.log(f"Failed to fetch question from API ({response.status_code})\n",output=stderr)
                 raise ValueError(f"Failed to fetch question from API ({response.status_code})\n")
+
+    # pre-condition: 
+    # post-condition: 
+    def __str__(self) -> str:
+        return f"API token: {self.api_token}"

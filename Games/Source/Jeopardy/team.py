@@ -6,13 +6,9 @@
 from debug_logger import DebugLogger
 
 class Team:
-    def __init__(self,
-        name: str,
-        #debug: bool = False
-    ) -> None:
+    def __init__(self, name: str) -> None:
         self.name = name
         self.score = 0
-        #self.DEBUG = debug
         self.logger = DebugLogger()
 
     # pre-condition: points must be initialized to a non-negative integer
@@ -22,6 +18,13 @@ class Team:
         
         self.score += points
         self.logger.log(f"Increased this team's points by {points}",for_debug=False)
+    
+    # pre-condition: 
+    # post-condition: 
+    def resetTeam(self, full_reset: bool = False) -> None:
+        self.score = 0
+        if full_reset:
+            self.name = ""
 
     def __str__(self) -> str:
         return f"{self.name} ({self.score} points)"

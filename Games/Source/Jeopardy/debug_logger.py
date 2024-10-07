@@ -7,6 +7,7 @@ from colorama import Fore, Style
 from colorama import init as colorama_init
 from sys import stdout, stderr
 from datetime import datetime
+from traceback import format_exc
 
 class DebugLogger:
     # class attribute instead of an instance attribute to avoid making multiple log files
@@ -15,6 +16,7 @@ class DebugLogger:
     def __init__(self, use_color: bool = False) -> None:
         #self.debug = debug
         self.use_color = use_color
+        #self.log_entries = []
         if self.use_color: colorama_init(autoreset=True)
         
         # give the log file a name if it does not have one
@@ -29,7 +31,7 @@ class DebugLogger:
         for_debug: bool = True,
         output=stdout
     ) -> None:
-        """Logs a message and prints it if debug mode is enabled."""
+        """Logs a message and dumps it."""
         
         if output == stderr: print(message)
         
@@ -70,32 +72,38 @@ class DebugLogger:
             DebugLogger.log_filename = f"log_{timestamp}.txt"
         
         try:
-            with open(self.log_filename,'a') as file:
+            with open(f"assets/logs/{self.log_filename}",'a') as file:
                 file.write(message + '\n')
         except IOError:
             # file was unable to be opened
             if not internal_log:
                 self.log(f"Error: dump to file '{DebugLogger.log_filename}' failed!",output=stderr)
+                self.log(format_exc(),internal_log=True)
         except FileNotFoundError:
             # for whatever reason the file DNE and Python could not create it
             if not internal_log:
                 self.log(f"Error: '{DebugLogger.log_filename}' not found",output=stderr)
+                self.log(format_exc(),internal_log=True)
         except PermissionError: 
             # the file is write-protected, or Python does not have proper permission to access it
             if not internal_log:
                 self.log(f"Error: Permission denied to write to '{DebugLogger.log_filename}'", output=stderr)
+                self.log(format_exc(),internal_log=True)
         except IsADirectoryError:
             # the filename is a directory
             if not internal_log:
                 self.log(f"Error: '{DebugLogger.log_filename}' is a directory, not a file", output=stderr)
+                self.log(format_exc(),internal_log=True)
         except OSError as e:
-            # corrupted file system or if the disk is full
+            # corrupted file system or the disk is full
             if not internal_log:
                 self.log(f"Error: OS error ({e}) while accessing '{DebugLogger.log_filename}'", output=stderr)
+                self.log(format_exc(),internal_log=True)
         except Exception as e:
             # anything else not here already
             if not internal_log:
                 self.log(f"Error: An unexpected error occurred ({e}) when accessing {DebugLogger.log_filename}", output=stderr)
+                self.log(format_exc(),internal_log=True)
         
         # Are all of these necessary? Probably not, but whatever. I feel it's good practice
         # thinking about and handling edge cases. The following would probably make it easier to
@@ -109,5 +117,5 @@ class DebugLogger:
         #        self.log(f"Unexpected error: {e}", output=stderr)
 
     def __str__(self) -> str:
-        return f"Log entries located in file '{DebugLogger.log_filename}'"
+        return f"Log entries located in file 'assets/logs/{DebugLogger.log_filename}'"
 
