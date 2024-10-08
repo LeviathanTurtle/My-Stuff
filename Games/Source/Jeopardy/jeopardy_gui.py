@@ -1,6 +1,6 @@
 # William Wadsworth
 # Created: .2024
-# Initial release: .2024
+# Initial release: 10.07.2024
 # 
 # This script is Jeopardy with Trivia questions via the Trivia API from Open Trivia Database
 # (documentation: https://opentdb.com/api_config.php). Notes about use of the API will be found in
@@ -8,18 +8,35 @@
 # with '[DEBUG]'. An internet connection is required for the program to work. Note that if a token
 # file is present, the program will overwrite the old token with the new one.
 # 
-# Usage: python3 jeopardyGUI.py
+# Usage: python3 jeopardy_gui.py
 
-from sys import stderr, exit
-#from argparse import ArgumentParser       # parse runtime args without spaghetti logic
-from random import sample, shuffle        # random category, mix answers
-#from typing import Optional, List         # variable and function type hinting
-from traceback import format_exc
+from sys import stderr, exit          # used in logging, exiting program
+from random import sample, shuffle    # random category, mix answers
+from typing import Optional           # variable and function type hinting
+from traceback import format_exc      # 
+from os.path import exists, getctime  # search for last log
+from debug_logger import DebugLogger  # debug logger
+from jeopardy_api import JeopardyAPI  # api handling
+from team import Team                 # keep track of team names/score
+from glob import glob                 # accumulate all log files
+from time import time                 # keep track of runtime
+from re import match                  # regex searching
 
-MAX_CATEGORIES: int = 1
+from kivy.app import App
+from kivy.uix.label import Label
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
+from kivy.uix.popup import Popup
+from kivy.uix.boxlayout import BoxLayout
+from kivy.core.window import Window
+from kivy.clock import Clock as kivy_clock
+from kivy.uix.checkbox import CheckBox
+from kivy.core.audio import SoundLoader
+
+MAX_CATEGORIES: int = 6
 # var for each level of question
-#MONETARY_VALUES = [100,200,300,400,500]
-MONETARY_VALUES = [100]
+MONETARY_VALUES = [100,200,300,400,500]
 #ANSWER_TIME: int = 30
 CATEGORY_NAMES = {
     9: "General Knowledge",
@@ -49,38 +66,7 @@ CATEGORY_NAMES = {
 }
 
 
-
-from kivy.app import App
-from kivy.uix.label import Label
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.textinput import TextInput
-from kivy.uix.button import Button
-#from kivy.uix.widget import Widget
-#from kivy.properties import ObjectProperty
-from kivy.uix.popup import Popup
-from kivy.uix.boxlayout import BoxLayout
-from kivy.core.window import Window
-from kivy.clock import Clock as kivy_clock
-from kivy.uix.checkbox import CheckBox
-
-from kivy.core.audio import SoundLoader
-
-from os.path import exists, getctime
-from jeopardy_api import JeopardyAPI
-from team import Team
-from debug_logger import DebugLogger
-from glob import glob
-from re import match
-from time import time
-from typing import Optional
-
 class MyLayout(GridLayout):
-    #MAX_CATEGORIES = ObjectProperty(MAX_CATEGORIES)
-    #question_amount = ObjectProperty(None)
-    #category_name = ObjectProperty(None)
-    #category_index = ObjectProperty(None)
-    
-    # init infinite keywords
     # pre-condition: 
     # post-condition: 
     def __init__(self, **kwargs) -> None:
@@ -101,14 +87,12 @@ class MyLayout(GridLayout):
         # we also have the following:
         # startTime, stopTime (float)
         # team1, team2, current_team (Team)
-        # self.sound
+        # sound
         # sound is a part of the class so I can reference it in different functions
         # token_filename
         
-        # current_category (str), current_question_points (int)
+        # current_category (str)
         # name_to_number (List[int])
-        # selected_category_names (List[str])
-        # category_index (int)
         # question, correct_answer (str), incorrect_answers (List[str])
         # 
         # stuff pertaining to the GUI
@@ -151,6 +135,7 @@ class MyLayout(GridLayout):
                 lines = file.readlines()
         except Exception as e:
             self.logger.log(f"Error reading log file: {e}",output=stderr)
+            self.logger.log(format_exc())
             self.logger.log("Exiting checkPreviousWinner.")
             return ""
 
@@ -164,6 +149,7 @@ class MyLayout(GridLayout):
             last_line = lines[-15].strip()
         except IndexError as e: # a game was not finished
             self.logger.log(f"Error: {e}",output=stderr)
+            self.logger.log(format_exc())
             self.logger.log("Exiting checkPreviousWinner.")
             return ""
         
@@ -352,12 +338,12 @@ class MyLayout(GridLayout):
         # create a reverse mapping for API call
         self.name_to_number = {v: k for k, v in CATEGORY_NAMES.items()}
         # load selected categories into list
-        self.selected_category_names = [CATEGORY_NAMES[num] for num in selected_category_indices]
+        selected_category_names = [CATEGORY_NAMES[num] for num in selected_category_indices]
         # init with monetary values for each category
-        self.logger.log(f"Categories: {self.selected_category_names} (indices {selected_category_indices})",for_debug=False)
+        self.logger.log(f"Categories: {selected_category_names} (indices {selected_category_indices})",for_debug=False)
         
         # add widgets
-        for category in self.selected_category_names:
+        for category in selected_category_names:
             category_label = Label(
                 text=category,
                 font_size=18,
@@ -371,7 +357,7 @@ class MyLayout(GridLayout):
         # add buttons for each value in each category
         self.buttons = []
         for value in MONETARY_VALUES:
-            for category in self.selected_category_names:
+            for category in selected_category_names:
                 # create button
                 button = Button(
                     text=f"${value}",
@@ -398,15 +384,15 @@ class MyLayout(GridLayout):
         self.logger.log("Entering press...")
         
         # add vars to class
-        self.current_question_points = int(question_button.text.strip('$')) # monetary value
+        current_question_points = int(question_button.text.strip('$')) # monetary value
         self.current_category = category                    # category name
-        self.category_index = self.name_to_number[category] # category index
-        self.logger.log(f"Pressed {self.current_question_points} in category {category} (index {self.category_index})",for_debug=False)
+        category_index = self.name_to_number[category] # category index
+        self.logger.log(f"Pressed {current_question_points} in category {category} (index {category_index})",for_debug=False)
         
         try: # query api for data
             self.question, self.correct_answer, self.incorrect_answers = self.API_TOKEN.getQuestion(
-                category=self.category_index,
-                question_amount=self.current_question_points)
+                category=category_index,
+                question_amount=current_question_points)
         except ValueError as ve:
             #stderr.write(f"Error fetching question: {ve}")
             self.logger.log(f"Error fetching question: {ve}",output=stderr)
@@ -467,13 +453,21 @@ class MyLayout(GridLayout):
             answer_button.bind(on_press=lambda instance, ans=answer: self.checkAnswer(ans,popup,question_button))
             box.add_widget(answer_button)
 
-        # Create the popup
-        popup = Popup(
-            title=f"{self.current_team}, select your answer",
-            content=box,
-            auto_dismiss=False,
-            size_hint=(0.9, 0.7),
-            title_size='15sp')
+        # create the popup, note that the title depends on the steal
+        if self.is_steal:
+            popup = Popup(
+                title=f"{self.current_team.name}, it is your turn to steal!",
+                content=box,
+                auto_dismiss=False,
+                size_hint=(0.9, 0.7),
+                title_size='15sp')
+        else:
+            popup = Popup(
+                title=f"{self.current_team.name}, select your answer",
+                content=box,
+                auto_dismiss=False,
+                size_hint=(0.9, 0.7),
+                title_size='15sp')
         popup.open()
         # todo: popup size is off, include category and question amount
         
@@ -490,48 +484,50 @@ class MyLayout(GridLayout):
         
         is_correct: bool = False
         
-        if self.is_steal:
+        if selected_answer == self.correct_answer:
+            is_correct = True
+        elif self.is_steal:
             # dismiss the popup because the current popup is for the old team, and without this
             # there is two popups that the user has to click off of
             popup.dismiss()
             
-            if selected_answer == self.correct_answer:
-                is_correct = True
-                
-                # DO NOT swap teams
-            else:
-                # show that the team is incorrect
-                result_popup = Popup(
-                    title='Result',
-                    content=Label(text="Incorrect."),
-                    size_hint=(0.5, 0.5))
-                result_popup.open()
-                popup.dismiss()
-                
-                # DO NOT switch teams or re-display the question
-                if self.use_audio: kivy_clock.schedule_once(lambda dt: self.playNoise(is_incorrect=True))
-                kivy_clock.schedule_once(lambda dt: result_popup.dismiss())
-                
-                self.removeButton(question_button)
+            # show that the team is incorrect
+            result_popup = Popup(
+                title='Result',
+                content=Label(text="Incorrect."),
+                size_hint=(0.5, 0.5))
+            result_popup.open()
+            #popup.dismiss()
+            
+            # DO NOT switch teams or re-display the question
+            if self.use_audio: self.playNoise(is_incorrect=True)
+            #if self.use_audio: kivy_clock.schedule_once(lambda dt: self.playNoise(is_incorrect=True))
+            #kivy_clock.schedule_once(lambda dt: result_popup.dismiss())
+            #result_popup.dismiss()
+            
+            self.removeButton(question_button)
             
             self.is_steal = False
         else: # it is NOT a steal opportunity
-            if selected_answer == self.correct_answer:
-                is_correct = True  
-            else:
-                # show that the team is incorrect
-                #self.playNoise(is_incorrect=True)
-                #popup.dismiss()
-                if self.use_audio: kivy_clock.schedule_once(lambda dt: self.playNoise(is_incorrect=True))
-                kivy_clock.schedule_once(lambda dt: popup.dismiss())
-                
-                # 
-                self.logger.log(f"{self.current_team} is incorrect, the other team can now steal",for_debug=False)
-                
-                # switch to next team and mark that it's a steal attempt
-                self.is_steal = True
-                self.switchTurn()
-                self.displayQuestion(question_button)
+            popup.dismiss()
+            # show that the team is incorrect
+            if self.use_audio: self.playNoise(is_incorrect=True)
+            #if self.use_audio: kivy_clock.schedule_once(lambda dt: self.playNoise(is_incorrect=True))
+            
+            #kivy_clock.schedule_once(lambda dt: popup.dismiss())
+            """result_popup = Popup(
+                title='Result',
+                content=Label(text="Incorrect."),
+                size_hint=(0.5, 0.5))
+            result_popup.open()"""
+            
+            # 
+            self.logger.log(f"{self.current_team} is incorrect, the other team can now steal",for_debug=False)
+            
+            # switch to next team and mark that it's a steal attempt
+            self.is_steal = True
+            self.switchTurn()
+            self.displayQuestion(question_button)
         
         if is_correct:
             # update score
@@ -546,6 +542,8 @@ class MyLayout(GridLayout):
             # swap teams for next turn IF IT IS NOT A STEAL
             if not self.is_steal:
                 self.switchTurn()
+            # ensure steal flag is not set
+            self.is_steal = False
             
             # display result
             result_popup = Popup(
@@ -558,8 +556,9 @@ class MyLayout(GridLayout):
             
             #self.playNoise(is_correct=True)
             # Schedule the sound to play after the result popup is displayed
-            if self.use_audio: kivy_clock.schedule_once(lambda dt: self.playNoise(is_correct=True))
-            kivy_clock.schedule_once(lambda dt: result_popup.dismiss())
+            #if self.use_audio: kivy_clock.schedule_once(lambda dt: self.playNoise(is_correct=True))
+            if self.use_audio: self.playNoise(is_correct=True)
+            #kivy_clock.schedule_once(lambda dt: result_popup.dismiss())
             
             self.removeButton(question_button)
         
@@ -755,6 +754,6 @@ if __name__ == "__main__":
 
 
 # todo:
-    # - play again button
-# 
 # timer?
+# 
+# move self.logger.log(format_exc()) to logger
