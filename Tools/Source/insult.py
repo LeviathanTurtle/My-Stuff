@@ -1,10 +1,7 @@
-# This uses the Evil Insult API from https://evilinsult.com/
+# This generates an insult from the Evil Insult API (https://evilinsult.com/)
 # 
 # The base link is: https://opentdb.com/api.php
 # where
-#     -- REQUIRED --
-# 
-# 
 #     -- OPTIONAL --
 # lang  : language to use (default english)
 # type  : response format (text, XML, JSON, or default plain text)

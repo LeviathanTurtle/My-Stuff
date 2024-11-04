@@ -1,10 +1,9 @@
-# This uses the Dog API from https://dog.ceo/dog-api/
+# Shows a random dog photo from the Dog API (https://dog.ceo/dog-api/)
 
 from requests import get
 from PIL import Image
 from io import BytesIO
 from json import loads
-
 
 def main():
     # query the API

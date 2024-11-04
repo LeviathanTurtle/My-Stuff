@@ -1,6 +1,5 @@
-# https://zenquotes.io/
-# 
-# This uses the ZenQuotes.io API (documentation: https://docs.zenquotes.io/zenquotes-documentation)
+# This generates a quote from the ZenQuotes.io API
+# (https://docs.zenquotes.io/zenquotes-documentation)
 # 
 # The link template is: https://zenquotes.io/api/[mode]/[key]?option1=value&option2=value
 # where
@@ -9,9 +8,8 @@
 # [mode]                   =  Retrieval type [quotes, today, author, random]
 # 
 #     -- OPTIONAL --
-# [key]                    =  API key for use with premium subscriptions, be sure to obfuscate or
-#                             hide this in your source code to prevent hijacking. Optional
-# [options]                =  Additional options. Optional
+# [key]                    =  API key for use with premium subscriptions
+# [options]                =  Additional options
 # 
 # The response will be formatted as a JSON array:
 # q: quote text
@@ -20,7 +18,6 @@
 # h: pre-formatted HTML quote
 
 from requests import get
-
 
 def main():
     # query the API
@@ -45,7 +42,7 @@ def main():
             # in case no quote was found
             print("No quote found in the response.")
     # query unsuccessful
-    else:
+    else: 
         # output error code
         print(f"Error: {response.status_code}")
 
