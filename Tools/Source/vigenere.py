@@ -34,10 +34,11 @@
 # --- IMPORTS ---------------------------------------------------------------------------
 from sys import argv, stderr, exit
 from typing import Optional, Tuple, List
+from string import ascii_lowercase
 
 # --- VIGENERE VARS ---------------------------------------------------------------------
-ALPHABET_LENGTH: int = 26
-ALPHABET: str = "abcdefghijklmnopqrstuvwxyz"
+ALPHABET_LENGTH: int = len(ascii_lowercase) # 26
+#ALPHABET: str = "abcdefghijklmnopqrstuvwxyz"
 DEBUG: bool = False
 
 #VigenereTable = [[None for _ in range(ALPHABET_LENGTH)] for _ in range(ALPHABET_LENGTH)]
@@ -63,7 +64,7 @@ def gen_keyed_alphabet(keyword: str) -> str:
     keyed_alphabet: str = keyword
     
     # append the rest of the letters
-    for char in ALPHABET:
+    for char in ascii_lowercase:
         # if the letter is not in the keyword, append
         if char not in keyword:
             keyed_alphabet += char
@@ -122,7 +123,7 @@ def gen_vigenere_table(keyed_alphabet: Optional[str] = None) -> VigenereTable:
         print("Entering gen_vigenere_table...")
     
     if keyed_alphabet is None:
-        keyed_alphabet = ALPHABET
+        keyed_alphabet = ascii_lowercase
     
     vigenere_table: VigenereTable = [["" for _ in range(ALPHABET_LENGTH)] for _ in range(ALPHABET_LENGTH)]
     
@@ -407,9 +408,9 @@ def encode(vigenere_table: VigenereTable, plaintext: str, keyword: str) -> str:
     # for each char in plaintext and keystream
     for p_char, k_char in zip(plaintext, keystream):
         # row index for plaintext char in alphabet
-        y_index: int = ALPHABET.index(p_char)
+        y_index: int = ascii_lowercase.index(p_char)
         # column index keystream char in alphabet
-        x_index: int = ALPHABET.index(k_char)
+        x_index: int = ascii_lowercase.index(k_char)
         # update the ciphertext
         ciphertext += vigenere_table[y_index][x_index]
     
@@ -445,11 +446,11 @@ def decode(vigenere_table: VigenereTable, ciphertext: str, keyword: str) -> str:
     # for each char in ciphertext and keystream
     for c_char, k_char in zip(ciphertext, keystream):
         # find pos of keystream char in alphabet
-        x_index: int = ALPHABET.index(k_char)
+        x_index: int = ascii_lowercase.index(k_char)
         # column index for ciphertext char in vigenere table
         y_index: int = vigenere_table[x_index].index(c_char)
         # update the plaintext
-        plaintext += ALPHABET[y_index]
+        plaintext += ascii_lowercase[y_index]
         #plaintext += ALPHABET[vigenere_table[ALPHABET.index(k_char)].index(c_char)]
     
     # re-add whitespaces
