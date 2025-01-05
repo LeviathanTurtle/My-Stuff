@@ -14,19 +14,17 @@ class JeopardyAPI():
     # 
     def __init__(self,
         token_filename: Optional[str] = None,
-        #debug: bool = False
     ) -> None:
-        #self.DEBUG = debug
-        self.logger = DebugLogger()
+        self.logger = DebugLogger(class_name="JeopardyAPI")
         
-        if self.checkInternet():
+        if JeopardyAPI.checkInternet():
             if token_filename: self.getSessionToken(token_filename)
             else: self.getSessionToken()
             
             self.logger.log(f"API token: {self.api_token}")
         else:
             #stderr.write("Error: an internet connection is required!\n")
-            self.logger.log("Error: an internet connection is required!\n",output=stderr)
+            self.logger.log("Error: an internet connection is required!\n",for_stderr=True)
             exit(1)
     
     # pre-condition: none
@@ -51,7 +49,7 @@ class JeopardyAPI():
     def getSessionToken(self,token_filename: Optional[str] = None) -> str:
         """Generate a new session token for the trivia API."""
         
-        self.logger.log("Entering getSessionToken...")
+        self.logger.log("Entering getSessionToken...",for_debug=True)
             
         file_token: Optional[str] = None
         
@@ -63,21 +61,21 @@ class JeopardyAPI():
                     file_token = file.read().strip()
             except FileNotFoundError:
                 #stderr.write(f"Warning: file '{token_filename}' not found")
-                self.logger.log(f"Warning: file '{token_filename}' not found",output=stderr)
+                self.logger.log(f"Warning: file '{token_filename}' not found",message_tag="WARNING")
             except IOError:
                 #stderr.write(f"Warning: file '{token_filename}' unable to be opened")
-                self.logger.log(f"Warning: file '{token_filename}' unable to be opened",output=stderr)
+                self.logger.log(f"Warning: file '{token_filename}' unable to be opened",message_tag="WARNING")
             
             # return the token from the file if it was read
             if file_token:
                 self.api_token = file_token # update token
-                #self.logger.log(f"Successfully read token from file '{token_filename}")
+                self.logger.log(f"Successfully read token from file '{token_filename}")
                 
-                self.logger.log("Exiting getSessionToken.")
+                self.logger.log("Exiting getSessionToken.",for_debug=True)
                 return self.api_token
             else: 
                 #stderr.write(f"Error: token read from file '{token_filename}' is invalid")
-                self.logger.log(f"Error: token read from file '{token_filename}' is invalid",output=stderr)
+                self.logger.log(f"Error: token read from file '{token_filename}' is invalid",for_stderr=True)
         
         # otherwise, assume we still need a token, so generate a new one
         self.logger.log("Generating a new token")
@@ -91,13 +89,13 @@ class JeopardyAPI():
                 self.api_token = data['token']
                 self.dumpToken()
                 
-                self.logger.log("Exiting getSessionToken.")
+                self.logger.log("Exiting getSessionToken.",for_debug=True)
                 return self.api_token
             else:
-                self.logger.log(f"Error in resetting token: {data['response_message']}",output=stderr)
+                self.logger.log(f"Error in resetting token: {data['response_message']}",for_stderr=True)
                 raise ValueError(f"Error in resetting token: {data['response_message']}")
         else:
-            self.logger.log(f"HTTP Error: {response.status_code}",output=stderr)
+            self.logger.log(f"HTTP Error: {response.status_code}",for_stderr=True)
             raise ConnectionError(f"HTTP Error: {response.status_code}")
     
     # pre-condition: api_token must be initialized as a string representing the API token
@@ -105,17 +103,17 @@ class JeopardyAPI():
     def dumpToken(self) -> None:
         """Dumps the API token to an external file."""
         
-        self.logger.log("Entering dumpToken...")
+        self.logger.log("Entering dumpToken...",for_debug=True)
             
         try:
             with open("token",'w') as file:
                 file.write(self.api_token)
         except IOError as e:
-            self.logger.log(f"Error dumping API token (Error: {e})",output=stderr)
+            self.logger.log(f"Error dumping API token (Error: {e})",for_stderr=True)
             raise e
-        self.logger.log("Dumped API token to filename 'token'")
         
-        self.logger.log("Exiting dumpToken.")
+        self.logger.log("Dumped API token to filename 'token'")
+        self.logger.log("Exiting dumpToken.",for_debug=True)
 
     # pre-condition: an internet connection, api_token must be initialized as a string representing the
     #                API token
@@ -123,7 +121,7 @@ class JeopardyAPI():
     def resetToken(self) -> str:
         """Reset the session token."""
         
-        self.logger.log("Entering resetToken...")
+        self.logger.log("Entering resetToken...",for_debug=True)
             
         response = get(f"https://opentdb.com/api_token.php?command=reset&token={self.api_token}")
         
@@ -134,14 +132,14 @@ class JeopardyAPI():
                 self.api_token = data['token']
                 self.dumpToken()
                 
-                self.logger.log("Exiting resetToken.")
+                self.logger.log("Exiting resetToken.",for_debug=True)
                 return self.api_token
             else:
                 message = data['response_message']
-                self.logger.log(f"Error in resetting token: {message}",output=stderr)
+                self.logger.log(f"Error in resetting token: {message}",for_stderr=True)
                 raise ValueError(f"Error in resetting token: {message}")
         else:
-            self.logger.log(f"HTTP Error: {response.status_code}",output=stderr)
+            self.logger.log(f"HTTP Error: {response.status_code}",for_stderr=True)
             raise ConnectionError(f"HTTP Error: {response.status_code}")
 
     # pre-condition: category must be initialized as a string, question_amount must be initialized to a
@@ -155,7 +153,7 @@ class JeopardyAPI():
         """Fetch a trivia question from the API."""
         
         # basically from trivia.py
-        self.logger.log(f"Entering getQuestion... Cat {category} for ${question_amount}")
+        self.logger.log(f"Entering getQuestion... Cat {category} for ${question_amount}",for_debug=True)
         
         # ensure correct scope
         #global API_TOKEN
@@ -190,16 +188,16 @@ class JeopardyAPI():
                     incorrect_answers = [unescape(ans) for ans in question_data['incorrect_answers']]
                     
                     self.logger.log(f"Question: {question} ({correct_answer})")
-                    self.logger.log("Exiting getQuestion.")
+                    self.logger.log("Exiting getQuestion.",for_debug=True)
                     return question, correct_answer, incorrect_answers
                 # reset token if expired or all questions used
                 elif data['response_code'] in [3,4]:
                     self.api_token = self.resetToken()
                 else:
-                    self.logger.log(f"API response error {data['response_code']}\n",output=stderr)
+                    self.logger.log(f"API response error {data['response_code']}\n",for_stderr=True)
                     raise ValueError(f"API response error {data['response_code']}\n")
             else:
-                self.logger.log(f"Failed to fetch question from API ({response.status_code})\n",output=stderr)
+                self.logger.log(f"Failed to fetch question from API ({response.status_code})\n",for_stderr=True)
                 raise ValueError(f"Failed to fetch question from API ({response.status_code})\n")
 
     # pre-condition: 
