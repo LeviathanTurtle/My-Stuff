@@ -5,116 +5,82 @@
 
 from colorama import Fore, Style
 from colorama import init as colorama_init
-from sys import stdout, stderr
 from datetime import datetime
 from traceback import format_exc
+from sys import stderr
 
 class DebugLogger:
     # class attribute instead of an instance attribute to avoid making multiple log files
     log_filename: str = ""
     
-    def __init__(self, use_color: bool = False) -> None:
-        #self.debug = debug
+    def __init__(self,
+        use_color: bool = False,
+        class_name: str = ""
+    ) -> None:
         self.use_color = use_color
-        #self.log_entries = []
-        if self.use_color: colorama_init(autoreset=True)
+        self.class_name = class_name
         
+        if self.use_color:
+            colorama_init(autoreset=True)
+            self.log("Using color in log tags")
+        
+        DebugLogger._make_file()
+
+    # pre-condition: 
+    # post-condition:
+    @staticmethod
+    def _make_file() -> None:
         # give the log file a name if it does not have one
         if not DebugLogger.log_filename:
             timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             DebugLogger.log_filename = f"log_{timestamp}.txt"
-
+    
     # pre-condition: 
     # post-condition: 
     def log(self,
         message: str,
-        for_debug: bool = True,
-        output=stdout
+        message_tag: str = "INFO",
+        for_debug: bool = False,
+        for_stderr: bool = False
     ) -> None:
         """Logs a message and dumps it."""
         
-        if output == stderr: print(message)
+        if for_stderr: print(message)
         
-        if for_debug:
-            # make debug output prettier
-            tagged_message: str = "[DEBUG] "
-            # if the message was for stderr, append tag to log entry
-            if output == stderr: tagged_message += "[STDERR] "
-            
-            tagged_message += message
-            
-            self.dump(tagged_message,internal_log=True) # add to log file
+        # COLOR CODES:
+        # - lightblue: classes
+        # - lightyellow: warnings
+        # - lightcyan: debug
+        # - lightred: errors
         
-        elif self.use_color:
-            # make debug output prettier
-            beautified_message: str = f"[{Fore.LIGHTCYAN_EX+Style.BRIGHT}DEBUG{Style.RESET_ALL}] "
-            # if the message was for stderr, append tag to log entry
-            if output == stderr: beautified_message += f"[{Fore.RED+Style.BRIGHT}STDERR{Style.RESET_ALL}] "
-            
-            beautified_message += message
-            
-            self.dump(beautified_message,internal_log=True) # add to log file
+        # first is the class name
+        tagged_message: str = f"{Fore.LIGHTBLUE_EX+Style.BRIGHT if self.use_color else ''}[{self.class_name}]{Style.RESET_ALL if self.use_color else ''} " if self.class_name else ""
+        # second is the type of message being logged
+        tagged_message += f"{Fore.LIGHTYELLOW_EX+Style.BRIGHT if self.use_color and message_tag=="WARNING" else ''}[{message_tag}]{Style.RESET_ALL if self.use_color else ''} "
         
-        else: self.dump(message,internal_log=True) # add to log file
+        if for_debug: # include color if specified
+            tagged_message += f"{Fore.LIGHTCYAN_EX+Style.BRIGHT if self.use_color else ''}[DEBUG]{Style.RESET_ALL if self.use_color else ''} "
+        if for_stderr: # if the message was for stderr, append tag
+            tagged_message += f"{Fore.LIGHTRED_EX+Style.BRIGHT if self.use_color else ''}[STDERR]{Style.RESET_ALL if self.use_color else ''} "
+
+        tagged_message += message
+        
+        self._dump(tagged_message) # add to log file
     
     # pre-condition: 
     # post-condition: 
-    def dump(self,
-        message: str,
-        internal_log: bool = False
-    ) -> None:
+    def _dump(self, message: str) -> None:
         """Dumps a log message to a file."""
 
-        # Ensure the class-level log_filename is being used
-        if not DebugLogger.log_filename:
-            # make a timestamp of the format YYYY-MM-DD_HH-MM-SS
-            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            DebugLogger.log_filename = f"log_{timestamp}.txt"
+        # ensure the class-level log_filename is being used
+        #DebugLogger._make_file()
         
         try:
-            with open(f"assets/logs/{self.log_filename}",'a') as file:
+            with open(f"assets/logs/{self.log_filename}",'a',encoding='utf-8') as file:
                 file.write(message + '\n')
-        except IOError:
-            # file was unable to be opened
-            if not internal_log:
-                self.log(f"Error: dump to file '{DebugLogger.log_filename}' failed!",output=stderr)
-                self.log(format_exc(),internal_log=True)
-        except FileNotFoundError:
-            # for whatever reason the file DNE and Python could not create it
-            if not internal_log:
-                self.log(f"Error: '{DebugLogger.log_filename}' not found",output=stderr)
-                self.log(format_exc(),internal_log=True)
-        except PermissionError: 
-            # the file is write-protected, or Python does not have proper permission to access it
-            if not internal_log:
-                self.log(f"Error: Permission denied to write to '{DebugLogger.log_filename}'", output=stderr)
-                self.log(format_exc(),internal_log=True)
-        except IsADirectoryError:
-            # the filename is a directory
-            if not internal_log:
-                self.log(f"Error: '{DebugLogger.log_filename}' is a directory, not a file", output=stderr)
-                self.log(format_exc(),internal_log=True)
-        except OSError as e:
-            # corrupted file system or the disk is full
-            if not internal_log:
-                self.log(f"Error: OS error ({e}) while accessing '{DebugLogger.log_filename}'", output=stderr)
-                self.log(format_exc(),internal_log=True)
         except Exception as e:
-            # anything else not here already
-            if not internal_log:
-                self.log(f"Error: An unexpected error occurred ({e}) when accessing {DebugLogger.log_filename}", output=stderr)
-                self.log(format_exc(),internal_log=True)
-        
-        # Are all of these necessary? Probably not, but whatever. I feel it's good practice
-        # thinking about and handling edge cases. The following would probably make it easier to
-        # read in the code, but less verbose in the output:
-        
-        #except (IOError, FileNotFoundError, PermissionError, IsADirectoryError, OSError) as e:
-        #    if not internal_log:
-        #        self.log(f"Error: {e} while writing to 'log.txt'", output=stderr)
-        #except Exception as e:
-        #    if not internal_log:
-        #        self.log(f"Unexpected error: {e}", output=stderr)
+            stderr.write(f"Error in DebugLogger with file '{DebugLogger.log_filename}': {e}\n")
+            stderr.write(format_exc() + '\n')
 
     def __str__(self) -> str:
         return f"Log entries located in file 'assets/logs/{DebugLogger.log_filename}'"

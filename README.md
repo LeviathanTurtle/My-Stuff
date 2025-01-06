@@ -7,7 +7,7 @@ NOTE: all binaries have been removed until I find a better portability solution.
 
 
 ## CALCULATORS
-- `coinTotal`: prompts the user to input a price, and the program will calculate and output the minimum amount of coins for each type (quarter, dime, nickel, penny) required to meet the price (Note: as of 5.20.2024, this does not work 100% accurate)
+- `coinTotal`: prompts the user to input a price, and the program will calculate and output the minimum amount of coins for each type (quarter, dime, nickel, penny) required to meet the price
 
 - `factorialGeoseriesCalc`: performs a factorial or geoseries calculation based on a number given from input
 
