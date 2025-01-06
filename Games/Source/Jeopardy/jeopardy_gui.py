@@ -196,6 +196,7 @@ class MyLayout(GridLayout):
         popup_content = GridLayout(cols=3,spacing=10,padding=[10,10])
         
         # todo add default values for text input if left blank
+        # todo: default team names should be team1 and team2
         # team 1 widgets
         popup_content.add_widget(Label(text="Team 1:", size_hint_y=None, height=30, valign='middle'))
         team_1_input = TextInput(multiline=False, size_hint_y=None, height=30,hint_text="Team 1")
@@ -285,10 +286,9 @@ class MyLayout(GridLayout):
         # assume that whatever is here is the possible filename
         self.token_filename = filename if filename and exists(filename) else ""
         
-        self.team1 = Team(team1)
-        self.team2 = Team(team2)
+        self.team1 = Team(team1) if team1 else Team("team1")
+        self.team2 = Team(team2) if team2 else Team("team2")
         self.current_team: Team = self.team1
-        # todo: ensure team names are not blank
         
         self.logger.log(f"Team 1: {team1}, Team 2: {team2}")
         popup.dismiss()
