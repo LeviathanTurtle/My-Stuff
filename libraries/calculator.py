@@ -9,13 +9,13 @@ from math import sqrt
 from typing import List, Tuple, Union
 
 class Calculator:
-    """idk"""
+    """A simple calculator class with various mathematical methods."""
     
     # pre-condition: endpoint should be initialized to an integer between 0 and 1,000 and
     #                double_factorial must be initialized to true of false
     # post-condition: if the user's endpoint is valid, its calculated result is returned, otherwise
     #                 -1 is returned
-    def factorial(
+    def factorial(self,
         endpoint: int,
         double_factorial: bool
     ) -> int:
@@ -26,7 +26,7 @@ class Calculator:
         if endpoint < 0 or endpoint > 1000:
             raise ValueError("Invalid endpoint, integer must be between 0 and 1,000")
 
-        prod: int = 0
+        prod: int = 1
         
         # user wants a double factorial
         if double_factorial:
@@ -35,13 +35,12 @@ class Calculator:
                 raise ValueError("Invalid endpoint, integer must be between 0 and 1,000")
                 #return -1
             
-            for i in range(1,endpoint+1):
+            for i in range(1,endpoint+1,2):
                 prod *= i
         # normal factorial
         else:
             for i in range(1,endpoint+1):
                 prod *= i
-                i += 2
         
         return prod
     
@@ -49,8 +48,8 @@ class Calculator:
     #                be initialized to a non-zero integer, r must be initialized to a positive 
     #                non-zero float, but has a default of 0.5 if it is not provided or invalid
     # post-condition: the series sum is returned
-    def geoseries(
-        a: float, 
+    def geoseries(self,
+        initial_term: float, 
         num_terms: int, 
         r: float = 0.5
     ) -> float:
@@ -58,15 +57,16 @@ class Calculator:
         
         # check common ratio of choice
         if r <= 0:
-            r = 0.5
+            raise ValueError("Common ratio must be positive.")
             
-        sum: float = 0.0
+        series_sum: float = 0.0
+        term = initial_term
         
         for _ in range(num_terms):
-            sum += a
-            a *= r
+            series_sum += term
+            term *= r
         
-        return sum
+        return series_sum
     
     # pre-condition: operand_1 and operand_2 parameters must be initialized with values. If 
     #                dividing, operand_2 cannot be 0. operation parameter must be initialized to a
@@ -107,7 +107,7 @@ class Calculator:
     # post-condition: if there are no multiples, false is returned, otherwise a tuple is returned
     #                 containing True, the amount of multiples, and a list of each multiple
     def isMultiple(
-        max: Union[int, float], 
+        max_val: Union[int, float], 
         increment: Union[int, float]
     ) -> Tuple[bool, int, List[Union[int, float]]]:
         """Determines if one number is a multiple of another (and its multiples)."""
@@ -126,18 +126,14 @@ class Calculator:
         count = 0
         # define empty list
         multiples = []
+        current_val = increment
         
-        # check if x is divisible by y
-        if max % increment == 0:
-            # calculation of multiples
-            while sum < max:
-                sum += increment
-                multiples.append(sum)
-                count += 1
+        # calculation of multiples
+        while current_val < max_val:
+            multiples.append(current_val)
+            current_val += increment
 
-            return True, count, multiples
-        else:
-            return False, count, multiples
+        return (len(multiples) > 0, len(multiples), multiples)
 
     # pre-condition: a, b, and c are real numbers (floats), a must not be zero
     # post-condition: if the discriminant is positive, returns two distinct real roots as a tuple
@@ -150,6 +146,9 @@ class Calculator:
         c: float
     ) -> Union[Tuple[float, float], float, Tuple[complex, complex]]:
         """Solves the quadratic equation."""
+        
+        if a == 0:
+            raise ValueError("The value of 'a' cannot be zero in a quadratic equation.")
         
         # calculate discriminant
         discriminant = b**2 - 4*a*c
