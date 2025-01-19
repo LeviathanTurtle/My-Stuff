@@ -9,14 +9,14 @@ from typing import Tuple
 class finance:
     """idk"""
     
-    # function to return the minimum number of coins given a monetary value
     # pre-condition: monetary total parameter should be initialized to a non-zero and non-negative
     #                float 
-    # 
     # post-condition: the minimum number of coins is returned in a tuple (quarters, dimes, nickels,
     #                 then pennies). If the total value parameter is less than or equal to 0, an 
     #                 error is output and a tuple consisting of four -1s is returned
     def findCoinTotal(total: float) -> Tuple[int,int,int,int]:
+        """Returns the minimum number of coins given a monetary value."""
+        
         # check amount, must be > 0
         if total <= 0:
             raise ValueError("invalid total, amount must be greater than 0")
@@ -46,25 +46,13 @@ class finance:
 
         return q, d, n, p
     
-    # function to calculate how much money based on USD denominations (1,5,10,20,50,100)
-    # pre-condition: each dollar denomination count must be initialized to a positive non-zero
-    #                integer
-    # 
-    # post-condition: the monetary total is calculated and returned
-    def moneyCalculator(count_1: int, count_5: int, count_10: int, count_20: int, count_50: int, count_100: int) -> int:
-        # ensure all parameters are integers
-        if not all(isinstance(i, int) for i in [count_1, count_5, count_10, count_20, count_50, count_100]):
-            raise TypeError("All denomination counts must be integers")
-
-        return count_1 + (5 * count_5) + (10 * count_10) + (20 * count_20) + (50 * count_50) + (100 * count_100)
-    
-    # function to generate an investment table
     # pre-condition: principal amount, interest rate, interest rate change, length of time, and
     #                deposit must all be initialized to positive non-zero floats
-    # 
     # post-condition: the table is output detailing the total amount invested and the value of the
     #                 investment for each time step
     def genInvestmentTable(principal_amount: float, interest_rate: float, time: float, deposit: float, interest_rate_change: float = 0) -> None:
+        """Generates an investment table."""
+        
         # ensure all numerical params are of valid types
         if not all(isinstance(param, (int, float)) for param in [principal_amount, interest_rate, interest_rate_change, time, deposit]):
             raise TypeError("All parameters must be numeric types (int or float)")
@@ -98,4 +86,16 @@ class finance:
 
         print('-' * 50)
         print(f"\nYour capital gain will be ${value_of_investment-principal_amount:.2f} in {time:.2f} years\n")
+    
+    # pre-condition: each dollar denomination count must be initialized to a positive non-zero
+    #                integer
+    # post-condition: the monetary total is calculated and returned
+    def moneyCalculator(count_1: int, count_5: int, count_10: int, count_20: int, count_50: int, count_100: int) -> int:
+        """Calculate how much money based on USD denominations (1,5,10,20,50,100)."""
+        
+        # ensure all parameters are integers
+        if not all(isinstance(i, int) for i in [count_1, count_5, count_10, count_20, count_50, count_100]):
+            raise TypeError("All denomination counts must be integers")
 
+        return count_1 + (5 * count_5) + (10 * count_10) + (20 * count_20) + (50 * count_50) + (100 * count_100)
+    

@@ -10,12 +10,7 @@ from typing import List, Tuple, Union
 
 class calculator:
     """idk"""
-    # will probably get rid of these, not totally sure yet
-    a: float
-    b: float
-    c: float
-
-
+    
     # pre-condition: endpoint should be initialized to an integer between 0 and 1,000 and
     #                double_factorial must be initialized to true of false
     # post-condition: if the user's endpoint is valid, its calculated result is returned, otherwise
@@ -184,3 +179,15 @@ class calculator:
             #return complex(-b / (2*a),sqrt(abs(discriminant)) / (2*a)), complex(-b / (2*a),-sqrt(abs(discriminant)) / (2*a))
     
     
+    # pre-condition: a, b, and c are real numbers (floats) greater than zero
+    # post-condition: if the squares of the two sides equal the square of the hypotenuse, True is
+    #                 returned, otherwise False
+    def isRightTriangle(
+        a: float,
+        b: float,
+        c: float
+    ) -> bool:
+        """Determines if three sides of a triangle make a right triangle."""
+        
+        return True if (a*a)+(b*b)==(c*c) else False
+
