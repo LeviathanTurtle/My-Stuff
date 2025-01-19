@@ -6,7 +6,7 @@
 
 from typing import Tuple
 
-class finance:
+class Finance:
     """idk"""
     
     # pre-condition: monetary total parameter should be initialized to a non-zero and non-negative

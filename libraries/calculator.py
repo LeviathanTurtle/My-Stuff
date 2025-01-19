@@ -8,7 +8,7 @@
 from math import sqrt
 from typing import List, Tuple, Union
 
-class calculator:
+class Calculator:
     """idk"""
     
     # pre-condition: endpoint should be initialized to an integer between 0 and 1,000 and
@@ -45,7 +45,6 @@ class calculator:
         
         return prod
     
-    
     # pre-condition: starting value a must be initialized to a non-zero float, number of terms must
     #                be initialized to a non-zero integer, r must be initialized to a positive 
     #                non-zero float, but has a default of 0.5 if it is not provided or invalid
@@ -69,7 +68,6 @@ class calculator:
         
         return sum
     
-     
     # pre-condition: operand_1 and operand_2 parameters must be initialized with values. If 
     #                dividing, operand_2 cannot be 0. operation parameter must be initialized to a
     #                non-empty string
@@ -102,8 +100,7 @@ class calculator:
             return operand_1 / operand_2
         else:
             raise ValueError("Error: invalid operation")
-
-
+        
     # pre-condition: max and increment must be initialized to positive non-zero numerical values,
     #                count must be initialized (will be reset to 0 in case of invalid value),
     #                multiples must be intialized to an empty vector
@@ -142,7 +139,6 @@ class calculator:
         else:
             return False, count, multiples
 
-
     # pre-condition: a, b, and c are real numbers (floats), a must not be zero
     # post-condition: if the discriminant is positive, returns two distinct real roots as a tuple
     #                 of floats. If the discriminant is zero, returns one real root as a float. If
@@ -178,16 +174,3 @@ class calculator:
             return root1, root2
             #return complex(-b / (2*a),sqrt(abs(discriminant)) / (2*a)), complex(-b / (2*a),-sqrt(abs(discriminant)) / (2*a))
     
-    
-    # pre-condition: a, b, and c are real numbers (floats) greater than zero
-    # post-condition: if the squares of the two sides equal the square of the hypotenuse, True is
-    #                 returned, otherwise False
-    def isRightTriangle(
-        a: float,
-        b: float,
-        c: float
-    ) -> bool:
-        """Determines if three sides of a triangle make a right triangle."""
-        
-        return True if (a*a)+(b*b)==(c*c) else False
-
