@@ -1,4 +1,4 @@
-use std::f64::consts::PI;
+//use std::f64::consts::PI;
 
 /// A simple calculator struct with various mathematical methods.
 pub struct Calculator;
