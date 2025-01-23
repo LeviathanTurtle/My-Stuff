@@ -7,13 +7,14 @@
 from typing import Tuple
 
 class Finance:
-    """idk"""
+    """A utility class for various financial calculations."""
     
     # pre-condition: monetary total parameter should be initialized to a non-zero and non-negative
     #                float 
     # post-condition: the minimum number of coins is returned in a tuple (quarters, dimes, nickels,
     #                 then pennies). If the total value parameter is less than or equal to 0, an 
     #                 error is output and a tuple consisting of four -1s is returned
+    @staticmethod
     def findCoinTotal(total: float) -> Tuple[int,int,int,int]:
         """Returns the minimum number of coins given a monetary value."""
         
@@ -22,35 +23,42 @@ class Finance:
             raise ValueError("invalid total, amount must be greater than 0")
 
         # convert dollars to cents to avoid floating-point issues
-        total = int(total * 100 + 0.5)  # adding 0.5 to round correctly
+        total = round(total * 100)
 
         # QUARTERS
         # how many quarters in starting amount
-        q = total // 25
+        quarters = total // 25
         # calculate new total without number of quarters
-        total -= q * 25
+        total %= 25
 
         # DIMES
         # how many dimes in updated amount
-        d = total // 10
-        total -= d * 10
+        dimes = total // 10
+        total %= 10
 
         # NICKELS
         # how many nickels in updated amount
-        n = total // 5
-        total -= n * 5
+        nickels = total // 5
+        #total %= 5
 
         # PENNIES
         # how many pennies in remaining amount
-        p = total
+        pennies = total % 5
 
-        return q, d, n, p
+        return quarters, dimes, nickels, pennies
     
     # pre-condition: principal amount, interest rate, interest rate change, length of time, and
     #                deposit must all be initialized to positive non-zero floats
     # post-condition: the table is output detailing the total amount invested and the value of the
     #                 investment for each time step
-    def genInvestmentTable(principal_amount: float, interest_rate: float, time: float, deposit: float, interest_rate_change: float = 0) -> None:
+    def genInvestmentTable(
+        principal_amount: float,
+        interest_rate: float,
+        time: float,
+        deposit: float,
+        interest_rate_change: float = 0,
+        output: str = "CONSOLE"
+    ) -> None:
         """Generates an investment table."""
         
         # ensure all numerical params are of valid types

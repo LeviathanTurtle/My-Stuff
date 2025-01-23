@@ -15,7 +15,8 @@ class Calculator:
     #                double_factorial must be initialized to true of false
     # post-condition: if the user's endpoint is valid, its calculated result is returned, otherwise
     #                 -1 is returned
-    def factorial(self,
+    @staticmethod
+    def factorial(
         endpoint: int,
         double_factorial: bool
     ) -> int:
@@ -48,7 +49,8 @@ class Calculator:
     #                be initialized to a non-zero integer, r must be initialized to a positive 
     #                non-zero float, but has a default of 0.5 if it is not provided or invalid
     # post-condition: the series sum is returned
-    def geoseries(self,
+    @staticmethod
+    def geoseries(
         initial_term: float, 
         num_terms: int, 
         r: float = 0.5
@@ -74,6 +76,7 @@ class Calculator:
     # post-condition: depending on the operation specified (assuming the operation is valid), the
     #                 sum, difference, product, or quotient is returned, otherwise an error is
     #                 output and a relevant exception is thrown
+    @staticmethod
     def fourFunction(
         operand_1: Union[int, float], 
         operand_2: Union[int, float], 
@@ -106,6 +109,7 @@ class Calculator:
     #                multiples must be intialized to an empty vector
     # post-condition: if there are no multiples, false is returned, otherwise a tuple is returned
     #                 containing True, the amount of multiples, and a list of each multiple
+    @staticmethod
     def isMultiple(
         max_val: Union[int, float], 
         increment: Union[int, float]
@@ -140,6 +144,7 @@ class Calculator:
     #                 of floats. If the discriminant is zero, returns one real root as a float. If
     #                 the discriminant is negative, returns two complex roots as a tuple of complex
     #                 numbers.
+    @staticmethod
     def quadratic(
         a: float, 
         b: float, 
