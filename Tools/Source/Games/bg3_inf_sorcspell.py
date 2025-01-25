@@ -119,7 +119,7 @@ def activate_equipment(using_shield: bool):
     if using_shield:
         create_sorcery_pts(1)
     else:
-        create_sorcery_pts(2)
+        create_sorcery_pts(2) # todo: amulet pts count as 2
     
     #print("Unequipping item")
     move_and_click(1285,1330)
@@ -133,24 +133,24 @@ def macro():
     # CHANGE ALL CURRENT VALUES HERE
     
     using_shield = True           # set to false if using the amulet
-    unlocked_spellslots_3 = False # set any of these to true if they are unlocked and you want 
-    unlocked_spellslots_4 = False # them expanded
-    unlocked_spellslots_5 = False
+    unlocked_spellslots_3 = True # set any of these to true if they are unlocked and you want 
+    unlocked_spellslots_4 = True # them expanded
+    unlocked_spellslots_5 = True
     
     # UPDATE THESE VALUES TO REFLECT YOUR CURRENT SPELL SLOTS
     # Note that this number should be considered after all sorc pts are gathered (since we are 
     # using first and second level spell slots) 
     
     if using_shield: # if we use the shield, we will use all first-level spell slots
-        Current_spellslots_1 = 0
-        Current_spellslots_2 = 3
+        Current_spellslots_1 = 0 # leave this 0
+        Current_spellslots_2 = 20
     else: # likewise for the amulet, we will use all second-level spell slots
         Current_spellslots_1 = 4
-        Current_spellslots_2 = 0
+        Current_spellslots_2 = 0 # leave this 0
     Current_spellslots_3 = 3
     Current_spellslots_4 = 3
     Current_spellslots_5 = 1
-    Current_sorc_pts = 6
+    Current_sorc_pts = 51
     
     # THESE ARE THE TARGET VALUES YOU WANT
     Target_spellslots_1 = 20 # e.g. I want 20 first-level spell slots
@@ -202,7 +202,15 @@ def macro():
     # -----------------
     
     # get all necessary sorc pts
-    print(f"Getting {LOOP_COUNTER} sorc pts ({Target_sorc_pts} pt targ + {Spell_1_pts} pts for lvl 1 spellslots + {Spell_2_pts} pts for lvl 2 spellslots)...")
+    msg = f"Getting {LOOP_COUNTER} sorc pts ({Target_sorc_pts} pt targ + {Spell_1_pts} pts for lvl 1 spellslots + {Spell_2_pts} pts for lvl 2 spellslots"
+    if unlocked_spellslots_3:
+        msg += f" + {Spell_3_pts} pts for lvl 3 spellslots"
+        if unlocked_spellslots_4:
+            msg += f"  {Spell_4_pts} pts for lvl 4 spellslots"
+            if unlocked_spellslots_5:
+                msg += f" + {Spell_5_pts} pts for lvl 5 spellslots"
+    print(msg+")...")
+    
     for _ in range(LOOP_COUNTER):
         activate_equipment(using_shield)
     
