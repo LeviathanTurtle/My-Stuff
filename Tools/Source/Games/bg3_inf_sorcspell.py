@@ -3,122 +3,71 @@
 # William Wadsworth
 # 1.23.2025
 # 
+# 
+# [notes]
+# 
 
 import keyboard
-#import pyautogui
-import pydirectinput
-import time
+from pydirectinput import moveTo, mouseDown, mouseUp
+from time import sleep, time
 
-# INFORMATION:
-"""
-CONVERSIONS:
-SLOTS:
-I: 2 pts
-II: 3 pts
-III: 5 pts
-IV: 6 pts
-V: 7 pts
+#MOUSE_SPEED = 1 
+# ^ pyautogui uses this, but not pydirectinput
 
-SORCERY PTS based on spell level (e.g. 3 = 3 pts)
-"""
-
-Base_spellslots_1 = 4
-Base_spellslots_2 = 3
-Base_spellslots_3 = 3
-Base_spellslots_4 = 3
-Base_spellslots_5 = 1
-using_shield_of_devotion = True
-using_spell_savant_amulet = False
-#MOUSE_SPEED = 1
-SLEEP_DURATION = .4
-
-# LAYOUT: 
-# TARGET GOAL -> need:
-# I: 20   -> +16 slots (32 pts)
-Target_spellslots_1 = 20
-Spell_1_pts = 32
-
-# II: 20  -> +17 slots (51 pts)
-unlocked_spellslots_2 = True
-Target_spellslots_2 = 20
-Spell_2_pts = 51
-sorcery_pts = 30
-
-# III: 10 -> +7 slots (35 pts)
-unlocked_spellslots_3 = False
-Target_spellslots_3 = 10
-Spell_3_pts = 35
-
-# IV: 10  -> +7 slots (42 pts)
-unlocked_spellslots_4 = False
-Target_spellslots_4 = 10
-Spell_4_pts = 42
-
-# V: 5    -> +4 slots (28 pts)
-unlocked_spellslots_5 = False
-Target_spellslots_5 = 5
-Spell_5_pts = 28
-
-# the loop counter needs to be the total amount of sorcery points needed
-LOOP_COUNTER: int = Spell_1_pts
-if unlocked_spellslots_2:
-    LOOP_COUNTER += Spell_2_pts + sorcery_pts
-    
-    if unlocked_spellslots_3:
-        LOOP_COUNTER += Spell_3_pts
-        if unlocked_spellslots_4:
-            LOOP_COUNTER += Spell_4_pts
-            if unlocked_spellslots_5:
-                LOOP_COUNTER += Spell_5_pts
-    
-
-#print(LOOP_COUNTER)
-
-
-"""
-def open_notepad_macro():
-    pydirectinput.press('win')
-    time.sleep(1)
-    pydirectinput.typewrite('notepad', interval=0.1)
-    pydirectinput.press('enter')
-    time.sleep(1)
-    pydirectinput.typewrite('Hello, this is a macro!', interval=0.1)
-
-# Bind the macro to a hotkey (e.g., CTRL+ALT+M)
-keyboard.add_hotkey('ctrl+alt+m', open_notepad_macro)
-
-# Keep the script running to listen for the hotkey
-keyboard.wait('esc')  # Exit the script by pressing ESC
-"""
-
+# the length of time to sleep between inputs (in seconds)
+SLEEP_DURATION = .05
 
 # -------------------------------------------------------------------------------------------------
 
-def mouse_click():
-    pydirectinput.mouseDown()
-    time.sleep(0.1)  # Hold for 100ms
-    pydirectinput.mouseUp()
+def move_and_click(coord_x: int, coord_y: int):
+    """Moves the mouse to an onscreen coordinate and clicks."""
+    
+    moveTo(coord_x, coord_y)
+    sleep(SLEEP_DURATION/2) # small buffer
+    
+    mouseDown()
+    sleep(0.1) # hold for 100ms
+    mouseUp()
+    
+    #sleep(SLEEP_DURATION)
 
 def select_metamagic(type: str):
-    """function def."""
+    """Select the metamagic icons in the UI."""
     
-    if type == "SORCERY PTS": # 1745 1215
-        pydirectinput.moveTo(1745, 1215)
-        time.sleep(SLEEP_DURATION/2)
-        mouse_click()
-        time.sleep(SLEEP_DURATION)
-    elif type == "SPELL SLOTS": # 1745 1275
-        pydirectinput.moveTo(1745, 1275)
-        time.sleep(SLEEP_DURATION/2)
-        mouse_click()
-        time.sleep(SLEEP_DURATION)
+    if type == "SORCPTS": # 1745 1215
+        move_and_click(1745,1215)
+    elif type == "SPELLSLOTS": # 1745 1275
+        move_and_click(1745,1275)
     else:
         pass # error
 
 def create_sorcery_pts(spellslot_level: int):
     """function def."""
     
-    print(f"Creating {spellslot_level} sorcery pt(s)...")
+    #print(f"Creating {spellslot_level} sorcery pt(s)...")
+    
+    spellslot_level_y = 1250
+    match (spellslot_level):
+        case 1:
+            # 1190 1250
+            spellslot_level_x = 1190
+        case 2:
+            # 1250 1250
+            spellslot_level_x = 1250
+
+    select_metamagic("SORCPTS")
+
+    # select spell slot level
+    move_and_click(spellslot_level_x,spellslot_level_y)
+    
+    # cast (mouse pos 1200 1050)
+    move_and_click(1200,1050)
+    
+    #print(f"Created {spellslot_level} sorcery pt(s)")
+    sleep(2)
+
+def create_spellslot(spellslot_level: int):
+    """function def."""
     
     spellslot_level_y = 1250
     match (spellslot_level):
@@ -137,70 +86,144 @@ def create_sorcery_pts(spellslot_level: int):
         case 5:
             # 1425 1250
             spellslot_level_x = 1425
-
-    select_metamagic("SORCERY PTS")
-
-    # select spell slot level
-    pydirectinput.moveTo(spellslot_level_x, spellslot_level_y)
-    time.sleep(SLEEP_DURATION/2)
-    mouse_click()
-    time.sleep(SLEEP_DURATION)
     
-    # cast mouse pos: 1200 1050
-    pydirectinput.moveTo(1200, 950)
-    time.sleep(SLEEP_DURATION/2)
-    mouse_click()
+    # goto spellslot icon (mouse pos 1745 1275)
+    select_metamagic("SPELLSLOTS")
+    
+    # goto spellslot level (dynamic mouse pos)
+    move_and_click(spellslot_level_x, spellslot_level_y)
+    
+    # cast (mouse pos 1200 1050 minimum)
+    #pydirectinput.moveTo(1200, 950)
+    #time.sleep(SLEEP_DURATION/2)
+    move_and_click(1200,950)
     #time.sleep(SLEEP_DURATION)
     
-    print(f"Created {spellslot_level} sorcery pts")
+    sleep(2)
 
-def create_spellslot(spellslot_level: int):
-    pass
-
-def activate_shield():
+def activate_equipment(using_shield: bool):
     """function def."""
     
-    # EVENT LOOP (shield):
+    # EVENT LOOP:
     # 
     # move mouse (1285 1330)
-    # click (equip shield)
+    # click (equip item)
     # create_sorc_pts
     # move mouse
-    # click (unequip shield)
+    # click (unequip item)
     
-    print("Equipping shield")
-    pydirectinput.moveTo(1285, 1330)
-    time.sleep(SLEEP_DURATION/2)
-    mouse_click()
-    time.sleep(SLEEP_DURATION)
+    #print("Equipping item")
+    move_and_click(1285,1330)
     
     # sorc pts
-    create_sorcery_pts(1)
-    time.sleep(2.4)
+    if using_shield:
+        create_sorcery_pts(1)
+    else:
+        create_sorcery_pts(2)
     
-    print("Unequipping shield")
-    pydirectinput.moveTo(1285, 1330)
-    time.sleep(SLEEP_DURATION/2)
-    mouse_click()
-    time.sleep(SLEEP_DURATION)
+    #print("Unequipping item")
+    move_and_click(1285,1330)
+    
+    sleep(.025)
 
 def macro():
     """function def."""
     
-    time.sleep(5)
-    #create_sorcery_pts(1)
+    #############################################
+    # CHANGE ALL CURRENT VALUES HERE
+    
+    using_shield = True           # set to false if using the amulet
+    unlocked_spellslots_3 = False # set any of these to true if they are unlocked and you want 
+    unlocked_spellslots_4 = False # them expanded
+    unlocked_spellslots_5 = False
+    
+    # UPDATE THESE VALUES TO REFLECT YOUR CURRENT SPELL SLOTS
+    # Note that this number should be considered after all sorc pts are gathered (since we are 
+    # using first and second level spell slots) 
+    
+    if using_shield: # if we use the shield, we will use all first-level spell slots
+        Current_spellslots_1 = 0
+        Current_spellslots_2 = 3
+    else: # likewise for the amulet, we will use all second-level spell slots
+        Current_spellslots_1 = 4
+        Current_spellslots_2 = 0
+    Current_spellslots_3 = 3
+    Current_spellslots_4 = 3
+    Current_spellslots_5 = 1
+    Current_sorc_pts = 6
+    
+    # THESE ARE THE TARGET VALUES YOU WANT
+    Target_spellslots_1 = 20 # e.g. I want 20 first-level spell slots
+    Target_spellslots_2 = 20
+    Target_spellslots_3 = 10
+    Target_spellslots_4 = 10
+    Target_spellslots_5 = 5
+    Target_sorc_pts = 30
+    #############################################
+
+    # SETUP: 
+    # TARGET GOAL -> need:
+    # I: 20   -> +16 slots (32 pts) [x2]
+    Target_spellslots_1 -= Current_spellslots_1
+    Spell_1_pts = Target_spellslots_1*2
+    # Note: if we're using the shield, all of these will be depleted so we need to create all of them
+
+    # II: 20  -> +17 slots (51 pts) [x3]
+    Target_spellslots_2 -= Current_spellslots_2
+    Spell_2_pts = Target_spellslots_2*3
+    # Note: if we're using the amulet, all of these will be depleted so we need to create all of them
+    Target_sorc_pts -= Current_sorc_pts 
+
+    # the loop counter needs to be the total amount of sorcery points needed
+    LOOP_COUNTER: int = Spell_1_pts+Spell_2_pts + Target_sorc_pts
+    # III: 10 -> +7 slots (35 pts) [x5]
+    if unlocked_spellslots_3:
+        Target_spellslots_3 -= Current_spellslots_3
+        Spell_3_pts = Target_spellslots_3*5
+        LOOP_COUNTER += Spell_3_pts
+        
+        # IV: 10  -> +7 slots (42 pts) [x6]
+        if unlocked_spellslots_4:
+            Target_spellslots_4 -= Current_spellslots_4
+            Spell_4_pts = Target_spellslots_4*6
+            LOOP_COUNTER += Spell_4_pts
+            
+            # V: 5    -> +4 slots (28 pts) [x7]
+            if unlocked_spellslots_5:
+                Target_spellslots_5 -= Current_spellslots_5
+                Spell_5_pts = Target_spellslots_5*7
+                LOOP_COUNTER += Spell_5_pts
+
+    print(f"Need {LOOP_COUNTER} more sorc pts ({LOOP_COUNTER+Current_sorc_pts} total)")
+    
+    sleep(5)
+    start_time = time()
     
     # -----------------
-    for _ in range(Base_spellslots_1):
-        create_sorcery_pts(1)
-        time.sleep(2.4)
     
-    # get all necessary sorcery pts
+    # get all necessary sorc pts
+    print(f"Getting {LOOP_COUNTER} sorc pts ({Target_sorc_pts} pt targ + {Spell_1_pts} pts for lvl 1 spellslots + {Spell_2_pts} pts for lvl 2 spellslots)...")
     for _ in range(LOOP_COUNTER):
-        activate_shield()
-        time.sleep(.75)
+        activate_equipment(using_shield)
     
     # expand spell slots
+    spellslot_data = {
+        1: {"target": Target_spellslots_1, "unlocked": True},
+        2: {"target": Target_spellslots_2, "unlocked": True},
+        3: {"target": Target_spellslots_3, "unlocked": unlocked_spellslots_3},
+        4: {"target": Target_spellslots_4, "unlocked": unlocked_spellslots_4},
+        5: {"target": Target_spellslots_5, "unlocked": unlocked_spellslots_5},
+    }
+
+    # loop through levels and create spellslots if unlocked
+    for level, data in spellslot_data.items():
+        if data["unlocked"]:  # check if the level is unlocked
+            print(f"Creating {data['target']} lvl {level} spellslots...")
+            for _ in range(data["target"]):
+                create_spellslot(level)
+    
+    stop_time = time()
+    print(f"Macro completed in {stop_time-start_time:.2f}s")
 
 
 def main():
@@ -210,23 +233,8 @@ def main():
     
     # Keep the script running to listen for the hotkey
     keyboard.wait('esc')  # Exit the script by pressing ESC
-    keyboard.add_hotkey('esc', keyboard.wait)
 
 
 if __name__ == "__main__":
     main()
-
-
-# EVENT LOOP (amulet):
-# 
-# cast all lvl 2
-# loop:
-#   move mouse
-#   click (equip amulet)
-#   move mouse
-#   click (activate metamagic)
-#   move mouse
-#   click (select level)
-#   move mouse
-#   click (cast)
 
