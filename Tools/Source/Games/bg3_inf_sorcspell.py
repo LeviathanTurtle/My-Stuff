@@ -5,6 +5,9 @@
 # 
 # 
 # [notes]
+# todo PROBLEMS:
+# - coords assume level 5 unlocked
+# - check that two-handed weapons are unequipped
 # 
 
 from keyboard import add_hotkey, wait
@@ -25,8 +28,8 @@ def macro():
     
     using_shield = True           # set to false if using the amulet
     unlocked_spellslots_3 = True # set any of these to true if they are unlocked and you want 
-    unlocked_spellslots_4 = True # them expanded
-    unlocked_spellslots_5 = True
+    unlocked_spellslots_4 = False # them expanded
+    unlocked_spellslots_5 = False
     
     # UPDATE THESE VALUES TO REFLECT YOUR CURRENT SPELL SLOTS
     # Note that this number should be considered after all sorc pts are gathered (since we are 
@@ -34,22 +37,22 @@ def macro():
     
     if using_shield: # if we use the shield, we will use all first-level spell slots
         Current_spellslots_1 = 0 # leave this 0
-        Current_spellslots_2 = 3 # default of 3
+        Current_spellslots_2 = 2 # default of 3
     else: # likewise for the amulet, we will use all second-level spell slots
         Current_spellslots_1 = 4 # default of 4
         Current_spellslots_2 = 0 # leave this 0
-    Current_spellslots_3 = 3
+    Current_spellslots_3 = 2
     Current_spellslots_4 = 3
     Current_spellslots_5 = 1
-    Current_sorc_pts = 6
+    Current_sorc_pts = 2
     
     # THESE ARE THE TARGET VALUES YOU WANT
-    Target_spellslots_1 = 20 # e.g. I want 20 first-level spell slots
-    Target_spellslots_2 = 20
-    Target_spellslots_3 = 10
+    Target_spellslots_1 = 10 # e.g. I want 20 first-level spell slots
+    Target_spellslots_2 = 10
+    Target_spellslots_3 = 5
     Target_spellslots_4 = 10
     Target_spellslots_5 = 5
-    Target_sorc_pts = 30
+    Target_sorc_pts = 20
     #############################################
 
     # SETUP: 
@@ -156,13 +159,13 @@ def create_sorcery_pts(spellslot_level: int):
     #print(f"Creating {spellslot_level} sorcery pt(s)...")
     
     spellslot_level_y = 1250
-    match (spellslot_level):
+    match (spellslot_level): # this assumes all 5 are unlocked
         case 1:
             # 1190 1250
-            spellslot_level_x = 1190
+            spellslot_level_x = 1250
         case 2:
             # 1250 1250
-            spellslot_level_x = 1250
+            spellslot_level_x = 1305
 
     select_metamagic("SORCPTS")
 
@@ -182,13 +185,13 @@ def create_spellslot(spellslot_level: int):
     match (spellslot_level):
         case 1:
             # 1190 1250
-            spellslot_level_x = 1190
+            spellslot_level_x = 1250
         case 2:
             # 1250 1250
-            spellslot_level_x = 1250
+            spellslot_level_x = 1305
         case 3:
             # 1300 1250 
-            spellslot_level_x = 1300
+            spellslot_level_x = 1365
         case 4:
             # 1365 1250
             spellslot_level_x = 1365
