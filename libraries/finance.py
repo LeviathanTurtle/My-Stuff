@@ -75,15 +75,17 @@ class Finance:
         count = 0
 
         # print table header
-        print(f"{'Investment Table':^35}\n")
-        print(f"{'Month':>8} | {'Total Invested ($)':>18} | {'Value of Investment ($)':>22}")
-        print('-' * 50)
+        table_title = f"{'Investment Table':^35}\n"
+        table_header = f"{'Month':>8} | {'Total Invested ($)':>18} | {'Value of Investment ($)':>22}\n"
+        table_separator = ('-' * 50) + '\n'
+        
+        investment_table: str = table_title + table_header + table_separator
 
         # table for changing interest
         while t <= time_months:
             # A = p + (p*r*t) + (t*d)
             value_of_investment = principal_amount + (principal_amount * interest_rate * t / 12) + (t * deposit)
-            print(f"{t:8} | {t * deposit:18.2f} | {value_of_investment:22.2f}")
+            investment_table += f"{t:8} | {t * deposit:18.2f} | {value_of_investment:22.2f}\n"
             t += 1
 
             # for changing interest
@@ -92,8 +94,10 @@ class Finance:
                 if count % 12 == 0:
                     interest_rate += interest_rate_change
 
-        print('-' * 50)
-        print(f"\nYour capital gain will be ${value_of_investment-principal_amount:.2f} in {time:.2f} years\n")
+        #print('-' * 50)
+        end_msg = f"\nYour capital gain will be ${value_of_investment-principal_amount:.2f} in {time:.2f} years\n"
+    
+    
     
     # pre-condition: each dollar denomination count must be initialized to a positive non-zero
     #                integer
