@@ -13,7 +13,7 @@
 # - literally test it
 # 
 
-from keyboard import add_hotkey, wait
+from keyboard import add_hotkey, wait, is_pressed
 from pydirectinput import moveTo, mouseDown, mouseUp
 from time import sleep, time
 
@@ -21,6 +21,8 @@ from time import sleep, time
 #MOUSE_SPEED = 1 
 # the length of time to sleep between inputs (in seconds)
 SLEEP_DURATION = .05
+PAUSE_HOTKEY = 'p'
+EXIT_HOTKEY = 'esc'
 
 #################################################
 # CHANGE ONLY THESE VALUES HERE
@@ -141,18 +143,28 @@ def macro():
     
     for _ in range(LOOP_COUNTER):
         activate_equipment(using_shield)
+        wait_if_paused() # pause check
 
     # loop through levels and create spellslots if unlocked
     for level, data in spellslot_data.items():
         if data["unlocked"]:  # check if the level is unlocked
+            wait_if_paused() # pause check
             print(f"Creating {data['target']} lvl {level} spellslots...")
             for _ in range(data["target"]):
                 create_spellslot(level)
+                wait_if_paused() # pause check
     
     stop_time = time()
     print(f"Macro completed in {stop_time-start_time:.2f}s")
 
 # -------------------------------------------------------------------------------------------------
+
+def wait_if_paused():
+    """Pauses the script if the pause hotkey is pressed."""
+    
+    while is_pressed(PAUSE_HOTKEY):
+        print("Macro paused. Press 'p' again to resume.")
+        sleep(1)
 
 def estimate_runtime(spellslot_data) -> float:
     total_runtime = 0
@@ -382,11 +394,14 @@ def activate_equipment(using_shield: bool):
     
 
 def main():
+    print(f"Press '{PAUSE_HOTKEY}' to pause/resume or '{EXIT_HOTKEY}' to quit.")
+    
     # Bind the macro to a hotkey (e.g., CTRL+ALT+M)
     add_hotkey('shift+r', macro)
+    add_hotkey('esc', wait, args='esc')
     
     # Keep the script running to listen for the hotkey
-    wait('esc')  # Exit the script by pressing ESC
+    #wait('esc')  # Exit the script by pressing ESC
 
 
 if __name__ == "__main__":
