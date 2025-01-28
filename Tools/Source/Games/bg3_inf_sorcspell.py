@@ -9,6 +9,7 @@
 # - check conv for spellslot lvl 6
 # - test with other FPS values
 # - add photos in readme doc
+# - graceful stoppage
 # - literally test it
 # 
 
@@ -127,15 +128,15 @@ def macro():
     # -------------------------------------------
     
     # get all necessary sorc pts
-    msg = f"Getting {LOOP_COUNTER} sorc pts ({Target_sorc_pts} pt targ + {Spell_1_pts} pts for lvl 1 spellslots + {Spell_2_pts} pts for lvl 2 spellslots"
+    msg = f"Getting {LOOP_COUNTER} sorc pts ({Target_sorc_pts} pt targ + {Spell_1_pts} for lvl 1 spellslots + {Spell_2_pts} for lvl 2 spellslots"
     if unlocked_spellslots_3:
-        msg += f" + {Spell_3_pts} pts for lvl 3 spellslots"
+        msg += f" + {Spell_3_pts} for lvl 3 spellslots"
         if unlocked_spellslots_4:
-            msg += f" + {Spell_4_pts} pts for lvl 4 spellslots"
+            msg += f" + {Spell_4_pts} for lvl 4 spellslots"
             if unlocked_spellslots_5:
-                msg += f" + {Spell_5_pts} pts for lvl 5 spellslots"
+                msg += f" + {Spell_5_pts} for lvl 5 spellslots"
                 #if unlocked_spellslots_6:
-                #    msg += f" + {Spell_6_pts} pts for lvl 6 spellslots"
+                #    msg += f" + {Spell_6_pts} for lvl 6 spellslots"
     print(msg+")...")
     
     for _ in range(LOOP_COUNTER):
