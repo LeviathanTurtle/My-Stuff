@@ -21,11 +21,12 @@ from time import sleep, time
 #MOUSE_SPEED = 1 
 # the length of time to sleep between inputs (in seconds)
 SLEEP_DURATION = .05
-PAUSE_HOTKEY = 'p'
-EXIT_HOTKEY = 'esc'
 
 #################################################
 # CHANGE ONLY THESE VALUES HERE
+
+PAUSE_HOTKEY = 'p'
+EXIT_HOTKEY = 'esc'
 
 # set any of these to true if they are unlocked and you want them expanded
 unlocked_spellslots_2 = True
@@ -193,8 +194,9 @@ def select_metamagic(type: str):
         move_and_click(1745,1215)
     elif type == "SPELLSLOTS": # 1745 1275
         move_and_click(1745,1275)
-    else:
-        pass # error
+    else: # error, literally should not happen
+        print("Invalid spell slot level.")
+        return
 
 # level 1:
 # - 1305 1250
@@ -210,14 +212,12 @@ def select_metamagic(type: str):
 # - 1275 1250
 # - 1335 1250
 # - 1395 1250
-
 # level 5:
 # - 1190 1250
 # - 1250 1250
 # - 1305 1250
 # - 1365 1250
 # - 1425 1250
-
 # level 6:
 # - 1160 1250
 # - 1220 1250
