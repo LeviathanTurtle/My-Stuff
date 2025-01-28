@@ -1,13 +1,18 @@
-import pyautogui
-import time
+
+# 
+# William Wadsworth
+# 1..2025
+# 
+
+from pyautogui import position
+from time import sleep
 
 print("Move your mouse to a desired position. Press Ctrl+C to stop.")
 
 try:
     while True:
-        # Get the current mouse position
-        x, y = pyautogui.position()
-        print(f"Mouse position: ({x}, {y})", end="\r")  # Print on the same line
-        time.sleep(0.1)  # Slight delay to make it readable
+        x, y = position() # get the current mouse position
+        print(f"Mouse position: ({x}, {y})", end="\r") # print on the same line
+        sleep(0.1) # slight delay to make it readable
 except KeyboardInterrupt:
     print("\nMouse position capturing stopped.")

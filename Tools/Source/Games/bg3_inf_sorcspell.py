@@ -397,8 +397,11 @@ def main():
     print(f"Press '{PAUSE_HOTKEY}' to pause/resume or '{EXIT_HOTKEY}' to quit.")
     
     # Bind the macro to a hotkey (e.g., CTRL+ALT+M)
-    add_hotkey('shift+r', macro)
-    add_hotkey('esc', wait, args='esc')
+    try:
+        add_hotkey('shift+r', macro)
+        add_hotkey('esc', wait, args='esc')
+    except KeyboardInterrupt:
+        print("Macro stopped")
     
     # Keep the script running to listen for the hotkey
     #wait('esc')  # Exit the script by pressing ESC
