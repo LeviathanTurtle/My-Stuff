@@ -27,9 +27,10 @@ SLEEP_DURATION: float = .05
 
 PAUSE_HOTKEY: str = 'p'
 EXIT_HOTKEY: str = 'esc'
+MAX_SPELL_LEVEL: int = 6
 
 # set any of these to true if they are unlocked and you want them expanded
-unlocked_spellslots_2: bool = True
+unlocked_spellslots_2: bool = True # this is only used for UI coords
 unlocked_spellslots_3: bool = True
 unlocked_spellslots_4: bool = False 
 unlocked_spellslots_5: bool = False
@@ -70,61 +71,59 @@ def macro() -> None:
     # SETUP:
     # LEVEL -> needed sorc pts per level:
     # I -> [x2]
-    Target_spellslots_1 -= Current_spellslots_1
+    Target_spellslots_1 = max(0, Target_spellslots_1-Current_spellslots_1)
     Spell_1_pts = Target_spellslots_1*2
 
     # II -> [x3]
-    Target_spellslots_2 -= Current_spellslots_2
+    Target_spellslots_2 = max(0, Target_spellslots_2-Current_spellslots_2)
     Spell_2_pts = Target_spellslots_2*3
-    Target_sorc_pts -= Current_sorc_pts 
+    
+    Target_sorc_pts = max(0, Target_sorc_pts-Current_sorc_pts)
 
     # the loop counter needs to be the total amount of sorcery points needed
     LOOP_COUNTER: int = Spell_1_pts+Spell_2_pts + Target_sorc_pts
     # III -> [x5]
     if unlocked_spellslots_3:
-        Target_spellslots_3 -= Current_spellslots_3
+        Target_spellslots_3 = max(0, Target_spellslots_3-Current_spellslots_3)
         Spell_3_pts = Target_spellslots_3*5
         LOOP_COUNTER += Spell_3_pts
         
         # IV -> [x6]
         if unlocked_spellslots_4:
-            Target_spellslots_4 -= Current_spellslots_4
+            Target_spellslots_4 = max(0, Target_spellslots_4-Current_spellslots_4)
             Spell_4_pts = Target_spellslots_4*6
             LOOP_COUNTER += Spell_4_pts
             
             # V -> [x7]
             if unlocked_spellslots_5:
-                Target_spellslots_5 -= Current_spellslots_5
+                Target_spellslots_5 = max(0, Target_spellslots_5-Current_spellslots_5)
                 Spell_5_pts = Target_spellslots_5*7
                 LOOP_COUNTER += Spell_5_pts
                 
                 # VI -> [x]
                 #if unlocked_spellslots_6:
-                #    Target_spellslots_6 -= Current_spellslots_6
+                #    Target_spellslots_6 = max(0, Target_spellslots_6-Current_spellslots_6)
                 #    Spell_6_pts = Target_spellslots_6*_
                 #    LOOP_COUNTER += Spell_6_pts
+
+    # if we are using the amulet, update the loop counter to use half the required iterations
+    if not using_shield:
+        # if it is odd, offset by 1 so we are over requirement
+        LOOP_COUNTER = LOOP_COUNTER // 2 + (LOOP_COUNTER % 2)
 
     # define dict to be used in main loop
     #: dict[int, dict[str, any]]
     spellslot_data = {
-        1: {"target": Target_spellslots_1, "unlocked": True},
-        2: {"target": Target_spellslots_2, "unlocked": True},
-        3: {"target": Target_spellslots_3, "unlocked": unlocked_spellslots_3},
-        4: {"target": Target_spellslots_4, "unlocked": unlocked_spellslots_4},
-        5: {"target": Target_spellslots_5, "unlocked": unlocked_spellslots_5},
-        6: {"target": Target_spellslots_6, "unlocked": unlocked_spellslots_6},
+        level: {
+            "target": max(0, globals()[f"Target_spellslots_{level}"]),
+            "unlocked": globals().get(f"unlocked_spellslots_{level}", True)
+        }
+        for level in range(1, MAX_SPELL_LEVEL+1)
     }
-
-    # if we are using the amulet, update the loop counter to use half the required iterations
-    if not using_shield:
-        if LOOP_COUNTER % 2 != 0:
-            LOOP_COUNTER //= 2 + 1 # if it is odd, offset by 1 so we are over requirement
-        else: LOOP_COUNTER /= 2
-        
+       
     print(f"Need {LOOP_COUNTER} more sorc pts ({LOOP_COUNTER+Current_sorc_pts} total)")
-    est_runtime_1: float = ((SLEEP_DURATION/2 + .1) * 5 + 2.025) * LOOP_COUNTER
-    est_runtime_2: float = estimate_runtime(spellslot_data)
-    print(f"Estimated runtime: {est_runtime_1+est_runtime_2:.2f}s ({(est_runtime_1+est_runtime_2)/60:.2f} min)")
+    est_runtime: float = ((SLEEP_DURATION/2 + .1) * 5 + 1.925) * LOOP_COUNTER + estimate_runtime(spellslot_data)
+    print(f"Estimated runtime: {est_runtime:.2f}s ({est_runtime/60:.2f} min)")
     
     sleep(5)
     start_time = time()
@@ -156,8 +155,7 @@ def macro() -> None:
                 create_spellslot(level)
                 wait_if_paused() # pause check
     
-    stop_time = time()
-    print(f"Macro completed in {stop_time-start_time:.2f}s")
+    print(f"Macro completed in {time()-start_time:.2f}s")
 
 # -------------------------------------------------------------------------------------------------
 
@@ -170,14 +168,15 @@ def wait_if_paused() -> None:
 
 # 
 def estimate_runtime(spellslot_data) -> float:
-    total_runtime: float = 0
+    #total_runtime: float = 0
 
-    for level, data in spellslot_data.items():
-        if data["unlocked"]:
-            # total runtime = iterations per item * sleep time for spellslot creation
-            total_runtime += data["target"] * ((SLEEP_DURATION/2 + .1) * 3 + 2)
+    #for level, data in spellslot_data.items():
+    #    if data["unlocked"]:
+    #        # total runtime = iterations per item * sleep time for spellslot creation
+    #        total_runtime += data["target"] * ((SLEEP_DURATION/2 + .1) * 3 + 2)
 
-    return total_runtime
+    #return total_runtime
+    return sum(data["target"] * ((SLEEP_DURATION/2 + .1) * 3 + 1.9) for data in spellslot_data.values() if data["unlocked"])
 
 def move_and_click(coord_x: int, coord_y: int) -> None:
     """Moves the mouse to an onscreen coordinate and clicks."""
@@ -186,7 +185,7 @@ def move_and_click(coord_x: int, coord_y: int) -> None:
     sleep(SLEEP_DURATION/2) # small buffer
     
     mouseDown()
-    sleep(0.1) # hold for 100ms
+    sleep(0.05) # hold for 50ms
     mouseUp()
 
 def select_metamagic(type: str) -> None:
@@ -296,7 +295,7 @@ def create_sorcery_pts(spellslot_level: int) -> None:
     # cast (mouse pos 1200 1050 minimum)
     move_and_click(1200,1050)
     
-    sleep(2)
+    sleep(1.9)
 
 def create_spellslot(spellslot_level: int) -> None:
     """Consumes sorcery points to create a spell slot at the specified level."""
@@ -367,7 +366,7 @@ def create_spellslot(spellslot_level: int) -> None:
     # cast (mouse pos 1200 1050 minimum)
     move_and_click(1200,950)
     
-    sleep(2)
+    sleep(1.9)
 
 def activate_equipment(using_shield: bool) -> None:
     """Equips and unequips the equipment for the exploit."""
