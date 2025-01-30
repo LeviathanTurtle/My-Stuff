@@ -3,8 +3,11 @@
 # William Wadsworth
 # 1.23.2025
 # 
+# 1.0 - initial release
+# 1.01 - added amulet functionality
+# 1.02 - fixed mouse coordinates based on unlocked spell slot levels
+# 1.1 - dynamic data gen for mod support, pausing, estimated runtime, reduction in sleep time
 # 
-# [notes]
 # todo PROBLEMS:
 # - check conv for spellslot lvl 6
 # - test with other FPS values
@@ -17,8 +20,6 @@ from keyboard import add_hotkey, wait, is_pressed
 from pydirectinput import moveTo, mouseDown, mouseUp
 from time import sleep, time
 
-# pyautogui uses this, but not pydirectinput
-#MOUSE_SPEED = 1 
 # the length of time to sleep between inputs (in seconds)
 SLEEP_DURATION: float = .05
 
