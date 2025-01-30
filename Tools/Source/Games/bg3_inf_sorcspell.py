@@ -20,51 +20,51 @@ from time import sleep, time
 # pyautogui uses this, but not pydirectinput
 #MOUSE_SPEED = 1 
 # the length of time to sleep between inputs (in seconds)
-SLEEP_DURATION = .05
+SLEEP_DURATION: float = .05
 
 #################################################
 # CHANGE ONLY THESE VALUES HERE
 
-PAUSE_HOTKEY = 'p'
-EXIT_HOTKEY = 'esc'
+PAUSE_HOTKEY: str = 'p'
+EXIT_HOTKEY: str = 'esc'
 
 # set any of these to true if they are unlocked and you want them expanded
-unlocked_spellslots_2 = True
-unlocked_spellslots_3 = True
-unlocked_spellslots_4 = False 
-unlocked_spellslots_5 = False
-unlocked_spellslots_6 = False
+unlocked_spellslots_2: bool = True
+unlocked_spellslots_3: bool = True
+unlocked_spellslots_4: bool = False 
+unlocked_spellslots_5: bool = False
+unlocked_spellslots_6: bool = False
 # set this to false if using the amulet
-using_shield = True
+using_shield: bool = True
 
 # UPDATE THESE VALUES TO REFLECT YOUR CURRENT SPELL SLOTS
 # Note that the current number of spellslots for level 1 should be 0 if using the shield, likewise
 # for level 2 if using the amulet
 if using_shield:
-    Current_spellslots_1 = 0 # leave this 0
-    Current_spellslots_2 = 3
+    Current_spellslots_1: int = 0 # leave this 0
+    Current_spellslots_2: int = 3
 else:
-    Current_spellslots_1 = 4
-    Current_spellslots_2 = 0 # leave this 0
-Current_spellslots_3 = 3
-Current_spellslots_4 = 1
-Current_spellslots_5 = 1
-Current_spellslots_6 = 1
-Current_sorc_pts = 5
+    Current_spellslots_1: int = 4
+    Current_spellslots_2: int = 0 # leave this 0
+Current_spellslots_3: int = 3
+Current_spellslots_4: int = 1
+Current_spellslots_5: int = 1
+Current_spellslots_6: int = 1
+Current_sorc_pts: int = 5
 
 # THESE ARE THE TARGET VALUES YOU WANT
-Target_spellslots_1 = 15 
-Target_spellslots_2 = 10
-Target_spellslots_3 = 10
-Target_spellslots_4 = 5
-Target_spellslots_5 = 5
-Target_spellslots_6 = 5
-Target_sorc_pts = 30
+Target_spellslots_1: int = 15 
+Target_spellslots_2: int = 10
+Target_spellslots_3: int = 10
+Target_spellslots_4: int = 5
+Target_spellslots_5: int = 5
+Target_spellslots_6: int = 5
+Target_sorc_pts: int = 30
 
 #################################################
 
 
-def macro():
+def macro() -> None:
     """function def."""
 
     # SETUP:
@@ -105,6 +105,7 @@ def macro():
                 #    LOOP_COUNTER += Spell_6_pts
 
     # define dict to be used in main loop
+    #: dict[int, dict[str, any]]
     spellslot_data = {
         1: {"target": Target_spellslots_1, "unlocked": True},
         2: {"target": Target_spellslots_2, "unlocked": True},
@@ -121,8 +122,8 @@ def macro():
         else: LOOP_COUNTER /= 2
         
     print(f"Need {LOOP_COUNTER} more sorc pts ({LOOP_COUNTER+Current_sorc_pts} total)")
-    est_runtime_1 = ((SLEEP_DURATION/2 + .1) * 5 + 2.025) * LOOP_COUNTER
-    est_runtime_2 = estimate_runtime(spellslot_data)
+    est_runtime_1: float = ((SLEEP_DURATION/2 + .1) * 5 + 2.025) * LOOP_COUNTER
+    est_runtime_2: float = estimate_runtime(spellslot_data)
     print(f"Estimated runtime: {est_runtime_1+est_runtime_2:.2f}s ({(est_runtime_1+est_runtime_2)/60:.2f} min)")
     
     sleep(5)
@@ -160,15 +161,16 @@ def macro():
 
 # -------------------------------------------------------------------------------------------------
 
-def wait_if_paused():
+def wait_if_paused() -> None:
     """Pauses the script if the pause hotkey is pressed."""
     
     while is_pressed(PAUSE_HOTKEY):
         print("Macro paused. Press 'p' again to resume.")
         sleep(1)
 
+# 
 def estimate_runtime(spellslot_data) -> float:
-    total_runtime = 0
+    total_runtime: float = 0
 
     for level, data in spellslot_data.items():
         if data["unlocked"]:
@@ -177,7 +179,7 @@ def estimate_runtime(spellslot_data) -> float:
 
     return total_runtime
 
-def move_and_click(coord_x: int, coord_y: int):
+def move_and_click(coord_x: int, coord_y: int) -> None:
     """Moves the mouse to an onscreen coordinate and clicks."""
     
     moveTo(coord_x, coord_y)
@@ -187,7 +189,7 @@ def move_and_click(coord_x: int, coord_y: int):
     sleep(0.1) # hold for 100ms
     mouseUp()
 
-def select_metamagic(type: str):
+def select_metamagic(type: str) -> None:
     """Select the metamagic icons in the UI."""
     
     if type == "SORCPTS": # 1745 1215
@@ -226,8 +228,8 @@ def select_metamagic(type: str):
 # - 1395 1250
 # - 1450 1250
 
-def create_sorcery_pts(spellslot_level: int):
-    """function def."""
+def create_sorcery_pts(spellslot_level: int) -> None:
+    """Consumes a specified spell level to create sorcery points."""
     
     spellslot_level_y = 1250
     spellslot_level_x = 1305
@@ -296,8 +298,8 @@ def create_sorcery_pts(spellslot_level: int):
     
     sleep(2)
 
-def create_spellslot(spellslot_level: int):
-    """function def."""
+def create_spellslot(spellslot_level: int) -> None:
+    """Consumes sorcery points to create a spell slot at the specified level."""
     
     spellslot_level_y = 1250
     spellslot_level_x = 1305
@@ -367,10 +369,10 @@ def create_spellslot(spellslot_level: int):
     
     sleep(2)
 
-def activate_equipment(using_shield: bool):
-    """function def."""
+def activate_equipment(using_shield: bool) -> None:
+    """Equips and unequips the equipment for the exploit."""
     
-    # EVENT LOOP:
+    # --- EVENT LOOP: ---
     # 
     # move mouse (1285 1330)
     # click (equip item)
@@ -381,7 +383,7 @@ def activate_equipment(using_shield: bool):
     #print("Equipping item")
     move_and_click(1285,1330)
     
-    # sorc pts
+    # sorc pts based on the equipment
     if using_shield:
         create_sorcery_pts(1)
     else:
@@ -393,18 +395,18 @@ def activate_equipment(using_shield: bool):
     sleep(.025)
     
 
-def main():
+def main() -> None:
     print(f"Press '{PAUSE_HOTKEY}' to pause/resume or '{EXIT_HOTKEY}' to quit.")
     
-    # Bind the macro to a hotkey (e.g., CTRL+ALT+M)
     try:
-        add_hotkey('shift+r', macro)
         add_hotkey('esc', wait, args='esc')
+        # bind the macro to a hotkey
+        add_hotkey('shift+r', macro)
     except KeyboardInterrupt:
         print("Macro stopped")
     
-    # Keep the script running to listen for the hotkey
-    #wait('esc')  # Exit the script by pressing ESC
+    # keep the script running to listen for the hotkey
+    #wait('esc')  # exit the script by pressing ESC
 
 
 if __name__ == "__main__":
