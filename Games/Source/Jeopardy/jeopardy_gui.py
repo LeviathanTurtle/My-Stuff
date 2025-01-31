@@ -13,7 +13,7 @@
 from sys import stderr, exit          # used in logging, exiting program
 from random import sample, shuffle    # random category, mix answers
 from typing import Optional           # variable and function type hinting
-from traceback import format_exc      # 
+from traceback import format_exc      # include error location in log
 from os.path import exists, getctime  # search for last log
 from debug_logger import DebugLogger  # debug logger
 from jeopardy_api import JeopardyAPI  # api handling
@@ -21,6 +21,7 @@ from team import Team                 # keep track of team names/score
 from glob import glob                 # accumulate all log files
 from time import time                 # keep track of runtime
 from re import match                  # regex searching
+from threading import Thread
 
 from kivy.app import App
 from kivy.uix.label import Label
@@ -180,6 +181,12 @@ class MyLayout(GridLayout):
     # post-condition: 
     def initPopup(self, filename: Optional[str] = None) -> None:
         self.logger.log("Entering initPopup...",for_debug=True)
+        
+        # if thread exists
+        #   kill it
+        #if Thread.is_alive(self.newgame_thread):
+        #    Thread.
+        
         # todo: stop after mainWindow is called
         self.playNoise(is_intro=True)
         
@@ -687,8 +694,9 @@ class MyLayout(GridLayout):
             if self.use_audio:
                 kivy_clock.schedule_once(lambda dt: self.playNoise(is_outro_1=True),1)
                 kivy_clock.schedule_once(lambda dt: self.playNoise(is_outro_2=True),5)
-                # show button after last outro sfx starts playing
-                kivy_clock.schedule_once(showPlayAgainButton, 4.5)
+            
+            # show button after last outro sfx starts playing
+            kivy_clock.schedule_once(showPlayAgainButton, 4.5)
             
             print(self.logger)
             if is_tie: self.logger.log(f"Game ended. (tie) {winner_text}")
@@ -716,6 +724,10 @@ class MyLayout(GridLayout):
     # post-condition: 
     def restartGame(self) -> None:
         self.logger.log("The user is starting a new game")
+        
+        self.newgame_thread = Thread(name="start-thread")
+        self.newgame_thread.start()
+        
         self.new_game_started = True
         # stop the audio
         if self.sound.state == "play":
