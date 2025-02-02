@@ -45,7 +45,6 @@ else:
 Current_spellslots_3: int = 3
 Current_spellslots_4: int = 3
 Current_spellslots_5: int = 2
-#Current_spellslots_6: int = 1
 Current_sorc_pts: int = 7
 
 # THESE ARE THE TARGET VALUES YOU WANT
@@ -54,7 +53,6 @@ Target_spellslots_2: int = 10
 Target_spellslots_3: int = 20
 Target_spellslots_4: int = 15
 Target_spellslots_5: int = 10
-#Target_spellslots_6: int = 10
 Target_sorc_pts: int = 60
 
 #################################################
@@ -64,7 +62,8 @@ SLEEP_DURATION: float = .05
 is_paused = False
 
 def macro() -> None:
-    """function def."""
+    """Runs the macro, starting with creating the sorcery points from the equipment then creating
+    the spell slots."""
 
     global Target_spellslots_1, Target_spellslots_2, Target_spellslots_3, Target_spellslots_4, Target_spellslots_5, Target_sorc_pts
 
@@ -116,7 +115,7 @@ def macro() -> None:
     }
        
     print(f"Need {LOOP_COUNTER} more sorc pts ({LOOP_COUNTER+Current_sorc_pts} total)")
-    est_runtime: float = ((SLEEP_DURATION/2 + .01) * 5 + 1.925) * LOOP_COUNTER + estimate_runtime(spellslot_data)
+    est_runtime: float = ((SLEEP_DURATION/2 + .01) * 5 + 1.95) * LOOP_COUNTER + estimate_runtime(spellslot_data)
     print(f"Estimated runtime: {est_runtime:.2f}s ({est_runtime/60:.2f} min)")
     
     sleep(5)
@@ -139,7 +138,7 @@ def macro() -> None:
 
     # loop through levels and create spellslots if unlocked
     for level, data in spellslot_data.items():
-        if data["unlocked"]:  # check if the level is unlocked
+        if data["unlocked"]: # check if the level is unlocked
             print(f"Creating {data['target']} lvl {level} spellslots...")
             for _ in range(data["target"]):
                 create_spellslot(level)
@@ -155,7 +154,7 @@ def wait_if_paused() -> None:
         sleep(1)
 
 def toggle_pause() -> None:
-    """function def."""
+    """Helper function to raise or lower the pause flag."""
     
     global is_paused
     
@@ -164,7 +163,7 @@ def toggle_pause() -> None:
 
 # 
 def estimate_runtime(spellslot_data) -> float:
-    """function def."""
+    """Estimate the main loop runtime of the macro."""
 
     return sum(data["target"] * ((SLEEP_DURATION/2 + .01) * 3 + 1.9) for data in spellslot_data.values() if data["unlocked"])
 
@@ -336,7 +335,7 @@ def activate_equipment(using_shield: bool) -> None:
     #print("Unequipping item")
     move_and_click(1285,1330)
     
-    sleep(.025)
+    sleep(.05)
     
 
 def main() -> None:
