@@ -26,9 +26,9 @@ MAX_SPELL_LEVEL: int = 5 # note that this should be the max spell level we can c
 
 # set any of these to true if they are unlocked and you want them expanded
 unlocked_spellslots_2: bool = True # this is only used for UI coords
-unlocked_spellslots_3: bool = False
-unlocked_spellslots_4: bool = False 
-unlocked_spellslots_5: bool = False
+unlocked_spellslots_3: bool = True
+unlocked_spellslots_4: bool = True 
+unlocked_spellslots_5: bool = True
 unlocked_spellslots_6: bool = False # this is only used for UI coords
 # set this to false if using the amulet
 using_shield: bool = True
@@ -38,22 +38,22 @@ using_shield: bool = True
 # for level 2 if using the amulet
 if using_shield:
     Current_spellslots_1: int = 0 # leave this 0
-    Current_spellslots_2: int = 2
+    Current_spellslots_2: int = 18
 else:
     Current_spellslots_1: int = 1
     Current_spellslots_2: int = 0 # leave this 0
-Current_spellslots_3: int = 3
-Current_spellslots_4: int = 3
-Current_spellslots_5: int = 2
-Current_sorc_pts: int = 7
+Current_spellslots_3: int = 15
+Current_spellslots_4: int = 10
+Current_spellslots_5: int = 20
+Current_sorc_pts: int = 198
 
 # THESE ARE THE TARGET VALUES YOU WANT
-Target_spellslots_1: int = 10
-Target_spellslots_2: int = 10
-Target_spellslots_3: int = 20
-Target_spellslots_4: int = 15
-Target_spellslots_5: int = 10
-Target_sorc_pts: int = 60
+Target_spellslots_1: int = 20
+Target_spellslots_2: int = 20
+Target_spellslots_3: int = 15
+Target_spellslots_4: int = 10
+Target_spellslots_5: int = 20
+Target_sorc_pts: int = 30
 
 #################################################
 
