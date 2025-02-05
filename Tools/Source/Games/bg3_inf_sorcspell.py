@@ -13,9 +13,12 @@
 # - escape and pause hotkeys not working
 # - estimated runtime is wrong
 # 
+# Possible planned updates:
+# - get current spellslot data from game via a mod
+# 
 
 from argparse import ArgumentParser
-from typing import Tuple
+from typing import Tuple, Optional
 from keyboard import add_hotkey, wait
 from pydirectinput import moveTo, mouseDown, mouseUp
 from time import sleep, time, perf_counter
@@ -37,17 +40,17 @@ unlocked_spellslots_6: bool = False # this is only used for UI coords
 # UPDATE THESE VALUES TO REFLECT YOUR CURRENT SPELL SLOTS
 Current_spellslots_1: int = 4
 Current_spellslots_2: int = 3
-Current_spellslots_3: int = 1
+Current_spellslots_3: int = 3
 Current_spellslots_4: int = 3
-Current_spellslots_5: int = 0
-Current_sorc_pts: int = 50
+Current_spellslots_5: int = 3
+Current_sorc_pts: int = 6
 
 # THESE ARE THE TARGET VALUES YOU WANT
-Target_spellslots_1: int = 20
-Target_spellslots_2: int = 20
+Target_spellslots_1: int = 15
+Target_spellslots_2: int = 15
 Target_spellslots_3: int = 15
-Target_spellslots_4: int = 10
-Target_spellslots_5: int = 20
+Target_spellslots_4: int = 15
+Target_spellslots_5: int = 50
 Target_sorc_pts: int = 30
 
 #################################################
@@ -55,6 +58,11 @@ Target_sorc_pts: int = 30
 # the length of time to sleep between inputs (in seconds)
 SLEEP_DURATION: float = .05
 is_paused = False
+Needed_spellslots_1: int = 0
+Needed_spellslots_2: int = 0
+Needed_spellslots_3: int = 0
+Needed_spellslots_4: int = 0
+Needed_spellslots_5: int = 0
 
 def macro(
     using_shield: bool,
@@ -64,34 +72,7 @@ def macro(
     """Runs the macro, starting with creating the sorcery points from the equipment then creating
     the spell slots."""
 
-    update_globals(using_shield,using_amulet)
-    Spell_1_pts = Target_spellslots_1*2
-    Spell_2_pts = Target_spellslots_2*3
-
-    # the loop counter needs to be the total amount of sorcery points needed
-    LOOP_COUNTER: int = Spell_1_pts+Spell_2_pts + Target_sorc_pts
-    # III -> [x5]
-    if unlocked_spellslots_3:
-        Target_spellslots_3 = max(0, Target_spellslots_3-Current_spellslots_3)
-        Spell_3_pts = Target_spellslots_3*5
-        LOOP_COUNTER += Spell_3_pts
-        
-        # IV -> [x6]
-        if unlocked_spellslots_4:
-            Target_spellslots_4 = max(0, Target_spellslots_4-Current_spellslots_4)
-            Spell_4_pts = Target_spellslots_4*6
-            LOOP_COUNTER += Spell_4_pts
-            
-            # V -> [x7]
-            if unlocked_spellslots_5:
-                Target_spellslots_5 = max(0, Target_spellslots_5-Current_spellslots_5)
-                Spell_5_pts = Target_spellslots_5*7
-                LOOP_COUNTER += Spell_5_pts
-
-    # if we are using the amulet, update the loop counter to use half the required iterations
-    if using_amulet:
-        # if it is odd, offset by 1 so we are over requirement
-        LOOP_COUNTER = LOOP_COUNTER // 2 + (LOOP_COUNTER % 2)
+    print("Macro started")
 
     # define dict to be used in main loop
     #: dict[int, dict[str, any]]
@@ -102,27 +83,23 @@ def macro(
         }
         for level in range(1, MAX_SPELL_LEVEL+1)
     }
-       
-    print(f"Need {LOOP_COUNTER} more sorc pts ({LOOP_COUNTER+Current_sorc_pts} total)")
-    est_runtime: float = ((SLEEP_DURATION/2 + .01) * 5 + 1.95) * LOOP_COUNTER + estimate_runtime(spellslot_data)
-    print(f"Estimated runtime: {est_runtime:.2f}s ({est_runtime/60:.2f} min)")
     
     sleep(5)
     start_time = time()
     
     # -------------------------------------------
     
-    # get all necessary sorc pts
-    msg = f"Getting {LOOP_COUNTER} sorc pts ({Target_sorc_pts} pt targ + {Spell_1_pts} for lvl 1 spellslots + {Spell_2_pts} for lvl 2 spellslots"
-    if unlocked_spellslots_3:
-        msg += f" + {Spell_3_pts} for lvl 3 spellslots"
-        if unlocked_spellslots_4:
-            msg += f" + {Spell_4_pts} for lvl 4 spellslots"
-            if unlocked_spellslots_5:
-                msg += f" + {Spell_5_pts} for lvl 5 spellslots"
-    print(msg+")...")
+    LOOP_COUNTER: int = 0
+    if not using_freecast:
+        LOOP_COUNTER = update_globals(using_shield,using_amulet,using_freecast)
+    else:
+        update_globals(using_shield,using_amulet,using_freecast)
     
     if not using_freecast:
+        print(f"Need {LOOP_COUNTER} more sorc pts ({LOOP_COUNTER+Current_sorc_pts} total)")
+        est_runtime: float = ((SLEEP_DURATION/2 + .01) * 5 + 1.95) * LOOP_COUNTER + estimate_runtime(spellslot_data)
+        print(f"Estimated runtime: {est_runtime:.2f}s ({est_runtime/60:.2f} min)")
+        
         for _ in range(LOOP_COUNTER):
             activate_equipment(using_shield) if using_shield else activate_equipment(using_amulet)
 
@@ -133,28 +110,104 @@ def macro(
                 for _ in range(data["target"]):
                     create_spellslot(level)
     else:
-        freecast(True, LOOP_COUNTER)
+        freecast()
     
     print(f"Macro completed in {time()-start_time:.2f}s")
 
 # -------------------------------------------------------------------------------------------------
 
-def update_globals(using_shield: bool, using_amulet: bool) -> None:
+def update_globals(
+    using_shield: bool,
+    using_amulet: bool,
+    using_freecast: bool
+) -> Optional[int]:
     """function def."""
     
     global Target_spellslots_1, Target_spellslots_2, Target_spellslots_3, Target_spellslots_4, Target_spellslots_5, Target_sorc_pts
-
+    global Current_spellslots_1, Current_spellslots_2, Current_spellslots_3, Current_spellslots_4, Current_spellslots_5, Current_sorc_pts
+    global Needed_spellslots_1, Needed_spellslots_2, Needed_spellslots_3, Needed_spellslots_4, Needed_spellslots_5, Needed_sorc_pts
+    
     # SETUP:
     # LEVEL -> needed sorc pts per level:
     # I -> [x2]
     if using_shield: Current_spellslots_1 = 0
-    Target_spellslots_1 = max(0, Target_spellslots_1-Current_spellslots_1)
+    Needed_spellslots_1 = max(0, Target_spellslots_1-Current_spellslots_1)
 
     # II -> [x3]
     if using_amulet: Current_spellslots_2 = 0
-    Target_spellslots_2 = max(0, Target_spellslots_2-Current_spellslots_2)
+    Needed_spellslots_2 = max(0, Target_spellslots_2-Current_spellslots_2)
     
-    Target_sorc_pts = max(0, Target_sorc_pts-Current_sorc_pts)
+    Needed_sorc_pts = max(0, Target_sorc_pts-Current_sorc_pts)
+    
+    if not using_freecast:
+        Spell_1_pts = Target_spellslots_1*2
+        Spell_2_pts = Target_spellslots_2*3
+
+        # the loop counter needs to be the total amount of sorcery points needed
+        loop_counter: int = Spell_1_pts+Spell_2_pts + Target_sorc_pts
+        
+    # III -> [x5]
+    if unlocked_spellslots_3:
+        Needed_spellslots_3 = max(0, Target_spellslots_3-Current_spellslots_3)
+        
+        if not using_freecast:
+            Spell_3_pts = Target_spellslots_3*5
+            loop_counter += Spell_3_pts
+        
+        # IV -> [x6]
+        if unlocked_spellslots_4:
+            Needed_spellslots_4 = max(0, Target_spellslots_4-Current_spellslots_4)
+            
+            if not using_freecast:
+                Spell_4_pts = Target_spellslots_4*6
+                loop_counter += Spell_4_pts
+            
+            # V -> [x7]
+            if unlocked_spellslots_5:
+                Needed_spellslots_5 = max(0, Target_spellslots_5-Current_spellslots_5)
+                
+                if not using_freecast:
+                    Spell_5_pts = Target_spellslots_5*7
+                    loop_counter += Spell_5_pts
+
+    # if we are using the amulet, update the loop counter to use half the required iterations
+    if using_amulet:
+        # if it is odd, offset by 1 so we are over requirement
+        loop_counter = loop_counter // 2 + (loop_counter % 2)
+    
+    # get all necessary sorc pts
+    msg: str = ""
+    if not using_freecast:
+        msg += f"Getting {loop_counter} sorc pts ({Target_sorc_pts} pt targ + {Spell_1_pts} for lvl 1 spellslots + {Spell_2_pts} for lvl 2 spellslots"
+    else:
+        msg += f"Getting {Needed_sorc_pts} sorc pts, {Needed_spellslots_1} lvl 1 spellslots, {Needed_spellslots_2} lvl 2 spellslots"
+    
+    if unlocked_spellslots_3:
+        if not using_freecast:
+            msg += f" + {Spell_3_pts} for lvl 3 spellslots"
+        else:
+            msg += f", {Needed_spellslots_3} for lvl 3 spellslots"
+        
+        if unlocked_spellslots_4:
+            if not using_freecast:
+                msg += f" + {Spell_4_pts} for lvl 4 spellslots"
+            else:
+                msg += f", {Needed_spellslots_4} for lvl 4 spellslots"
+                
+            if unlocked_spellslots_5:
+                if not using_freecast:
+                    msg += f" + {Spell_5_pts} for lvl 5 spellslots"
+                else:
+                    msg += f", {Needed_spellslots_5} for lvl 5 spellslots"
+    if not using_freecast:
+        msg += ")"
+    
+    print(msg+"...")
+    
+    if not using_freecast:
+        return loop_counter
+    else: return
+    
 
 def wait_if_paused() -> None:
     """Pauses the script if the pause hotkey is pressed."""
@@ -170,40 +223,53 @@ def toggle_pause() -> None:
     is_paused = not is_paused
     print(f"Macro {'paused' if is_paused else 'resumed'}.")
 
-def freecast(create_pts: bool, needed_pts: int) -> None:
+def freecast() -> None:
     """function def."""
     
+    global Target_spellslots_1, Target_spellslots_2, Target_spellslots_3, Target_spellslots_4, Target_spellslots_5, Target_sorc_pts
+    global Current_spellslots_1, Current_spellslots_2, Current_spellslots_3, Current_spellslots_4, Current_spellslots_5, Current_sorc_pts
+    global Needed_spellslots_1, Needed_spellslots_2, Needed_spellslots_3, Needed_spellslots_4, Needed_spellslots_5, Needed_sorc_pts
+    
     # determine needed values
-    Needed_sorc_pts: int = Target_sorc_pts-Current_sorc_pts
-    Needed_spellslots_1: int = Target_spellslots_1-Current_spellslots_1
-    Needed_spellslots_2: int = Target_spellslots_2-Current_spellslots_2
     List_spell_slots = [Needed_spellslots_1,Needed_spellslots_2]
     
     if unlocked_spellslots_3:
-        Needed_spellslots_3: int = Target_spellslots_3-Current_spellslots_3
         List_spell_slots.append(Needed_spellslots_3)
         if unlocked_spellslots_4:
-            Needed_spellslots_4: int = Target_spellslots_4-Current_spellslots_4
             List_spell_slots.append(Needed_spellslots_4)
             if unlocked_spellslots_5:
-                Needed_spellslots_5: int = Target_spellslots_5-Current_spellslots_5
                 List_spell_slots.append(Needed_spellslots_5)
+    
+    print(f"{Target_sorc_pts}, {Current_sorc_pts}, {Needed_sorc_pts}")
     
     # maximize gains for sorc pts
     List_sorc_pts = find_combination(Needed_sorc_pts)
+    print(f"Creating sorcery points from the following levels: {List_sorc_pts}")
     for num in List_sorc_pts:
+        print(f"Creating {num} sorcery points from spell level {num}")
+        toggle_freecast()
         create_sorcery_pts(num)
     
     # maximize gains for ascending spellslots
     for index, value in enumerate(List_spell_slots,start=1):
+        print(f"Creating {value} spell slots for spell level {index}")
         for _ in range(value):
+            toggle_freecast()
             create_spellslot(index)
+
+def toggle_freecast() -> None:
+    """function def."""
+    
+    # move mouse to equipment and click
+    move_and_click(1660,1220)
+    
+    # move mouse to freecast icon and click
+    move_and_click(1660,1160)
 
 def find_combination(x):
     """function def."""
     
-    spellslot_levels = [1, 2, 3, 4, 5, 6]
-    
+    spellslot_levels = [5, 4, 3, 2, 1]
     result = []
     
     for num in spellslot_levels:
@@ -254,6 +320,7 @@ def create_sorcery_pts(spellslot_level: int) -> None:
     
     spellslot_level_y = 1250
     spellslot_level_x = 1305
+    # todo: change this to add ~60px per spell level unlocked
     if unlocked_spellslots_2:
         match (spellslot_level):
             case 1:
@@ -418,6 +485,7 @@ def handle_args() -> Tuple[bool,bool,bool]:
 
 
 def main() -> None:
+    # python3 bg3_inf_sorcspell.py <-shield | -amulet | -freecast>
     using_shield, using_amulet, using_freecast = handle_args()
     
     print(f"Press '{PAUSE_HOTKEY}' to pause/resume or '{EXIT_HOTKEY}' to quit.")
