@@ -18,7 +18,7 @@
 # 
 
 from argparse import ArgumentParser
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Literal
 from keyboard import add_hotkey, wait
 from pydirectinput import moveTo, mouseDown, mouseUp
 from time import sleep, time, perf_counter
@@ -28,24 +28,24 @@ from time import sleep, time, perf_counter
 
 PAUSE_HOTKEY: str = 'p'
 EXIT_HOTKEY: str = 'esc'
-MAX_SPELL_LEVEL: int = 1 # NOTE: this should be the max spell level you can convert from sorc pts
+MAX_SPELL_LEVEL: int = 5 # NOTE: this should be the max spell level you can convert from sorc pts
 # Vanilla: [1,5]
 
 # UPDATE THESE VALUES TO REFLECT YOUR CURRENT SPELL SLOTS
-Current_spellslots_1: int = 3
+Current_spellslots_1: int = 4
 Current_spellslots_2: int = 3
 Current_spellslots_3: int = 3
 Current_spellslots_4: int = 3
 Current_spellslots_5: int = 3
-Current_sorc_pts: int = 2
+Current_sorc_pts: int = 6
 
 # THESE ARE THE TARGET VALUES YOU WANT
 Target_spellslots_1: int = 10
-Target_spellslots_2: int = 15
-Target_spellslots_3: int = 15
-Target_spellslots_4: int = 15
-Target_spellslots_5: int = 50
-Target_sorc_pts: int = 10
+Target_spellslots_2: int = 10
+Target_spellslots_3: int = 10
+Target_spellslots_4: int = 10
+Target_spellslots_5: int = 30
+Target_sorc_pts: int = 30
 
 #################################################
 
@@ -88,7 +88,7 @@ def macro(
     
     if not using_freecast:
         print(f"Need {LOOP_COUNTER} more sorc pts ({LOOP_COUNTER+Current_sorc_pts} total)")
-        est_runtime: float = ((SLEEP_DURATION/2 + .01) * 5 + 1.95) * LOOP_COUNTER + estimate_runtime(spellslot_data)
+        est_runtime: float = ((SLEEP_DURATION/2 + .01) * 5 + 1.95) * LOOP_COUNTER + estimate_runtime(using_freecast)
         print(f"Estimated runtime: {est_runtime:.2f}s ({est_runtime/60:.2f} min)")
         
         for _ in range(LOOP_COUNTER):
@@ -99,8 +99,10 @@ def macro(
             if data["unlocked"]: # check if the level is unlocked
                 print(f"Creating {data['target']} lvl {level} spellslots...")
                 for _ in range(data["target"]):
-                    create_spellslot(level)
+                    spend_stuff("SPELLSLOTS",level)
     else:
+        #est_runtime: float = ((SLEEP_DURATION/2 + .01) * 5 + 1.95) * LOOP_COUNTER + estimate_runtime(using_freecast)
+        #print(f"Estimated runtime: {est_runtime:.2f}s ({est_runtime/60:.2f} min)")
         freecast()
     
     print(f"Macro completed in {time()-start_time:.2f}s")
@@ -121,10 +123,6 @@ def update_globals(
     if using_amulet:
         spellslot_data[2]['current'] = 0
     
-    #for level, slot in spell_slots.items():
-    #    if level == 1 or slot['unlocked'] == True:
-    #        slot['needed'] = max(0, slot['target']-slot['current'])
-    
     loop_counter: int = 0
     if not using_freecast:
         loop_counter = sum(slot['needed']*spell_costs[level] for level, slot in spellslot_data.items() if level == 1 or slot['unlocked'] == True)
@@ -133,7 +131,7 @@ def update_globals(
         if using_amulet:
             loop_counter = loop_counter // 2 if loop_counter%2 == 0 else (loop_counter+1) // 2
     
-    # Build the message
+    # construct update message
     msg = ""
     if not using_freecast:
         msg += f"Getting {loop_counter} sorc pts ({Target_sorc_pts} pt targ"
@@ -185,14 +183,14 @@ def freecast() -> None:
     for num in List_sorc_pts:
         print(f"Creating {num} sorcery points from spell level {num}")
         toggle_freecast()
-        create_sorcery_pts(num)
+        spend_stuff("SORCPTS",num)
     
     # maximize gains for ascending spellslots
     for level, needed_slots in enumerate(List_spell_slots,start=1):
         print(f"Creating {needed_slots} spell slots for spell level {level}")
         for _ in range(needed_slots):
             toggle_freecast()
-            create_spellslot(level)
+            spend_stuff("SPELLSLOTS",level)
 
 def toggle_freecast() -> None:
     """Selects the equipment and freecast icon."""
@@ -218,17 +216,22 @@ def find_combination(x):
     return result
 
 # 
-def estimate_runtime(spellslot_data) -> float:
+def estimate_runtime(using_freecast: bool) -> float:
     """Estimate the main loop runtime of the macro."""
+    
+    global spellslot_data
     
     start_time = perf_counter()
     time_elapsed: float = 0
     
-    for level, data in spellslot_data.items():
-        if data["unlocked"]: # check if the level is unlocked
-            print(f"Creating {data['target']} lvl {level} spellslots...")
-            for _ in range(data["target"]):
-                time_elapsed += (SLEEP_DURATION/2 + .01) * 3 + 1.9
+    if using_freecast:
+        pass
+    else:
+        for level, data in spellslot_data.items():
+            if data["unlocked"]: # check if the level is unlocked
+                print(f"Creating {data['target']} lvl {level} spellslots...")
+                for _ in range(data["target"]):
+                    time_elapsed += (SLEEP_DURATION/2 + .01) * 3 + 1.9
 
     return perf_counter()-start_time + time_elapsed
 
@@ -253,8 +256,11 @@ def select_metamagic(type: str) -> None:
         print("Invalid spell slot level.")
         return
 
-def create_sorcery_pts(spellslot_level: int) -> None:
-    """Consumes a specified spell level to create sorcery points."""
+def spend_stuff(
+    select_icon: str = Literal["SORCPTS","SPELLSLOTS"],
+    spellslot_level: int = Literal[1,2,3,4,5]
+) -> None:
+    """Consumes a specified spell level to create sorcery points ."""
     
     spellslot_level_y = 1250
     # note that this assumes level 2
@@ -273,7 +279,9 @@ def create_sorcery_pts(spellslot_level: int) -> None:
     if spellslot_level >= 2:
         spellslot_level_x += 60*(spellslot_level-1)
     
-    select_metamagic("SORCPTS")
+    if select_icon in ["SORCPTS","SPELLSLOTS"]:
+        select_metamagic(select_icon)
+    else: raise ValueError(f"Invalid select icon: {select_icon}")
 
     # select spell slot level
     # if all we have is level 1 we can skip selecting metamagic icon
@@ -281,38 +289,6 @@ def create_sorcery_pts(spellslot_level: int) -> None:
         move_and_click(spellslot_level_x,spellslot_level_y)
     
     # cast (mouse pos (775-1945) 1050 minimum)
-    move_and_click(1200,950)
-    
-    sleep(1.9)
-
-def create_spellslot(spellslot_level: int) -> None:
-    """Consumes sorcery points to create a spell slot at the specified level."""
-    
-    spellslot_level_y = 1250
-    # note that this assumes level 2
-    spellslot_level_x = 1275
-    
-    # get the position of the first icon
-    match (MAX_SPELL_LEVEL):
-        case 3:
-            spellslot_level_x = 1250
-        case 4:
-            spellslot_level_x = 1220
-        case 5:
-            spellslot_level_x = 1190
-    
-    # adjust coords to find intended icon based on unlocked spell levels
-    if spellslot_level >= 2:
-        spellslot_level_x += 60*(spellslot_level-1)
-    
-    # goto spellslot icon (mouse pos 1745 1275)
-    select_metamagic("SPELLSLOTS")
-    
-    # goto spellslot level (dynamic mouse pos)
-    if MAX_SPELL_LEVEL != 1:
-        move_and_click(spellslot_level_x, spellslot_level_y)
-    
-    # cast (mouse pos 1200 1050 minimum)
     move_and_click(1200,950)
     
     sleep(1.9)
@@ -332,9 +308,9 @@ def activate_equipment(using_shield: bool) -> None:
     
     # sorc pts based on the equipment
     if using_shield:
-        create_sorcery_pts(1)
+        spend_stuff("SORCPTS",1)
     else:
-        create_sorcery_pts(2)
+        spend_stuff("SORCPTS",2)
     
     #print("Unequipping item")
     move_and_click(1285,1330)
