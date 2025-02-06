@@ -7,7 +7,7 @@
 from pyautogui import position
 from time import sleep
 
-print("Move your mouse to a desired position. Press Ctrl+C to stop.")
+print("Press Ctrl+C to stop.")
 
 try:
     while True:

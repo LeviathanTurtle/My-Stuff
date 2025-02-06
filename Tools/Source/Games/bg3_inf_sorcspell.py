@@ -10,7 +10,7 @@
 # 1.2 - freecast, runtime args
 # 
 # Known issues:
-# - escape and pause hotkeys not working
+# - exit and pause hotkeys are not working
 # - estimated runtime is wrong
 # 
 # Possible planned updates:
@@ -28,41 +28,42 @@ from time import sleep, time, perf_counter
 
 PAUSE_HOTKEY: str = 'p'
 EXIT_HOTKEY: str = 'esc'
-MAX_SPELL_LEVEL: int = 5 # NOTE: this should be the max spell level you can convert from sorc pts
-
-# set any of these to true if they are unlocked and you want them expanded
-unlocked_spellslots_2: bool = True # this is only used for UI coords
-unlocked_spellslots_3: bool = True
-unlocked_spellslots_4: bool = True 
-unlocked_spellslots_5: bool = True
-unlocked_spellslots_6: bool = False # this is only used for UI coords
+MAX_SPELL_LEVEL: int = 1 # NOTE: this should be the max spell level you can convert from sorc pts
+# Vanilla: [1,5]
 
 # UPDATE THESE VALUES TO REFLECT YOUR CURRENT SPELL SLOTS
-Current_spellslots_1: int = 4
+Current_spellslots_1: int = 3
 Current_spellslots_2: int = 3
 Current_spellslots_3: int = 3
 Current_spellslots_4: int = 3
 Current_spellslots_5: int = 3
-Current_sorc_pts: int = 6
+Current_sorc_pts: int = 2
 
 # THESE ARE THE TARGET VALUES YOU WANT
-Target_spellslots_1: int = 15
+Target_spellslots_1: int = 10
 Target_spellslots_2: int = 15
 Target_spellslots_3: int = 15
 Target_spellslots_4: int = 15
 Target_spellslots_5: int = 50
-Target_sorc_pts: int = 30
+Target_sorc_pts: int = 10
 
 #################################################
 
 # the length of time to sleep between inputs (in seconds)
 SLEEP_DURATION: float = .05
 is_paused = False
-Needed_spellslots_1: int = 0
-Needed_spellslots_2: int = 0
-Needed_spellslots_3: int = 0
-Needed_spellslots_4: int = 0
-Needed_spellslots_5: int = 0
+
+spellslot_data = {
+    level: {
+        "target": globals()[f"Target_spellslots_{level}"],
+        "current": globals()[f"Current_spellslots_{level}"],
+        "needed": max(0, globals()[f"Target_spellslots_{level}"]-globals()[f"Current_spellslots_{level}"]),
+        "unlocked": globals().get(f"unlocked_spellslots_{level}", True),
+    }
+    for level in range(1, MAX_SPELL_LEVEL+1)
+}
+Needed_sorc_pts = max(0, Target_sorc_pts-Current_sorc_pts)
+spell_costs = [2,3,5,6,7]
 
 def macro(
     using_shield: bool,
@@ -74,16 +75,6 @@ def macro(
 
     print("Macro started")
 
-    # define dict to be used in main loop
-    #: dict[int, dict[str, any]]
-    spellslot_data = {
-        level: {
-            "target": max(0, globals()[f"Target_spellslots_{level}"]),
-            "unlocked": globals().get(f"unlocked_spellslots_{level}", True)
-        }
-        for level in range(1, MAX_SPELL_LEVEL+1)
-    }
-    
     sleep(5)
     start_time = time()
     
@@ -121,93 +112,44 @@ def update_globals(
     using_amulet: bool,
     using_freecast: bool
 ) -> Optional[int]:
-    """function def."""
+    """Updates global variables to be used in macro."""
     
-    global Target_spellslots_1, Target_spellslots_2, Target_spellslots_3, Target_spellslots_4, Target_spellslots_5, Target_sorc_pts
-    global Current_spellslots_1, Current_spellslots_2, Current_spellslots_3, Current_spellslots_4, Current_spellslots_5, Current_sorc_pts
-    global Needed_spellslots_1, Needed_spellslots_2, Needed_spellslots_3, Needed_spellslots_4, Needed_spellslots_5, Needed_sorc_pts
-    
-    # SETUP:
-    # LEVEL -> needed sorc pts per level:
-    # I -> [x2]
-    if using_shield: Current_spellslots_1 = 0
-    Needed_spellslots_1 = max(0, Target_spellslots_1-Current_spellslots_1)
+    global spellslot_data, spell_costs, Needed_sorc_pts
 
-    # II -> [x3]
-    if using_amulet: Current_spellslots_2 = 0
-    Needed_spellslots_2 = max(0, Target_spellslots_2-Current_spellslots_2)
-    
-    Needed_sorc_pts = max(0, Target_sorc_pts-Current_sorc_pts)
-    
-    if not using_freecast:
-        Spell_1_pts = Target_spellslots_1*2
-        Spell_2_pts = Target_spellslots_2*3
-
-        # the loop counter needs to be the total amount of sorcery points needed
-        loop_counter: int = Spell_1_pts+Spell_2_pts + Target_sorc_pts
-        
-    # III -> [x5]
-    if unlocked_spellslots_3:
-        Needed_spellslots_3 = max(0, Target_spellslots_3-Current_spellslots_3)
-        
-        if not using_freecast:
-            Spell_3_pts = Target_spellslots_3*5
-            loop_counter += Spell_3_pts
-        
-        # IV -> [x6]
-        if unlocked_spellslots_4:
-            Needed_spellslots_4 = max(0, Target_spellslots_4-Current_spellslots_4)
-            
-            if not using_freecast:
-                Spell_4_pts = Target_spellslots_4*6
-                loop_counter += Spell_4_pts
-            
-            # V -> [x7]
-            if unlocked_spellslots_5:
-                Needed_spellslots_5 = max(0, Target_spellslots_5-Current_spellslots_5)
-                
-                if not using_freecast:
-                    Spell_5_pts = Target_spellslots_5*7
-                    loop_counter += Spell_5_pts
-
-    # if we are using the amulet, update the loop counter to use half the required iterations
+    if using_shield:
+        spellslot_data[1]['current'] = 0
     if using_amulet:
-        # if it is odd, offset by 1 so we are over requirement
-        loop_counter = loop_counter // 2 + (loop_counter % 2)
+        spellslot_data[2]['current'] = 0
     
-    # get all necessary sorc pts
-    msg: str = ""
-    if not using_freecast:
-        msg += f"Getting {loop_counter} sorc pts ({Target_sorc_pts} pt targ + {Spell_1_pts} for lvl 1 spellslots + {Spell_2_pts} for lvl 2 spellslots"
-    else:
-        msg += f"Getting {Needed_sorc_pts} sorc pts, {Needed_spellslots_1} lvl 1 spellslots, {Needed_spellslots_2} lvl 2 spellslots"
+    #for level, slot in spell_slots.items():
+    #    if level == 1 or slot['unlocked'] == True:
+    #        slot['needed'] = max(0, slot['target']-slot['current'])
     
-    if unlocked_spellslots_3:
-        if not using_freecast:
-            msg += f" + {Spell_3_pts} for lvl 3 spellslots"
-        else:
-            msg += f", {Needed_spellslots_3} for lvl 3 spellslots"
-        
-        if unlocked_spellslots_4:
-            if not using_freecast:
-                msg += f" + {Spell_4_pts} for lvl 4 spellslots"
-            else:
-                msg += f", {Needed_spellslots_4} for lvl 4 spellslots"
-                
-            if unlocked_spellslots_5:
-                if not using_freecast:
-                    msg += f" + {Spell_5_pts} for lvl 5 spellslots"
-                else:
-                    msg += f", {Needed_spellslots_5} for lvl 5 spellslots"
+    loop_counter: int = 0
     if not using_freecast:
+        loop_counter = sum(slot['needed']*spell_costs[level] for level, slot in spellslot_data.items() if level == 1 or slot['unlocked'] == True)
+        loop_counter += Needed_sorc_pts
+
+        if using_amulet:
+            loop_counter = loop_counter // 2 if loop_counter%2 == 0 else (loop_counter+1) // 2
+    
+    # Build the message
+    msg = ""
+    if not using_freecast:
+        msg += f"Getting {loop_counter} sorc pts ({Target_sorc_pts} pt targ"
+        for level, slot in spellslot_data.items():
+            if level == 1 or slot['unlocked'] == True:
+                msg += f" + {slot['needed']*slot['cost']} for lvl {level} spellslots"
         msg += ")"
-    
+    else:
+        msg += f"Getting {Needed_sorc_pts} sorc pts"
+        for level, slot in spellslot_data.items():
+            if level == 1 or slot['unlocked'] == True:
+                msg += f", {slot['needed']} lvl {level} spellslots"
+
     print(msg+"...")
-    
-    if not using_freecast:
-        return loop_counter
-    else: return
-    
+
+    return loop_counter if not using_freecast else None
 
 def wait_if_paused() -> None:
     """Pauses the script if the pause hotkey is pressed."""
@@ -224,41 +166,36 @@ def toggle_pause() -> None:
     print(f"Macro {'paused' if is_paused else 'resumed'}.")
 
 def freecast() -> None:
-    """function def."""
+    """Uses the freecast method of creating spell slots and sorcery points."""
     
-    global Target_spellslots_1, Target_spellslots_2, Target_spellslots_3, Target_spellslots_4, Target_spellslots_5, Target_sorc_pts
-    global Current_spellslots_1, Current_spellslots_2, Current_spellslots_3, Current_spellslots_4, Current_spellslots_5, Current_sorc_pts
-    global Needed_spellslots_1, Needed_spellslots_2, Needed_spellslots_3, Needed_spellslots_4, Needed_spellslots_5, Needed_sorc_pts
+    global spellslot_data, spell_costs, Needed_sorc_pts
     
     # determine needed values
-    List_spell_slots = [Needed_spellslots_1,Needed_spellslots_2]
+    List_spell_slots = [
+        spellslot_data[level]['needed'] 
+        for level in range(1, MAX_SPELL_LEVEL+1)
+        if spellslot_data[level]['unlocked']
+    ]
     
-    if unlocked_spellslots_3:
-        List_spell_slots.append(Needed_spellslots_3)
-        if unlocked_spellslots_4:
-            List_spell_slots.append(Needed_spellslots_4)
-            if unlocked_spellslots_5:
-                List_spell_slots.append(Needed_spellslots_5)
-    
-    print(f"{Target_sorc_pts}, {Current_sorc_pts}, {Needed_sorc_pts}")
-    
-    # maximize gains for sorc pts
+    #print(f"{Target_sorc_pts}, {Current_sorc_pts}, {Needed_sorc_pts}")
     List_sorc_pts = find_combination(Needed_sorc_pts)
     print(f"Creating sorcery points from the following levels: {List_sorc_pts}")
+    
+    # maximize gains for sorc pts
     for num in List_sorc_pts:
         print(f"Creating {num} sorcery points from spell level {num}")
         toggle_freecast()
         create_sorcery_pts(num)
     
     # maximize gains for ascending spellslots
-    for index, value in enumerate(List_spell_slots,start=1):
-        print(f"Creating {value} spell slots for spell level {index}")
-        for _ in range(value):
+    for level, needed_slots in enumerate(List_spell_slots,start=1):
+        print(f"Creating {needed_slots} spell slots for spell level {level}")
+        for _ in range(needed_slots):
             toggle_freecast()
-            create_spellslot(index)
+            create_spellslot(level)
 
 def toggle_freecast() -> None:
-    """function def."""
+    """Selects the equipment and freecast icon."""
     
     # move mouse to equipment and click
     move_and_click(1660,1220)
@@ -267,9 +204,10 @@ def toggle_freecast() -> None:
     move_and_click(1660,1160)
 
 def find_combination(x):
-    """function def."""
+    """Calculates the most efficient (least amount) combination of spell slot levels to create
+    sorcery points."""
     
-    spellslot_levels = [5, 4, 3, 2, 1]
+    spellslot_levels = [MAX_SPELL_LEVEL-i for i in range(MAX_SPELL_LEVEL)]
     result = []
     
     for num in spellslot_levels:
@@ -319,69 +257,31 @@ def create_sorcery_pts(spellslot_level: int) -> None:
     """Consumes a specified spell level to create sorcery points."""
     
     spellslot_level_y = 1250
-    spellslot_level_x = 1305
-    # todo: change this to add ~60px per spell level unlocked
-    if unlocked_spellslots_2:
-        match (spellslot_level):
-            case 1:
-                spellslot_level_x = 1275
-            case 2:
-                spellslot_level_x = 1335
-        
-        if unlocked_spellslots_3:
-            match (spellslot_level):
-                case 1:
-                    spellslot_level_x = 1250
-                case 2:
-                    spellslot_level_x = 1305
-                case 3:
-                    spellslot_level_x = 1365
-            
-            if unlocked_spellslots_4:
-                match (spellslot_level):
-                    case 1:
-                        spellslot_level_x = 1215
-                    case 2:
-                        spellslot_level_x = 1275
-                    case 3:
-                        spellslot_level_x = 1335
-                    case 4:
-                        spellslot_level_x = 1395
-                
-                if unlocked_spellslots_5:
-                    match (spellslot_level):
-                        case 1:
-                            spellslot_level_x = 1190
-                        case 2:
-                            spellslot_level_x = 1250
-                        case 3:
-                            spellslot_level_x = 1305
-                        case 4:
-                            spellslot_level_x = 1365
-                        case 5:
-                            spellslot_level_x = 1425
-                    
-                    if unlocked_spellslots_6:
-                        match (spellslot_level):
-                            case 1:
-                                spellslot_level_x = 1160
-                            case 2:
-                                spellslot_level_x = 1220
-                            case 3:
-                                spellslot_level_x = 1280
-                            case 4:
-                                spellslot_level_x = 1340
-                            case 5:
-                                spellslot_level_x = 1400
-                            # we are ignoring lvl 6 because we cannot create that spellslot
-
+    # note that this assumes level 2
+    spellslot_level_x = 1275
+    
+    # get the position of the first icon
+    match (MAX_SPELL_LEVEL):
+        case 3:
+            spellslot_level_x = 1250
+        case 4:
+            spellslot_level_x = 1220
+        case 5:
+            spellslot_level_x = 1190
+    
+    # adjust coords to find intended icon based on unlocked spell levels
+    if spellslot_level >= 2:
+        spellslot_level_x += 60*(spellslot_level-1)
+    
     select_metamagic("SORCPTS")
 
     # select spell slot level
-    move_and_click(spellslot_level_x,spellslot_level_y)
+    # if all we have is level 1 we can skip selecting metamagic icon
+    if MAX_SPELL_LEVEL != 1:
+        move_and_click(spellslot_level_x,spellslot_level_y)
     
-    # cast (mouse pos 1200 1050 minimum)
-    move_and_click(1200,1050)
+    # cast (mouse pos (775-1945) 1050 minimum)
+    move_and_click(1200,950)
     
     sleep(1.9)
 
@@ -389,52 +289,28 @@ def create_spellslot(spellslot_level: int) -> None:
     """Consumes sorcery points to create a spell slot at the specified level."""
     
     spellslot_level_y = 1250
-    spellslot_level_x = 1305
-    if unlocked_spellslots_2:
-        match (spellslot_level):
-            case 1:
-                spellslot_level_x = 1275
-            case 2:
-                spellslot_level_x = 1335
-        
-        if unlocked_spellslots_3:
-            match (spellslot_level):
-                case 1:
-                    spellslot_level_x = 1250
-                case 2:
-                    spellslot_level_x = 1305
-                case 3:
-                    spellslot_level_x = 1365
-            
-            if unlocked_spellslots_4:
-                match (spellslot_level):
-                    case 1:
-                        spellslot_level_x = 1215
-                    case 2:
-                        spellslot_level_x = 1275
-                    case 3:
-                        spellslot_level_x = 1335
-                    case 4:
-                        spellslot_level_x = 1395
-                
-                if unlocked_spellslots_5:
-                    match (spellslot_level):
-                        case 1:
-                            spellslot_level_x = 1190
-                        case 2:
-                            spellslot_level_x = 1250
-                        case 3:
-                            spellslot_level_x = 1305
-                        case 4:
-                            spellslot_level_x = 1365
-                        case 5:
-                            spellslot_level_x = 1425
+    # note that this assumes level 2
+    spellslot_level_x = 1275
+    
+    # get the position of the first icon
+    match (MAX_SPELL_LEVEL):
+        case 3:
+            spellslot_level_x = 1250
+        case 4:
+            spellslot_level_x = 1220
+        case 5:
+            spellslot_level_x = 1190
+    
+    # adjust coords to find intended icon based on unlocked spell levels
+    if spellslot_level >= 2:
+        spellslot_level_x += 60*(spellslot_level-1)
     
     # goto spellslot icon (mouse pos 1745 1275)
     select_metamagic("SPELLSLOTS")
     
     # goto spellslot level (dynamic mouse pos)
-    move_and_click(spellslot_level_x, spellslot_level_y)
+    if MAX_SPELL_LEVEL != 1:
+        move_and_click(spellslot_level_x, spellslot_level_y)
     
     # cast (mouse pos 1200 1050 minimum)
     move_and_click(1200,950)
@@ -490,7 +366,6 @@ def main() -> None:
     
     print(f"Press '{PAUSE_HOTKEY}' to pause/resume or '{EXIT_HOTKEY}' to quit.")
     
-    # try while true
     try:
         # add hotkeys
         add_hotkey('shift+r', macro, args=(using_shield,using_amulet,using_freecast))
