@@ -36,7 +36,7 @@ Current_spellslots_1: int = 4
 Current_spellslots_2: int = 3
 Current_spellslots_3: int = 3
 Current_spellslots_4: int = 3
-Current_spellslots_5: int = 3
+Current_spellslots_5: int = 1
 Current_sorc_pts: int = 6
 
 # THESE ARE THE TARGET VALUES YOU WANT
@@ -50,7 +50,7 @@ Target_sorc_pts: int = 30
 #################################################
 
 # the length of time to sleep between inputs (in seconds)
-SLEEP_DURATION: float = .05
+SLEEP_DURATION: float = .025
 is_paused = False
 
 spellslot_data = {
