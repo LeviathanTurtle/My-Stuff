@@ -15,6 +15,7 @@
 # 
 # Possible planned updates:
 # - get current spellslot data from game via a mod
+# - HOLD ON note 1:54:00 in that long video for optimization (time cut)
 # 
 
 from argparse import ArgumentParser
