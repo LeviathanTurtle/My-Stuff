@@ -13,16 +13,31 @@ This macro utilizes the infinite sorcery points and spell slots [exploit](https:
 Below are before and after images for a Level 12 Sorcerer.
 
 ![Base](./base.jpg)
-![After](./after.jpg)
+![After with shield](./after-shield.jpg)
 
 It seems that the game stores the maximum number of spell slots as a number, which is inflated by the exploit. I think the reason long-resting does not work in the same manner as Angelic Reprieve potions (which restores health and first and second level spell slots) is that long-resting also resets any party buffs and will hard reset this value to what it is supposed to be (as defined in your class tree(s)).
 
-The macro utilizes this exploit (the second, third, and fourth methods outlined in the video) to give you the amount of spell slots and sorcery points you specify. The fastest method is to use freecast, but that is not available until Act 3, and neither is the amulet. The shield is available from a vendor in Act 2, so that is the earliest this macro can be used. Please note that you can only use the amulet with this macro if you are using a version before Patch 7. The shield and freecast methods both work as of Patch 7.
+The macro utilizes this exploit (the second, third, and fourth methods outlined in the video) to give you the amount of spell slots and sorcery points you specify. The fastest method is to use freecast, but that is not available until Act 3, as is the amulet. The shield is available from a vendor in Act 2, so that is the earliest this macro can be used. Please note that you can only use the amulet with this macro if you are using a version before Patch 7. The shield and freecast methods both work as of Patch 7. As of now, this only works on Windows.
 
-Note that icon positions and subsequent mouse positions in the macro are the measurements I made, so they may not be the same for you. I recommend testing the mouse positions first with `mouse_pos.py`, adjusting the UI to your liking, and updating the coordinates in the script before running the macro. Also be sure to adjust the spell slot and sorcerer point amounts to your liking before using. This macro requires being a Sorcerer of at least level 2. This works with a minimum of 30 FPS (but higher will be more consistent; I like ~45) at 1920x1080 resolution and should work at any point in the game. If the delta between your current and target spell slots is very low, the macro will most likely give you extra first or second level spell slots (depending on if you are using the shield or amulet, not with freecast), since the macro assumes you will have none of the spell slot level the gear gives you. In my testing there has been no accidental icon moving by the macro, but just in case, I recommend locking the U.I.
+Note that icon positions and subsequent mouse positions in the macro are the measurements I made, so they may not be the same for you. I recommend testing the mouse positions first with `mouse_pos.py`, adjusting the U.I. to your liking, and updating the coordinates in the script before running the macro. Also be sure to adjust the spell slot and sorcerer point amounts to your liking before using. In my testing there has been no accidental icon moving by the macro, but just in case, I recommend locking the U.I. 
 
-Before running the macro, unequip any two-handed weapon if you are using one. Remember to check the coordinates of the icons first. Once that is done, you can run `python bg3_inf_sorcspell.py` in a terminal window. Then, make sure the Baldur's Gate 3 window is in focus and press Shift+R. You should see a message in the terminal and the macro will begin shortly. Please note that the macro is so powerful, there is no graceful way of stopping it, so ensure that the Baldur's Gate 3 window remains in focus until the macro is finished. <b>This is not a fast macro if you are using the shield or amulet and want a lot of spell slots,</b> so do not expect it to be done in a minute or two (as an example, the post-run image above took 32 minutes). COMPARE SHIELD VS FREECAST TIMES.
+Here is how the U.I. should be organized if you do not want to do any re-arranging:
+![U.I.](./ui.jpg)
 
-As of now, this only works on Windows.
+This macro requires being a Sorcerer of at least level 2. This works with a minimum of 30 FPS (but higher will be more consistent; I like ~45) at 1920x1080 resolution and should work at any point in the game. If are using the shield or amulet and the delta between your current and target spell slots is less than your current number of slots, the macro will give you extra first or second level spell slots. This is because the macro assumes you will have none of the spell slot level the gear gives you, and because the game will use your base class spell slots before the slot given by the gear. 
 
-![UI](./ui.jpg)
+### Execution Steps:
+1. Check the coordinates of the icons
+2. Update the marked values at the top of the script to what you want
+3. Unequip any two-handed weapon, if you are using one
+4. Open a terminal window and navigate to the script
+5. Run `python bg3_inf_sorcspell.py`
+6. Ensure the Baldur's Gate 3 window is in focus
+7. Activate using the keybind set in Step 2
+
+You should see a message in the terminal and the macro will begin shortly. Please note that the macro is so powerful, there is no graceful way of stopping it, so ensure that the Baldur's Gate 3 window remains in focus until the macro is finished. <b>This is not a fast macro if you are using the shield or amulet and want a lot of spell slots,</b> so do not expect it to be done in a minute or two. It took the following times to create the earlier before/after example:
+
+| shield | freecast |
+| ------ | -------- |
+| 1917.27s (31.95 min) | 375.23s (6.25 min)
+

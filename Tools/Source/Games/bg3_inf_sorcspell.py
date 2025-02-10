@@ -27,6 +27,7 @@ from time import sleep, time, perf_counter
 #################################################
 # CHANGE ONLY THESE VALUES HERE
 
+START_HOTKEY: str = 'shift+r'
 PAUSE_HOTKEY: str = 'p'
 EXIT_HOTKEY: str = 'esc'
 MAX_SPELL_LEVEL: int = 5 # NOTE: this should be the max spell level you can convert from sorc pts
@@ -41,12 +42,12 @@ Current_spellslots_5: int = 1
 Current_sorc_pts: int = 6
 
 # THESE ARE THE TARGET VALUES YOU WANT
-Target_spellslots_1: int = 10
-Target_spellslots_2: int = 10
-Target_spellslots_3: int = 10
-Target_spellslots_4: int = 10
-Target_spellslots_5: int = 30
-Target_sorc_pts: int = 30
+Target_spellslots_1: int = 30
+Target_spellslots_2: int = 30
+Target_spellslots_3: int = 20
+Target_spellslots_4: int = 15
+Target_spellslots_5: int = 10
+Target_sorc_pts: int = 60
 
 #################################################
 
@@ -345,7 +346,7 @@ def main() -> None:
     
     try:
         # add hotkeys
-        add_hotkey('shift+r', macro, args=(using_shield,using_amulet,using_freecast))
+        add_hotkey(START_HOTKEY, macro, args=(using_shield,using_amulet,using_freecast))
         add_hotkey(PAUSE_HOTKEY, toggle_pause)
         add_hotkey(EXIT_HOTKEY, exit)
         
