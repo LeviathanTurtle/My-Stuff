@@ -298,14 +298,7 @@ def spend_stuff(
 def activate_equipment(using_shield: bool) -> None:
     """Equips and unequips the equipment for the exploit."""
     
-    # --- EVENT LOOP: ---
-    #   move mouse (1285 1330)
-    #   click (equip item)
-    #   create_sorc_pts
-    #   move mouse
-    #   click (unequip item)
-    
-    #print("Equipping item")
+    # put on the equipment
     move_and_click(1285,1330)
     
     # sorc pts based on the equipment
@@ -314,7 +307,7 @@ def activate_equipment(using_shield: bool) -> None:
     else:
         spend_stuff("SORCPTS",2)
     
-    #print("Unequipping item")
+    # take off the equipment
     move_and_click(1285,1330)
     
     sleep(.05)
