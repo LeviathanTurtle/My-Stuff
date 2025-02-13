@@ -13,6 +13,7 @@ class Geometry:
     #                cartesian coordinate points
     # 
     # post-condition: the distance between the two points is returned
+    @staticmethod
     def distance(q: float, w: float, e: float, r: float) -> float:
         """Calculates the distance between two cartesian coordinates (x1,y1,x2,y2)."""
         
@@ -22,6 +23,7 @@ class Geometry:
     #                cartesian coordinate points 
     # 
     # post-condition: the radius between the two points is returned
+    @staticmethod
     def radius(a: float, s: float, d: float, f: float) -> float:
         """Calculates the radius between two cartesian coordinates (x1,y1,x2,y2)."""
         
@@ -30,6 +32,7 @@ class Geometry:
     # pre-condition: the radius must be initialized to a positive non-zero float
     # 
     # post-condition: the calculated circumference is returned
+    @staticmethod
     def circumference(radius: float) -> float:
         """Calculates the circumference of a circle."""
         
@@ -38,6 +41,7 @@ class Geometry:
     # pre-condition: the radius must be initialized to a positive non-zero float
     # 
     # post-condition: the calculated area is returned
+    @staticmethod
     def area_circle(radius: float) -> float:
         """Calculates the area of a circle."""
         
@@ -47,6 +51,7 @@ class Geometry:
     #                be side c
     # post-condition: if the squares of the two sides equal the square of the hypotenuse, True is
     #                 returned, otherwise False
+    @staticmethod
     def isRightTriangle(
         a: float,
         b: float,

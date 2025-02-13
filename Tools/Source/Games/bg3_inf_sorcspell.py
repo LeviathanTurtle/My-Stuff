@@ -42,11 +42,11 @@ Current_spellslots_5: int = 1
 Current_sorc_pts: int = 6
 
 # THESE ARE THE TARGET VALUES YOU WANT
-Target_spellslots_1: int = 30
-Target_spellslots_2: int = 30
-Target_spellslots_3: int = 20
-Target_spellslots_4: int = 15
-Target_spellslots_5: int = 10
+Target_spellslots_1: int = 10
+Target_spellslots_2: int = 10
+Target_spellslots_3: int = 10
+Target_spellslots_4: int = 10
+Target_spellslots_5: int = 50
 Target_sorc_pts: int = 60
 
 #################################################
