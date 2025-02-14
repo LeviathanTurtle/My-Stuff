@@ -3,7 +3,7 @@
 # 
 # 
 
-from debug_logger import DebugLogger
+from Libraries.debug_logger import DebugLogger
 
 class Team:
     def __init__(self, name: str) -> None:

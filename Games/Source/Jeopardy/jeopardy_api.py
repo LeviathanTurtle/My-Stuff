@@ -6,9 +6,9 @@
 from requests import get                  # make an HTTP GET request
 from html import unescape                 # convert anomalous characters to unicode
 from typing import Optional, Tuple, List  # variable and function type hinting
-from sys import stderr, exit
+from sys import exit
 from socket import setdefaulttimeout, socket, AF_INET, SOCK_STREAM, error
-from debug_logger import DebugLogger
+from Libraries.debug_logger import DebugLogger
 
 class JeopardyAPI():
     # 
@@ -23,7 +23,6 @@ class JeopardyAPI():
             
             self.logger.log(f"API token: {self.api_token}")
         else:
-            #stderr.write("Error: an internet connection is required!\n")
             self.logger.log("Error: an internet connection is required!\n",for_stderr=True)
             exit(1)
     
@@ -60,10 +59,8 @@ class JeopardyAPI():
                 with open(token_filename, 'r') as file:
                     file_token = file.read().strip()
             except FileNotFoundError:
-                #stderr.write(f"Warning: file '{token_filename}' not found")
                 self.logger.log(f"Warning: file '{token_filename}' not found",message_tag="WARNING")
             except IOError:
-                #stderr.write(f"Warning: file '{token_filename}' unable to be opened")
                 self.logger.log(f"Warning: file '{token_filename}' unable to be opened",message_tag="WARNING")
             
             # return the token from the file if it was read
@@ -74,7 +71,6 @@ class JeopardyAPI():
                 self.logger.log("Exiting getSessionToken.",for_debug=True)
                 return self.api_token
             else: 
-                #stderr.write(f"Error: token read from file '{token_filename}' is invalid")
                 self.logger.log(f"Error: token read from file '{token_filename}' is invalid",for_stderr=True)
         
         # otherwise, assume we still need a token, so generate a new one

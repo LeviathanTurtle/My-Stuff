@@ -10,17 +10,17 @@
 # 
 # Usage: python3 jeopardy_gui.py
 
-from sys import stderr, exit          # used in logging, exiting program
-from random import sample, shuffle    # random category, mix answers
-from typing import Optional           # variable and function type hinting
-from traceback import format_exc      # include error location in log
-from os.path import exists, getctime  # search for last log
-from debug_logger import DebugLogger  # debug logger
-from jeopardy_api import JeopardyAPI  # api handling
-from team import Team                 # keep track of team names/score
-from glob import glob                 # accumulate all log files
-from time import time                 # keep track of runtime
-from re import match                  # regex searching
+from sys import exit                            # used in logging, exiting program
+from random import sample, shuffle              # random category, mix answers
+from typing import Optional                     # variable and function type hinting
+from traceback import format_exc                # include error location in log
+from os.path import exists, getctime            # search for last log
+from Libraries.debug_logger import DebugLogger  # debug logger
+from jeopardy_api import JeopardyAPI            # api handling
+from team import Team                           # keep track of team names/score
+from glob import glob                           # accumulate all log files
+from time import time                           # keep track of runtime
+from re import match                            # regex searching
 from threading import Thread
 
 from kivy.app import App
@@ -403,12 +403,10 @@ class MyLayout(GridLayout):
                 category=category_index,
                 question_amount=current_question_points)
         except ValueError as ve:
-            #stderr.write(f"Error fetching question: {ve}")
             self.logger.log(f"Error fetching question: {ve}",for_stderr=True)
             self.logger.log(format_exc())
             return
         except ConnectionError as ce:
-            #stderr.write(f"Network error: {ce}")
             self.logger.log(f"Network error: {ce}",for_stderr=True)
             self.logger.log(format_exc())
             return
@@ -416,11 +414,9 @@ class MyLayout(GridLayout):
         
         # just in case the API response did not return everything needed
         if not self.question:
-            #stderr.write("Error: Missing question data.")
             self.logger.log("Error: Missing question data.",for_stderr=True)
             return
         elif not self.correct_answer or not self.incorrect_answers:
-            #stderr.write("Error: Missing answer data.")
             self.logger.log("Error: Missing answer data.",for_stderr=True)
             return
         

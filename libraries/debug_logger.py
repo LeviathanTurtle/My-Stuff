@@ -8,6 +8,7 @@ from colorama import init as colorama_init
 from datetime import datetime
 from traceback import format_exc
 from sys import stderr
+from os import path, makedirs
 
 class DebugLogger:
     # class attribute instead of an instance attribute to avoid making multiple log files
@@ -20,11 +21,11 @@ class DebugLogger:
         self.use_color = use_color
         self.class_name = class_name
         
+        DebugLogger._make_file()
+        
         if self.use_color:
             colorama_init(autoreset=True)
-            self.log("Using color in log tags")
-        
-        DebugLogger._make_file()
+            self.log("Printing logs with colored tags to console.")
 
     # pre-condition: 
     # post-condition:
@@ -34,6 +35,9 @@ class DebugLogger:
         if not DebugLogger.log_filename:
             timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             DebugLogger.log_filename = f"log_{timestamp}.txt"
+        
+        if not (path.exists("./assets/") or path.exists("./assets/logs/")):
+            makedirs("./assets/logs/")
     
     # pre-condition: 
     # post-condition: 
@@ -43,7 +47,7 @@ class DebugLogger:
         for_debug: bool = False,
         for_stderr: bool = False
     ) -> None:
-        """Logs a message and dumps it."""
+        """Logs a message with optional color and tags."""
         
         if for_stderr: print(message)
         
@@ -53,19 +57,39 @@ class DebugLogger:
         # - lightcyan: debug
         # - lightred: errors
         
-        # first is the class name
-        tagged_message: str = f"{Fore.LIGHTBLUE_EX+Style.BRIGHT if self.use_color else ''}[{self.class_name}]{Style.RESET_ALL if self.use_color else ''} " if self.class_name else ""
-        # second is the type of message being logged
-        tagged_message += f"{Fore.LIGHTYELLOW_EX+Style.BRIGHT if self.use_color and message_tag=="WARNING" else ''}[{message_tag}]{Style.RESET_ALL if self.use_color else ''} "
+        if self.use_color:
+            # first is the class name
+            colored_message: str = f"{Fore.LIGHTBLUE_EX+Style.BRIGHT}[{self.class_name}]{Style.RESET_ALL} " if self.class_name else ""
+            
+            # second is the type of message being logged
+            if for_debug: # include color if specified
+                colored_message += f"{Fore.LIGHTCYAN_EX+Style.BRIGHT}[DEBUG]{Style.RESET_ALL} "
+            elif for_stderr: # if the message was for stderr, append tag
+                colored_message += f"{Fore.LIGHTRED_EX+Style.BRIGHT}[ERROR]{Style.RESET_ALL} "
+            else:
+                colored_message += f"{Fore.LIGHTYELLOW_EX+Style.BRIGHT if message_tag=='WARNING' else ''}[{message_tag}]{Style.RESET_ALL} "
+
+            colored_message += message
+            print(colored_message)
         
+        # first is the class name
+        tagged_message: str = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        tagged_message += f" [{self.class_name}] " if self.class_name else ""
+        
+        # second is the type of message being logged
         if for_debug: # include color if specified
-            tagged_message += f"{Fore.LIGHTCYAN_EX+Style.BRIGHT if self.use_color else ''}[DEBUG]{Style.RESET_ALL if self.use_color else ''} "
-        if for_stderr: # if the message was for stderr, append tag
-            tagged_message += f"{Fore.LIGHTRED_EX+Style.BRIGHT if self.use_color else ''}[STDERR]{Style.RESET_ALL if self.use_color else ''} "
+            tagged_message += "[DEBUG] "
+        elif for_stderr: # if the message was for stderr, append tag
+            tagged_message += "[ERROR] "
+        else:
+            tagged_message += f"[{message_tag}] "
 
         tagged_message += message
         
-        self._dump(tagged_message) # add to log file
+        try:
+            self._dump(tagged_message) # add to log file
+        except Exception as e:
+            print(f"Failed to log message: {e}",file=stderr)
     
     # pre-condition: 
     # post-condition: 
