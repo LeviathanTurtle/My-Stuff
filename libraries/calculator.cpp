@@ -3,7 +3,7 @@
  * Date: 6.12.2024
  *
  * About:
- *    This is the implementation file for the calculator class
+ *    This is the implementation file for the C++ calculator class
 */
 
 #include "calculator.h"

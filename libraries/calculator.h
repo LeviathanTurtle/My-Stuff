@@ -3,7 +3,7 @@
  * Date: 6.12.2024
  *
  * About:
- *    This is the header file for the calculator class
+ *    This is the header file for the C++ calculator class
 */
 
 #ifndef CALCULATOR

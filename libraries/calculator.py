@@ -3,7 +3,7 @@
 # Updated 8.30.2024: added quadratic function
 # 
 # About:
-#     This is the implementation file for the calculator class
+#     This is the implementation file for the Python calculator class
 
 from math import sqrt
 from typing import List, Tuple, Union

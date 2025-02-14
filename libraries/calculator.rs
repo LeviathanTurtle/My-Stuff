@@ -1,3 +1,12 @@
+
+/*
+ * Author: William Wadsworth
+ * Date: 2.13.2025
+ *
+ * About:
+ *    This is the implementation file for the Rust calculator class
+*/
+
 //use std::f64::consts::PI;
 
 /// A simple calculator struct with various mathematical methods.

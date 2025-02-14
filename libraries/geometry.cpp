@@ -3,7 +3,7 @@
  * Date: 6.14.2024
  *
  * About:
- *    This is the implementation file for the geometry class
+ *    This is the implementation file for the C++ geometry class
 */
 
 #include "geometry.h"

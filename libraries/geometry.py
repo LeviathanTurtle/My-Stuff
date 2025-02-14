@@ -2,7 +2,7 @@
 # Date: 6.16.2024
 # 
 # About:
-#     This is the implementation file for the geometry class
+#     This is the implementation file for the Python geometry class
 
 from math import sqrt, pi
 

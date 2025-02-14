@@ -3,7 +3,7 @@
  * Date: 6.15.2024
  *
  * About:
- *    This is the header file for the finance class
+ *    This is the header file for the C++ finance class
 */
 
 #ifndef FINANCE
@@ -13,9 +13,6 @@
 
 
 class finance {
-    private:
-        
-
     public:
         std::tuple<int, int, int, int> findCoinTotal(double);
         int moneyCalculator(const int&, const int&, const int&, const int&, const int&, const int&);

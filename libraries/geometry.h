@@ -3,7 +3,7 @@
  * Date: 6.14.2024
  *
  * About:
- *    This is the header file for the geometry class
+ *    This is the header file for the C++ geometry class
 */
 
 #ifndef GEOMETRY

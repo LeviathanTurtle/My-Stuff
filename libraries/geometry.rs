@@ -1,3 +1,12 @@
+
+/*
+ * Author: William Wadsworth
+ * Date: 6.14.2024
+ *
+ * About:
+ *    This is the implementation file for the Rust geometry class
+*/
+
 use std::f64::consts::PI;
 
 pub struct Geometry;
