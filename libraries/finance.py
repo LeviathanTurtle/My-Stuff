@@ -2,9 +2,9 @@
 # Date: 6.16.2024
 # 
 # About:
-#     This is the implementation file for the finance class
+#     This is the implementation file for the Python finance class
 
-from typing import Tuple
+from typing import Tuple, Literal
 
 class Finance:
     """A utility class for various financial calculations."""
@@ -25,24 +25,20 @@ class Finance:
         # convert dollars to cents to avoid floating-point issues
         total = round(total * 100)
 
-        # QUARTERS
-        # how many quarters in starting amount
+        # how many QUARTERS in starting amount
         quarters = total // 25
         # calculate new total without number of quarters
         total %= 25
 
-        # DIMES
-        # how many dimes in updated amount
+        # how many DIMES in updated amount
         dimes = total // 10
         total %= 10
 
-        # NICKELS
-        # how many nickels in updated amount
+        # how many NICKLES in updated amount
         nickels = total // 5
         #total %= 5
 
-        # PENNIES
-        # how many pennies in remaining amount
+        # how many PENNIES in remaining amount
         pennies = total % 5
 
         return quarters, dimes, nickels, pennies
@@ -51,13 +47,14 @@ class Finance:
     #                deposit must all be initialized to positive non-zero floats
     # post-condition: the table is output detailing the total amount invested and the value of the
     #                 investment for each time step
+    @staticmethod
     def genInvestmentTable(
         principal_amount: float,
         interest_rate: float,
         time: float,
         deposit: float,
-        interest_rate_change: float = 0,
-        output: str = "CONSOLE"
+        interest_rate_change: float,
+        output: Literal["CONSOLE","FILE"]
     ) -> None:
         """Generates an investment table."""
         
@@ -97,17 +94,29 @@ class Finance:
         #print('-' * 50)
         end_msg = f"\nYour capital gain will be ${value_of_investment-principal_amount:.2f} in {time:.2f} years\n"
     
-    
+        if output == "CONSOLE":
+            print(investment_table+end_msg)
+        else:
+            with open("investment_table",'w') as file:
+                file.write(investment_table+end_msg)
     
     # pre-condition: each dollar denomination count must be initialized to a positive non-zero
     #                integer
     # post-condition: the monetary total is calculated and returned
-    def moneyCalculator(count_1: int, count_5: int, count_10: int, count_20: int, count_50: int, count_100: int) -> int:
+    @staticmethod
+    def moneyCalculator(
+        count_1: int,
+        count_5: int,
+        count_10: int,
+        count_20: int,
+        count_50: int,
+        count_100: int
+    ) -> int:
         """Calculate how much money based on USD denominations (1,5,10,20,50,100)."""
         
         # ensure all parameters are integers
         if not all(isinstance(i, int) for i in [count_1, count_5, count_10, count_20, count_50, count_100]):
             raise TypeError("All denomination counts must be integers")
 
-        return count_1 + (5 * count_5) + (10 * count_10) + (20 * count_20) + (50 * count_50) + (100 * count_100)
+        return count_1 + (5*count_5) + (10*count_10) + (20*count_20) + (50*count_50) + (100*count_100)
     
