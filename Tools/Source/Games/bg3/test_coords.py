@@ -7,7 +7,12 @@
 # 
 
 from pydirectinput import moveTo
+from dotenv import set_key
+from os import path
 
+WORKSPACE_ROOT = "../"
+ENV_FILE = path.join(WORKSPACE_ROOT, ".env")
+set_key(ENV_FILE, "CHECKED_MOUSE_COORDS", "False")
 
 def main() -> None:
     
@@ -19,7 +24,7 @@ def main() -> None:
         "Spell slots": (1745,1275, 256),
     }
     
-    print()
+    print() # for extra space
     for name, spot in ui_coords.items():
         x, y, *others = spot # unpack first two values as x, y, remaining in others
         print(f"\n{name}: {x}, {y}")
@@ -30,6 +35,7 @@ def main() -> None:
         
         input("Press Enter to continue...")
     
+    set_key(ENV_FILE, "CHECKED_MOUSE_COORDS", "True")
     print("Done")
 
 

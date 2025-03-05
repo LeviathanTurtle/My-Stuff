@@ -22,6 +22,8 @@ from argparse import ArgumentParser
 from typing import Tuple, Optional, Literal
 from keyboard import add_hotkey, wait
 from pydirectinput import moveTo, mouseDown, mouseUp
+from dotenv import load_dotenv
+from os import getenv
 from time import sleep, time, perf_counter
 
 #################################################
@@ -74,8 +76,13 @@ def macro(
 ) -> None:
     """Runs the macro, starting with creating the sorcery points from the equipment then creating
     the spell slots."""
-
-    print("Macro started")
+    
+    # check that the user has run the test_coords script
+    load_dotenv()
+    if getenv("CHECKED_MOUSE_COORDS", "").lower() != "True":
+        print("You did not check the mouse coordinates!")
+        exit()
+    else: print("Macro started")
 
     sleep(5)
     start_time = time()
