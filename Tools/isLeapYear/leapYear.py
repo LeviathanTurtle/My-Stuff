@@ -11,21 +11,41 @@
 # 
 # [USAGE]:
 # python3 leapYear.py 
+# 
 
 
-# --- IMPORTS ---------------------------------------------------------------------------
-import invalidDay
-import invalidMonth
-import invalidYear
+class invalidDay:
+    def __init__(self, message: str = "invalid day") -> None:
+        self.__message = message
+    
+    # pre-condition: message is declared and initialized
+    # post-condition: message is returned to the main program
+    def huh(self) -> str:
+        return self.__message
+
+class invalidMonth:
+    def __init__(self, message: str = "invalid month") -> None:
+        self.__message = message
+    
+    # pre-condition: message is declared and initialized 
+    # post-condition: message is returned to the main program
+    def huh(self) -> str:
+        return self.__message
+
+class invalidYear:
+    def __init__(self, message: str = "invalid year") -> None:
+        self.__message = message
+    
+    # pre-condition: message is declared and initialized
+    # post-condition: message is returned to the main program
+    def huh(self) -> str:
+        return self.__message
 
 # --- FUNCTIONS -------------------------------------------------------------------------
 # --- IS LEAP -----------------------------------
 # takes current year and checks if it is a leap year
-def isLeap(year) -> bool:
-    if year%4 == 0:
-        return True
-    else:
-        return False
+def isLeap(year: int) -> bool:
+    return year%4 == 0
 
 # --- CONV --------------------------------------
 # takes numeric month input and outputs corresponding month
