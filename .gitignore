@@ -1,5 +1,5 @@
-.vscode/*
+.vscode
 .env
 Games/Source/Jeopardy/token
-Games/Source/Jeopardy/__pycache__/*
+Games/Source/Jeopardy/__pycache__
 Games/Source/Jeopardy/assets/logs/log_*

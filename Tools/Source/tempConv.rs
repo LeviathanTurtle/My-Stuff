@@ -6,9 +6,14 @@
  * 
  * This program creates a temperature conversion chart based on a degree given in Fahrenheit,
  * incrementing by a value imput by the user.
+ * 
+ * Usage: 
+ * To compile: rustc tempConv.rs
+ * To run: ./tempConv
 */
 
-use std::io;
+use std::io::{self, Write};
+use std::process;
 
 //fn main() -> io::Result<()> 
 fn main() {
@@ -18,46 +23,99 @@ fn main() {
              nearest thousandth.\n");
 
     // confirmation
-    println!("Do you want to run this program? [Y/n]: ");
-    // personal note: `mut` is required because for this way because we are defining a variable,
-    // then assigning it later
-    let mut confirmation = char;
-    io::stdin().read_line(&mut confirmation).expect("Failed to read response");
+    let mut confirmation = String::new();
+
+    print!("Do you want to run this program? [Y/n]: ");
+    io::stdout().flush().expect("Failed to flush stdout");
+    loop { // sort of not really like cpp do-while
+        confirmation.clear(); // clear input before reading again
+        io::stdin().read_line(&mut confirmation).expect("Failed to read response");
+
+        match confirmation.trim().to_lowercase().as_str() {
+            "y" | "yes" => {
+                break;
+            }
+            "n" | "no" => {
+                println!("Exiting...");
+                process::exit(0);
+            }
+            _ => { // invalid value
+                print!("Invalid input. Please enter 'Y' or 'n': ");
+                io::stdout().flush().expect("Failed to flush stdout");
+            }
+        }
+    }
 
     // --- SMALLLEST DEGREE ---------------------
-    // give instructions to define sdegree
-    println!("Give your starting (smallest) Fahrenheit degree [-1000 < this_degree < 1000]: ");
-    let mut smallest_degree = int;
-    io::stdin().read_line(&mut smallest_degree).expect("Failed to read degree");
+    let mut input = String::new();
+    let smallest_degree: f64;
 
-    // input validation
-    while smallest_degree <= -1000 && smallest_degree >= 1000 {
-        println!("Not valid, degree limitations: [-1000 < this_degree < 1000]: ");
-        io::stdin().read_line(&mut smallest_degree).expect("Failed to read degree");
+    // give instructions to define sdegree
+    print!("Give your starting (smallest) Fahrenheit degree between -1000 and 1000: ");
+    io::stdout().flush().expect("Failed to flush stdout");
+    loop {
+        input.clear();
+        io::stdin().read_line(&mut input).expect("Failed to read degree");
+
+        // input validation
+        match input.trim().parse::<f64>() {
+            Ok(value) if (-1000.0..=1000.0).contains(&value) => {
+                smallest_degree = value;
+                break;
+            }
+            _ => {
+                print!("Not valid, degree limitations: [-1000 < this_degree < 1000]: ");
+                io::stdout().flush().expect("Failed to flush stdout");
+            }
+        }
     }
 
     // --- LARGEST DEGREE -----------------------
-    // give instructions to define ldegree
-    println!("Give your ending (largest) Fahrenheit degree [smallest_degree < this_degree < 1000]: ");
-    let mut largest_degree = int;
-    io::stdin().read_line(&mut largest_degree).expect("Failed to read degree");
+    // same thing as smallest_degree
+    let largest_degree: f64;
 
-    // input validation
-    while largest_degree <= smallest_degree && largest_degree >= 1000 {
-        println!("Not valid, degree limitations: [smallest_degree < this_degree < 1000]: ");
-        io::stdin().read_line(&mut largest_degree).expect("Failed to read degree");
+    print!("{}", format!("Give your ending (largest) Fahrenheit degree between {} and 1000: ", smallest_degree));
+    io::stdout().flush().expect("Failed to flush stdout");
+    loop {
+        input.clear();
+        io::stdin().read_line(&mut input).expect("Failed to read degree");
+
+        match input.trim().parse::<f64>() {
+            Ok(value) if (smallest_degree..=1000.0).contains(&value) => {
+                largest_degree = value;
+                break;
+            }
+            _ => {
+                print!("{}", format!("Not valid, degree limitations: [{} < this_degree < 1000]: ", smallest_degree));
+                io::stdout().flush().expect("Failed to flush stdout");
+            }
+        }
     }
 
     // --- INCREMENT ----------------------------
-    // define increment
-    println!("How much do you want to increment by: ");
-    let mut increment = float;
-    io::stdin().read_line(&mut increment).expect("Failed to read increment");
+    // guess what? same thing again
+    let increment: f64;
 
-    // input validation
-    while increment <= 0 {
-        println!("Not valid, increment must be > 0: ");
-        io::stdin().read_line(&mut increment).expect("Failed to read increment");
+    print!("How much do you want to increment by: ");
+    io::stdout().flush().expect("Failed to flush stdout");
+    loop {
+        input.clear();
+        io::stdin().read_line(&mut input).expect("Failed to read increment");
+
+        match input.trim().parse::<f64>() {
+            Ok(value) if value > 0.0 && value < (largest_degree-smallest_degree) => {
+                increment = value;
+                break;
+            }
+            Ok(_) => { // successful parsing, but invalid value
+                print!("{}", format!("Invalid, increment must be (0 < increment < {}): ", largest_degree-smallest_degree));
+                io::stdout().flush().expect("Failed to flush stdout");
+            }
+            Err(_) => { // failure case
+                print!("{}", format!("Invalid, increment must be (0 < increment < {}): ", largest_degree-smallest_degree));
+                io::stdout().flush().expect("Failed to flush stdout");
+            }
+        }
     }
 
     // --- TABLE AND FORMULAS -------------------
@@ -70,10 +128,17 @@ fn main() {
     //double k = ((sdegree - 32) * 5/9 + 273.15);
 
     // while loop to run through incremented degrees
-    while(smallest_degree <= largest_degree) {
+    let mut current_value: f64 = smallest_degree;
+
+    while current_value <= largest_degree {
         // display calculations
-        println!("{:>12.3}     |{:>12.3}    |{:>12.3}", smallest_degree, (smallest_degree - 32) * 5 / 9, (smallest_degree - 32) * 5 / 9 + 273.15);
-        smallest_degree += increment;
+        println!(
+            "{:>12.3}     |{:>12.3}    |{:>12.3}",
+            current_value,
+            (current_value -32.0) * 5.0 / 9.0,
+            (current_value -32.0) * 5.0 / 9.0 + 273.15
+        );
+        current_value += increment;
     }
 }
 
