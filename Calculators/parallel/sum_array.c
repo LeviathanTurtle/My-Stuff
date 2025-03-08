@@ -1,39 +1,33 @@
 
-/******************************************************************************
-* William Wadsworth
-* 9-27-2023
-* CSC 4310 
-* ~csc4310/mpi/sum-array2/sum_array.c
-*
-* FILE: sum_array.c
-* DESCRIPTION: 
-*   MPI Example - Array Assignment - C Version
-*   This is an untested update as of 5.25.2024. This program demonstrates a simple data
-*   decomposition. The master task first initializes an array and then distributes an equal portion
-*   that array to the other tasks. After the other tasks receive their portion of the array, they
-*   perform an addition operation to each array element. They also maintain a sum for their portion
-*   of the array. The master task does likewise with its portion of the array. As each of the
-*   non-master tasks finish, they send their sum to the master which computes a total.
-*
-*   An MPI collective communication call is used to collect the sums maintained by each task.
-*   Finally, the master task displays selected parts of the final array and the global sum of all
-*   array elements. 
-*   NOTE: the number of MPI tasks must be evenly divided by 4.
-*
-* NOTE: This is an example.  If it was code to be released, only the master node would output any
-* values.  The output from the other nodes is to verify the data flow and my understanding of the
-* events that take place when the program is executed.
-* 
-* To compile: 
-*     mpicc sum_array.c -o sum_array
-*
-* To execute: 
-*     mpiexec --mca btl_tcp_if_include <ethernet_ID> -n 4 -hostfile actHosts sum_array 
-* either ifconfig or ip a to determine the ethernet ID for the machine.
-*     mpiexec --mca btl_tcp_if_include enp3s -n 4 -hostfile actHosts sum_array 
-*
-*   NOTE: the number of MPI tasks must be evenly divided by 4.
-****************************************************************************/
+/*
+ * William Wadsworth
+ * 9-27-2023
+ * CSC 4310 
+ *
+ * This program demonstrates a simple data decomposition. The master task first initializes an
+ * array and then distributes an equal portion that array to the other tasks. After the other tasks
+ * receive their portion of the array, they perform an addition operation to each array element.
+ * They also maintain a sum for their portion of the array. The master task does likewise with its
+ * portion of the array. As each of the non-master tasks finish, they send their sum to the master
+ * which computes a total.
+ *
+ * An MPI collective communication call is used to collect the sums maintained by each task.
+ * Finally, the master task displays selected parts of the final array and the global sum of all
+ * array elements. 
+ * NOTE: the number of MPI tasks must be evenly divided by 4.
+ *
+ * NOTE: This is an example. If it was code to be released, only the master node would output any
+ * values. The output from the other nodes is to verify the data flow and my understanding of the
+ * events that take place when the program is executed.
+ * 
+ * To compile: 
+ *     mpicc sum_array.c -o sum_array
+ * To execute: 
+ *     mpiexec --mca btl_tcp_if_include <ethernet_ID> -n 4 -hostfile actHosts sum_array 
+ * 
+ * either ifconfig or ip a to determine the ethernet ID for the machine.
+ * Example: mpiexec --mca btl_tcp_if_include enp3s -n 4 -hostfile actHosts sum_array 
+*/
 #include "mpi.h"
 #include <stdio.h>
 #include <stdlib.h>
