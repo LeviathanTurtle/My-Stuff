@@ -41,17 +41,17 @@ class invalidYear:
     def huh(self) -> str:
         return self.__message
 
-# --- FUNCTIONS -------------------------------------------------------------------------
-# --- IS LEAP -----------------------------------
-# takes current year and checks if it is a leap year
+
 def isLeap(year: int) -> bool:
+    """Takes current year and checks if it is a leap year."""
+    
     return year%4 == 0
 
-# --- CONV --------------------------------------
-# takes numeric month input and outputs corresponding month
 # end="" --> not add newline to the end of the string
 # sep="" --> not add space between function args
 def conv(inp):
+    """Takes numeric month input and outputs corresponding month."""
+    
     match(inp):
         case 1:
             print("January",end="")
@@ -80,19 +80,19 @@ def conv(inp):
 
 
 def main():
-    # --- INPUT ---------------------------------
     try:
         day = int(input("Enter your birth day: "))
         month = int(input("Enter your birth month: "))
         year = int(input("Enter your birth year: "))
 
-        # --- TEST INPUT ------------------------
         # year test
         if year <= 0:
             raise invalidYear()
+        
         # month test
         if month <= 0 or month > 12:
             raise invalidMonth()
+        
         # day test -- months with 31 days
         if month in {1,3,5,7,8,10,12}:
             if day <= 0 or day > 31:
@@ -110,7 +110,6 @@ def main():
             if day <= 0 or day > 30:
                 raise invalidDay()
 
-        # --- CONVERSION ------------------------
         # convert numerical month to string
         print(f"{conv(month)}day, {year}")
 
@@ -121,7 +120,6 @@ def main():
             print("Your birth year is not a leap year")
 
 
-    # --- EXCEPTION HANDLING --------------------
     # date is not valid
     except invalidDay:
         print("error: ",invalidDay.huh())
