@@ -10,7 +10,7 @@
 | `dataDetails` | ./dataDetails < file name > | python dataDetails.py < file name > | | < file name >: file to read from |
 | `dog_gen` | | python dog_gen.py | | | Internet required |
 | `duplicate_removal` | | python duplicate_removal.py < -video \| -photo > < path to file > | | < -video \| -photo >: specify if you want to remove duplicate photos or videos<br>< path to file >: location of the folder on disk |
-| `golfAnalysis` | ./golfAnalysis < number of players > < number of holes > < input file > | | | < number of players >: amount of players to use<br>< number of holes >: amount of holes to count<br>< input file >: file to read from |
+| `golfAnalysis` | ./golfAnalysis < number of players > < number of holes > < input file > | python golfAnalysis.py < number of players > < number of holes > < input file > | | < number of players >: amount of players to use<br>< number of holes >: amount of holes to count<br>< input file >: file to read from |
 | `icebreaker` | | python icebreaker.py | 
 | `insult` | | python insult.py | | | Internet required |
 | `isLeapYear` | ./leapYear | python leapYear.py |
