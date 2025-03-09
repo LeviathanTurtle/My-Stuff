@@ -12,7 +12,7 @@
  *     g++ max-master.cpp -Wall -fopenmp -o max
  * 
  * To run:
- *     ./max <array size> <thread count>
+ *     ./max-master <array size> <thread count>
 */
 
 

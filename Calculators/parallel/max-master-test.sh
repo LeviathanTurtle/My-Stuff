@@ -4,5 +4,5 @@
 
 for i in {1..20..1}
 do
-    ./max-master-cpp 1000 10
+    ./max-master 1000 10
 done

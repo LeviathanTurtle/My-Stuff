@@ -7,8 +7,8 @@
  * percentages are stored in an external file named config by default, but specified at runtime.
  * Default assignments are homework, quizzes, tests, and labs. The user has the option to add
  * additional assignments with their weights or change an existing assignments weighted percentage,
- * which will all be saved in the same config file. The binary was last compiled on 5.25.2024.
- * TODO: maybe a table or some kind of optional structured output
+ * which will all be saved in the same config file.
+ * TODO: maybe a table or some kind of optional structured output, init config file if not found
  * 
  * [USAGE]:
  * To compile:
@@ -16,7 +16,7 @@
  * To run:
  *     ./<exe name> [-d] <config file name>
  * where:
- * [-d] - optional, enable debug output
+ * [-d] - enable debug output
  * 
  * [EXIT/TERMINATING CODES]:
  * 0 - program successfully completed full execution
