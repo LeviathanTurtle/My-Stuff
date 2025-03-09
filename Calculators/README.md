@@ -1,12 +1,10 @@
 ## USAGE
 
-NOTE: `final_grade_calc` is left out of the `compile` bash script because with this directory structure that was not something I wanted to deal with when writing it.
-
 | Program Name | Usage (C++) | Usage (Python) | Usage (Rust) | Argument Descriptions | Notes |
 | ------------ | ----------- | -------------- | ------------ | --------------------- | ----- |
 | `billTotalandTip` | | python billTotalandTip.py |
 | `coinTotal` | ./coinTotal | python coinTotal.py |
-| `factorialGeoseriesCalc` | ./factorialGeoseriesCalc | python factorialGeoseriesCalc.py
+| `factorialGeoseriesCalc` | ./factorialGeoseriesCalc | python factorialGeoseriesCalc.py |
 | `finalGrade` | ./finalGrade | python finalGrade.py |
 | `final_grade_calc` | ./final_grade_calc [-d] < config file name > | python final_grade_calc [-d] < config file name > | | [-d]: emable debug output<br>< config file name >: file containing each assignment and their weight |
 | `fourFunction` | ./fourFunction | python fourFunction.py |
