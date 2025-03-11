@@ -61,7 +61,7 @@ class Customer(Base):
 
 # set up engine based on db location
 # manages the connection to the db
-database_url = 'mariadb+mariadbconnector://root:toor@172.17.0.1:3306/david-warehouse-db'
+database_url = 'mariadb+mariadbconnector://root:toor@172.17.0.1:3306/david-simulation-db'
 engine = create_engine(database_url, echo=True)
 
 # USE THIS ENGINE FOR A .db FILE
@@ -69,8 +69,9 @@ engine = create_engine(database_url, echo=True)
 #engine = create_engine(database_uri)
 
 
-# create tables based on definitions above, define which engine to use
-Base.metadata.create_all(bind=engine)
+# create tables based on defs above if tables do not already exist, define which engine to use
+if not engine.dialect.has_table(engine, "orders"):
+    Base.metadata.create_all(bind=engine)
 
 
 # declare a new session to interact with db, define which engine to use
