@@ -1,4 +1,0 @@
-dotenv == 1.0.1
-mysql == 0.0.3
-mysql-connector-python == 9.2.0
-SQLAlchemy == 2.0.25
