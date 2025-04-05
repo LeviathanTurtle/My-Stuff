@@ -787,6 +787,9 @@ class Binary:
         
         return binary_str
 
+class Hexidecimal:
+    pass
+
 
 
 #def main():

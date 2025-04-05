@@ -30,10 +30,12 @@ from time import sleep, time, perf_counter
 # CHANGE ONLY THESE VALUES HERE
 
 START_HOTKEY: str = 'shift+r'
-PAUSE_HOTKEY: str = 'p'
+PAUSE_HOTKEY: str = 'p' # todo: use env instead of bool?
 EXIT_HOTKEY: str = 'esc'
-MAX_SPELL_LEVEL: int = 5 # NOTE: this should be the max spell level you can convert from sorc pts
+
+# NOTE: this value should be the max spell level you can convert from sorc pts
 # Vanilla: [1,5]
+MAX_SPELL_LEVEL: int = 5
 
 # UPDATE THESE VALUES TO REFLECT YOUR CURRENT SPELL SLOTS
 Current_spellslots_1: int = 4
@@ -321,6 +323,8 @@ def activate_equipment(using_shield: bool) -> None:
 
 def handle_args() -> Tuple[bool,bool,bool]:
     """Helper function to initiate runtime arguments."""
+    
+    # todo: check env that user ran mouse test
     
     # python3 bg3_inf_sorcspell.py <-shield | -amulet | -freecast>
     parser = ArgumentParser(description="Baldur's Gate 3 macro with optional flags.")
