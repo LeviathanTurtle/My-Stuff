@@ -25,6 +25,7 @@ from pydirectinput import moveTo, mouseDown, mouseUp
 from dotenv import load_dotenv
 from os import getenv
 from time import sleep, time, perf_counter
+import sys
 
 #################################################
 # CHANGE ONLY THESE VALUES HERE
@@ -83,7 +84,7 @@ def macro(
     load_dotenv()
     if getenv("CHECKED_MOUSE_COORDS", "").lower() != "True":
         print("You did not check the mouse coordinates!")
-        exit()
+        sys.exit(1)
     else: print("Macro started")
 
     sleep(5)
