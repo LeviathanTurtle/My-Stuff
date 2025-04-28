@@ -8,6 +8,7 @@
 # 1.02 - fixed mouse coordinates based on unlocked spell slot levels
 # 1.1 - dynamic data gen for mod support, pausing, estimated runtime, reduction in sleep time
 # 1.2 - freecast, runtime args
+# 1.3 - moved values to separate config file
 # 
 # Known issues:
 # - exit and pause hotkeys are not working
@@ -25,36 +26,12 @@ from pydirectinput import moveTo, mouseDown, mouseUp
 from dotenv import load_dotenv
 from os import getenv
 from time import sleep, time, perf_counter
+
+#from config import *
+import config
+from config import COORDINATE_MAP, CoordType
 import sys
 
-#################################################
-# CHANGE ONLY THESE VALUES HERE
-
-START_HOTKEY: str = 'shift+r'
-PAUSE_HOTKEY: str = 'p' # todo: use env instead of bool?
-EXIT_HOTKEY: str = 'esc'
-
-# NOTE: this value should be the max spell level you can convert from sorc pts
-# Vanilla: [1,5]
-MAX_SPELL_LEVEL: int = 5
-
-# UPDATE THESE VALUES TO REFLECT YOUR CURRENT SPELL SLOTS
-Current_spellslots_1: int = 4
-Current_spellslots_2: int = 3
-Current_spellslots_3: int = 3
-Current_spellslots_4: int = 3
-Current_spellslots_5: int = 1
-Current_sorc_pts: int = 6
-
-# THESE ARE THE TARGET VALUES YOU WANT
-Target_spellslots_1: int = 10
-Target_spellslots_2: int = 10
-Target_spellslots_3: int = 10
-Target_spellslots_4: int = 10
-Target_spellslots_5: int = 50
-Target_sorc_pts: int = 60
-
-#################################################
 
 # the length of time to sleep between inputs (in seconds)
 SLEEP_DURATION: float = .025
@@ -62,15 +39,18 @@ is_paused = False
 
 spellslot_data = {
     level: {
-        "target": globals()[f"Target_spellslots_{level}"],
-        "current": globals()[f"Current_spellslots_{level}"],
-        "needed": max(0, globals()[f"Target_spellslots_{level}"]-globals()[f"Current_spellslots_{level}"]),
-        "unlocked": globals().get(f"unlocked_spellslots_{level}", True),
+        "target": getattr(config, f"Target_spellslots_{level}"),
+        "current": getattr(config, f"Current_spellslots_{level}"),
+        "needed": max(0, getattr(config, f"Target_spellslots_{level}")-getattr(config, f"Current_spellslots_{level}")),
+        "unlocked": True if config.MAX_SPELL_LEVEL>=level else False,
     }
-    for level in range(1, MAX_SPELL_LEVEL+1)
+    for level in range(1, config.MAX_SPELL_LEVEL+1)
 }
-Needed_sorc_pts = max(0, Target_sorc_pts-Current_sorc_pts)
+Needed_sorc_pts = max(0, config.Target_sorc_pts-config.Current_sorc_pts)
 spell_costs = [2,3,5,6,7]
+print(spellslot_data)
+sys.exit()
+
 
 def macro(
     using_shield: bool,
@@ -80,14 +60,6 @@ def macro(
     """Runs the macro, starting with creating the sorcery points from the equipment then creating
     the spell slots."""
     
-    # check that the user has run the test_coords script
-    load_dotenv()
-    if getenv("CHECKED_MOUSE_COORDS", "").lower() != "True":
-        print("You did not check the mouse coordinates!")
-        sys.exit(1)
-    else: print("Macro started")
-
-    sleep(5)
     start_time = time()
     
     # -------------------------------------------
@@ -99,7 +71,7 @@ def macro(
         update_globals(using_shield,using_amulet,using_freecast)
     
     if not using_freecast:
-        print(f"Need {LOOP_COUNTER} more sorc pts ({LOOP_COUNTER+Current_sorc_pts} total)")
+        print(f"Need {LOOP_COUNTER} more sorc pts ({LOOP_COUNTER+config.Current_sorc_pts} total)")
         est_runtime: float = ((SLEEP_DURATION/2 + .01) * 5 + 1.95) * LOOP_COUNTER + estimate_runtime(using_freecast)
         print(f"Estimated runtime: {est_runtime:.2f}s ({est_runtime/60:.2f} min)")
         
@@ -146,7 +118,7 @@ def update_globals(
     # construct update message
     msg = ""
     if not using_freecast:
-        msg += f"Getting {loop_counter} sorc pts ({Target_sorc_pts} pt targ"
+        msg += f"Getting {loop_counter} sorc pts ({config.Target_sorc_pts} pt targ"
         for level, slot in spellslot_data.items():
             if level == 1 or slot['unlocked'] == True:
                 msg += f" + {slot['needed']*slot['cost']} for lvl {level} spellslots"
@@ -183,7 +155,7 @@ def freecast() -> None:
     # determine needed values
     List_spell_slots = [
         spellslot_data[level]['needed'] 
-        for level in range(1, MAX_SPELL_LEVEL+1)
+        for level in range(1, config.MAX_SPELL_LEVEL+1)
         if spellslot_data[level]['unlocked']
     ]
     
@@ -207,17 +179,20 @@ def freecast() -> None:
 def toggle_freecast() -> None:
     """Selects the equipment and freecast icon."""
     
+    equipment_coords = COORDINATE_MAP[CoordType.CLOTHING]
+    freecast_coords = COORDINATE_MAP[CoordType.FREECAST]
+    
     # move mouse to equipment and click
-    move_and_click(1660,1220)
+    move_and_click(equipment_coords.x,equipment_coords.y)
     
     # move mouse to freecast icon and click
-    move_and_click(1660,1160)
+    move_and_click(freecast_coords.x,freecast_coords.y)
 
 def find_combination(x):
     """Calculates the most efficient (least amount) combination of spell slot levels to create
     sorcery points."""
     
-    spellslot_levels = [MAX_SPELL_LEVEL-i for i in range(MAX_SPELL_LEVEL)]
+    spellslot_levels = [config.MAX_SPELL_LEVEL-i for i in range(config.MAX_SPELL_LEVEL)]
     result = []
     
     for num in spellslot_levels:
@@ -227,7 +202,7 @@ def find_combination(x):
     
     return result
 
-# 
+# broken
 def estimate_runtime(using_freecast: bool) -> float:
     """Estimate the main loop runtime of the macro."""
     
@@ -261,9 +236,9 @@ def select_metamagic(type: str) -> None:
     """Select the metamagic icons in the UI."""
     
     if type == "SORCPTS": # 1745 1215
-        move_and_click(1745,1215)
+        move_and_click(COORDINATE_MAP[CoordType.SORC_PTS].x,COORDINATE_MAP[CoordType.SORC_PTS].y)
     elif type == "SPELLSLOTS": # 1745 1275
-        move_and_click(1745,1275)
+        move_and_click(COORDINATE_MAP[CoordType.SPELL_SLOTS].x,COORDINATE_MAP[CoordType.SPELL_SLOTS].y)
     else: # error, literally should not happen
         print("Invalid spell slot level.")
         return
@@ -275,11 +250,10 @@ def spend_stuff(
     """Consumes a specified spell level to create sorcery points ."""
     
     spellslot_level_y = 1250
-    # note that this assumes level 2
-    spellslot_level_x = 1275
+    spellslot_level_x = 1275 # note that this assumes level 2
     
     # get the position of the first icon
-    match (MAX_SPELL_LEVEL):
+    match (config.MAX_SPELL_LEVEL):
         case 3:
             spellslot_level_x = 1250
         case 4:
@@ -297,11 +271,11 @@ def spend_stuff(
 
     # select spell slot level
     # if all we have is level 1 we can skip selecting metamagic icon
-    if MAX_SPELL_LEVEL != 1:
+    if config.MAX_SPELL_LEVEL != 1:
         move_and_click(spellslot_level_x,spellslot_level_y)
     
     # cast (mouse pos (775-1945) 1050 minimum)
-    move_and_click(1200,950)
+    move_and_click(1200,950) # todo: check this
     
     sleep(1.9)
 
@@ -309,7 +283,8 @@ def activate_equipment(using_shield: bool) -> None:
     """Equips and unequips the equipment for the exploit."""
     
     # put on the equipment
-    move_and_click(1285,1330)
+    equipment_coords = COORDINATE_MAP[CoordType.EQUIPMENT]
+    move_and_click(equipment_coords.x,equipment_coords.y)
     
     # sorc pts based on the equipment
     if using_shield:
@@ -318,14 +293,12 @@ def activate_equipment(using_shield: bool) -> None:
         spend_stuff("SORCPTS",2)
     
     # take off the equipment
-    move_and_click(1285,1330)
+    move_and_click(equipment_coords.x,equipment_coords.y)
     
     sleep(.05)
 
 def handle_args() -> Tuple[bool,bool,bool]:
     """Helper function to initiate runtime arguments."""
-    
-    # todo: check env that user ran mouse test
     
     # python3 bg3_inf_sorcspell.py <-shield | -amulet | -freecast>
     parser = ArgumentParser(description="Baldur's Gate 3 macro with optional flags.")
@@ -336,24 +309,29 @@ def handle_args() -> Tuple[bool,bool,bool]:
     group.add_argument("-freecast", action="store_true", help="Use the Illithid Freecast passive.")
     args = parser.parse_args()
     
-    #using_shield: bool = args.shield
-    #using_amulet: bool = args.amulet
-    #using_freecast: bool = args.freecast
     return args.shield, args.amulet, args.freecast
 
 
 
 def main() -> None:
+    # check that the user has run the test_coords script
+    load_dotenv()
+    if getenv("CHECKED_MOUSE_COORDS", "").lower() != "True":
+        print("You did not check the mouse coordinates!")
+        sys.exit(1)
+    else: print("Macro started")
+    sleep(5)
+    
     # python3 bg3_inf_sorcspell.py <-shield | -amulet | -freecast>
     using_shield, using_amulet, using_freecast = handle_args()
     
-    print(f"Press '{PAUSE_HOTKEY}' to pause/resume or '{EXIT_HOTKEY}' to quit.")
+    print(f"Press '{config.PAUSE_HOTKEY}' to pause/resume or '{config.EXIT_HOTKEY}' to quit.")
     
     try:
         # add hotkeys
-        add_hotkey(START_HOTKEY, macro, args=(using_shield,using_amulet,using_freecast))
-        add_hotkey(PAUSE_HOTKEY, toggle_pause)
-        add_hotkey(EXIT_HOTKEY, exit)
+        add_hotkey(config.START_HOTKEY, macro, args=(using_shield,using_amulet,using_freecast))
+        add_hotkey(config.PAUSE_HOTKEY, toggle_pause)
+        add_hotkey(config.EXIT_HOTKEY, exit)
         
         # keep the script running to listen for the hotkey
         wait()

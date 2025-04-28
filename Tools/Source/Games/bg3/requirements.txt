@@ -1,0 +1,4 @@
+dotenv==0.9.9
+keyboard==0.13.5
+python-dotenv==1.1.0
+PyDirectInput==1.0.4
