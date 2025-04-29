@@ -14,8 +14,8 @@ This macro utilizes an infinite sorcery points and spell slots [exploit](https:/
 
 Below are before and after images for a Level 12 Sorcerer.
 
-![Base](./base.jpg)
-![After](./after.jpg)
+![Base](./media/base.jpg)
+![After](./media/after.jpg)
 <br>*Note that in Vanilla, the maximum spell level you can convert is level 5*
 
 I think the game stores the maximum number of spell slots as a number, which is inflated by the exploit. I also think the reason long-resting does not work in the same manner as Angelic Reprieve potions (which restores health and first and second level spell slots) is that long-resting also resets any party buffs and will hard reset this value to what it is supposed to be (as defined in your class tree(s)).
@@ -35,7 +35,7 @@ Note that I have not tested on any versions before Patch 7.
 Note that icon positions and subsequent mouse positions in the macro are the measurements I made, so they may not be the same for you. I recommend testing the mouse positions first with `test_coords.py` to see if my measurements match yours. If not, or if you would like to adjust the U.I. to your liking, you can use `mouse_pos.py` in Tools to get the new coordinates. `test_coords.py` will tell you where to update the values in the macro. Also be sure to adjust the spell slot and sorcerer point amounts to your liking before using. In my testing there has been no accidental icon moving by the macro, but just in case, I recommend locking the U.I. 
 
 Here is how the Vanilla U.I. should be organized if you do not want to do any re-arranging:
-![U.I.](./ui.jpg)
+![U.I.](./media/ui.jpg)
 
 This macro requires being a Sorcerer of at least level 2. This works with a minimum of 30 FPS (but higher will be more consistent; I like ~45) at 1920x1080 resolution and should work at any point in the game. If are using the shield or amulet and the delta between your current and target spell slots is less than your current number of slots, the macro will give you extra first or second level spell slots. This is because the macro assumes you will have none of the spell slot level the gear gives you, and because the game will use your base class spell slots before the slot given by the gear. 
 
