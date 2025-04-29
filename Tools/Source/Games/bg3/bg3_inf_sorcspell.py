@@ -252,7 +252,7 @@ def spend_stuff(
     spellslot_level_y = 1250
     spellslot_level_x = 1275 # note that this assumes level 2
     
-    # get the position of the first icon
+    # get the position of the FIRST ICON
     match (config.MAX_SPELL_LEVEL):
         case 3:
             spellslot_level_x = 1250

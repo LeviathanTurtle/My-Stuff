@@ -7,7 +7,7 @@
 # 
 
 from pydirectinput import moveTo
-from dotenv import set_key
+from dotenv import load_dotenv, set_key
 from os import path
 from config import *
 
@@ -16,8 +16,9 @@ ENV_FILE = path.join(WORKSPACE_ROOT, ".env")
 set_key(ENV_FILE, "CHECKED_MOUSE_COORDS", "False")
 
 def main() -> None:
-    
+    load_dotenv()
     print() # for extra space
+    
     for name, spot in COORDINATE_MAP.items():
         #x, y, *others = spot # unpack first two values as x, y, remaining in others
         print(f"\n{name.value}: {spot.x}, {spot.y}")

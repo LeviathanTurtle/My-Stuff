@@ -45,6 +45,19 @@ class CoordType(Enum):
     CLOTHING = "clothing"
     SORC_PTS = "sorcery_pts"
     SPELL_SLOTS = "spell_slots"
+    #SPELL_LEVEL_2_max2 = "spell_level_2_max2"
+    #
+    #SPELL_LEVEL_2_max3 = "spell_level_2_max3"
+    #SPELL_LEVEL_3_max3 = "spell_level_3_max3"
+    #
+    #SPELL_LEVEL_2_max4 = "spell_level_2_max4"
+    #SPELL_LEVEL_3_max4 = "spell_level_3_max4"
+    #SPELL_LEVEL_4_max4 = "spell_level_4_max4"
+    #
+    #SPELL_LEVEL_2_max5 = "spell_level_2_max5"
+    #SPELL_LEVEL_3_max5 = "spell_level_3_max5"
+    #SPELL_LEVEL_4_max5 = "spell_level_4_max5"
+    #SPELL_LEVEL_5_max5 = "spell_level_5_max5"
 
 @dataclass
 class Coordinates:
@@ -67,6 +80,23 @@ COORDINATE_MAP = {
     CoordType.SPELL_SLOTS: Coordinates(x=1745, y=1275),
     
     # each spell level
+    # max level 2
+    #CoordType.SPELL_LEVEL_2_max2: Coordinates(x=1275, y=1250),
+    
+    # max level 3
+    #CoordType.SPELL_LEVEL_2_max3: Coordinates(x=1250, y=1250),
+    #CoordType.SPELL_LEVEL_3_max3: Coordinates(x=0, y=1250),
+    
+    # max level 4
+    #CoordType.SPELL_LEVEL_2_max4: Coordinates(x=1220, y=1250),
+    #
+    #
+    
+    # max level 5
+    #CoordType.SPELL_LEVEL_2_max5: Coordinates(x=1190, y=1250),
+    #
+    #
+    #
 }
 
 #################################################
