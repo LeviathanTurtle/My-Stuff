@@ -31,6 +31,8 @@ Note that I have not tested on any versions before Patch 7.
 | Shield | Patch 7+ |
 | Freecast | Patch 7 |
 
+Please also note that while using the shield still works in Patch 8, equipping/unequipping equipment from the UI does not seem to work as it did in Patch 7.
+
 ## Disclaimers
 Note that icon positions and subsequent mouse positions in the macro are the measurements I made, so they may not be the same for you. I recommend testing the mouse positions first with `test_coords.py` to see if my measurements match yours. If not, or if you would like to adjust the U.I. to your liking, you can use `mouse_pos.py` in Tools to get the new coordinates. `test_coords.py` will tell you where to update the values in the macro. Also be sure to adjust the spell slot and sorcerer point amounts to your liking before using. In my testing there has been no accidental icon moving by the macro, but just in case, I recommend locking the U.I. 
 
