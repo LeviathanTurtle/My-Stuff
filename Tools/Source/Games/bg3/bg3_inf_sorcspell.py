@@ -327,8 +327,7 @@ def main() -> None:
     # check that the user has run the test_coords script
     load_dotenv(os.path.join(".env"))
     
-    if os.getenv("CHECKED_MOUSE_COORDS", "").lower() != "True":
-        # todo: ^ this should not be false but it is
+    if os.getenv("CHECKED_MOUSE_COORDS", "") != "True":
         print("You did not check the mouse coordinates!")
         sys.exit(1)
     else: print("Macro started")

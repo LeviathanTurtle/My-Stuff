@@ -12,8 +12,7 @@ from os import path
 from config import *
 
 
-WORKSPACE_ROOT = "./"
-ENV_FILE = path.join(WORKSPACE_ROOT, ".env")
+ENV_FILE = ".env"
 
 def main() -> None:
     print() # for extra space
