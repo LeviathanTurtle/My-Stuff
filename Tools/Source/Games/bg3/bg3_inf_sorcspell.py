@@ -27,7 +27,7 @@ from pydirectinput import moveTo, mouseDown, mouseUp
 from dotenv import load_dotenv
 from time import sleep, time, perf_counter
 
-#from config import *
+import threading
 import config
 from config import COORDINATE_MAP, CoordType
 import sys
@@ -52,6 +52,7 @@ spellslot_data = {
 Needed_sorc_pts = max(0, config.Target_sorc_pts-config.Current_sorc_pts)
 print(spellslot_data)
 #sys.exit()
+macro_lock = threading.Lock()
 
 
 def macro(
@@ -79,6 +80,7 @@ def macro(
         
         # create the sorc pts
         for _ in range(LOOP_COUNTER):
+            wait_if_paused()
             use_equipment(using_shield) if using_shield else use_equipment(using_amulet)
 
         # loop through levels and create spellslots if unlocked
@@ -86,6 +88,7 @@ def macro(
             if data["unlocked"]: # check if the level is unlocked
                 print(f"Creating {data['target']} lvl {level} spellslots...")
                 for _ in range(data["target"]):
+                    wait_if_paused()
                     spend_stuff("SPELLSLOTS",level)
     else:
         #est_runtime: float = ((SLEEP_DURATION/2 + .01) * 5 + 1.95) * LOOP_COUNTER + estimate_runtime(using_freecast)
@@ -93,6 +96,19 @@ def macro(
         freecast()
     
     print(f"Macro completed in {time()-start_time:.2f}s")
+
+def macro_threaded(
+    using_shield: bool,
+    using_amulet: bool,
+    using_freecast: bool
+) -> None:
+    """function def."""
+    
+    if macro_lock.locked():
+        print("Macro already running. Please wait.")
+        return
+    with macro_lock:
+        macro(using_shield, using_amulet, using_freecast)
 
 # -------------------------------------------------------------------------------------------------
 
@@ -338,17 +354,21 @@ def main() -> None:
     
     print(f"Press '{config.PAUSE_HOTKEY}' to pause/resume or '{config.EXIT_HOTKEY}' to quit.")
     
-    try:
+    def start_hotkey_listener():
         # add hotkeys
-        #add_hotkey(config.START_HOTKEY, macro, args=(using_shield,using_amulet,using_freecast))
-        #add_hotkey(config.PAUSE_HOTKEY, toggle_pause)
-        #add_hotkey(config.EXIT_HOTKEY, exit)
-        #
-        ## keep the script running to listen for the hotkey
-        #wait()
-        macro(using_shield,using_amulet,using_freecast)
+        add_hotkey(config.START_HOTKEY, macro_threaded, args=(using_shield, using_amulet, using_freecast))
+        add_hotkey(config.PAUSE_HOTKEY, toggle_pause)
+        add_hotkey(config.EXIT_HOTKEY, lambda: sys.exit(0))
+        wait() # Keep this thread alive to listen
+
+    listener_thread = threading.Thread(target=start_hotkey_listener, daemon=True)
+    listener_thread.start()
+    
+    try:
+        while True:
+            sleep(1) # keep the main thread alive
     except KeyboardInterrupt:
-        print("Macro stopped.")
+        print("Macro interrupted.")
 
 
 if __name__ == "__main__":
