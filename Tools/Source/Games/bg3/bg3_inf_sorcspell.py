@@ -273,19 +273,16 @@ def spend_stuff(
 ) -> None:
     """Consumes a specified spell level to create sorcery points ."""
     
-    spellslot_level_y = 1250
-    spellslot_level_x = 1275 # note that this assumes level 2
+    spellslot_level_y = COORDINATE_MAP[CoordType.SPELL_LEVEL_1_max2].y
+    spellslot_level_x = COORDINATE_MAP[CoordType.SPELL_LEVEL_1_max2].x
     # we can assume level 2 because we do not need to select the spell level if we only have one
     # level unlocked
     
     # get the position of the FIRST ICON
     match (config.MAX_SPELL_LEVEL):
-        case 3:
-            spellslot_level_x = 1250
-        case 4:
-            spellslot_level_x = 1220
-        case 5:
-            spellslot_level_x = 1190
+        case 3: spellslot_level_x = COORDINATE_MAP[CoordType.SPELL_LEVEL_1_max3].x
+        case 4: spellslot_level_x = COORDINATE_MAP[CoordType.SPELL_LEVEL_1_max4].x
+        case 5: spellslot_level_x = COORDINATE_MAP[CoordType.SPELL_LEVEL_1_max5].x
     
     # adjust coords to find intended icon based on unlocked spell levels
     if spellslot_level >= 2:
@@ -293,7 +290,7 @@ def spend_stuff(
     
     if select_icon in ["SORCPTS","SPELLSLOTS"]:
         select_metamagic(select_icon)
-    else: raise ValueError(f"Invalid select icon: {select_icon}")
+    else: raise ValueError(f"Invalid select icon '{select_icon}'")
 
     # select spell slot level
     # if all we have is level 1 we can skip selecting metamagic icon

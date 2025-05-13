@@ -9,8 +9,8 @@
 from pydirectinput import moveTo
 from dotenv import load_dotenv, set_key
 from os import path
-from config import *
 
+from config import COORDINATE_MAP
 
 ENV_FILE = ".env"
 

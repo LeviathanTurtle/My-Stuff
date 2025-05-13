@@ -40,25 +40,18 @@ Target_sorc_pts: int = 30
 
 
 class CoordType(Enum):
-    EQUIPMENT = "equipment"
-    FREECAST = "freecast"
-    CLOTHING = "clothing"
-    SORC_PTS = "sorcery_pts"
-    SPELL_SLOTS = "spell_slots"
-    CAST = "cast"
-    #SPELL_LEVEL_2_max2 = "spell_level_2_max2"
-    #
-    #SPELL_LEVEL_2_max3 = "spell_level_2_max3"
-    #SPELL_LEVEL_3_max3 = "spell_level_3_max3"
-    #
-    #SPELL_LEVEL_2_max4 = "spell_level_2_max4"
-    #SPELL_LEVEL_3_max4 = "spell_level_3_max4"
-    #SPELL_LEVEL_4_max4 = "spell_level_4_max4"
-    #
-    #SPELL_LEVEL_2_max5 = "spell_level_2_max5"
-    #SPELL_LEVEL_3_max5 = "spell_level_3_max5"
-    #SPELL_LEVEL_4_max5 = "spell_level_4_max5"
-    #SPELL_LEVEL_5_max5 = "spell_level_5_max5"
+    EQUIPMENT_1 = "shield/amulet slot"
+    EQUIPMENT_2 = "second shield slot (patch 8)"
+    FREECAST = "freecast icon"
+    CLOTHING = "clothing icon"
+    SORC_PTS = "sorcery pts icon"
+    SPELL_SLOTS = "spell slots icon"
+    CAST = "cast spot"
+    
+    SPELL_LEVEL_1_max2 = "first spell level with a max spell level of 2"
+    SPELL_LEVEL_1_max3 = "first spell level with a max spell level of 3"
+    SPELL_LEVEL_1_max4 = "first spell level with a max spell level of 4"
+    SPELL_LEVEL_1_max5 = "first spell level with a max spell level of 5"
 
 @dataclass
 class Coordinates:
@@ -76,7 +69,11 @@ class Coordinates:
 COORDINATE_MAP = {
     # Coordinates of the shield or amulet
     # Default: 1285, 1330
-    CoordType.EQUIPMENT: Coordinates(x=1910, y=1220),
+    CoordType.EQUIPMENT_1: Coordinates(x=1910, y=1220),
+    
+    # Coordinates of the second shield (for Patch 8)
+    # Default: 
+    CoordType.EQUIPMENT_2: Coordinates(x=0, y=0),
     
     # Coordinates of freecast icon
     # Default: 1660, 1160
@@ -98,24 +95,21 @@ COORDINATE_MAP = {
     # Default: 1200, 950
     CoordType.CAST: Coordinates(x=1200, y=950),
     
-    # each spell level
-    # max level 2
-    #CoordType.SPELL_LEVEL_2_max2: Coordinates(x=1275, y=1250),
+    # Coordinates of the fist spell level spot with a max spell level of 2
+    # Default: 
+    CoordType.SPELL_LEVEL_1_max2: Coordinates(x=1275, y=1250),
     
-    # max level 3
-    #CoordType.SPELL_LEVEL_2_max3: Coordinates(x=1250, y=1250),
-    #CoordType.SPELL_LEVEL_3_max3: Coordinates(x=0, y=1250),
+    # Coordinates of the fist spell level spot with a max spell level of 3
+    # Default: 
+    CoordType.SPELL_LEVEL_1_max3: Coordinates(x=1250, y=1250),
     
-    # max level 4
-    #CoordType.SPELL_LEVEL_2_max4: Coordinates(x=1220, y=1250),
-    #
-    #
+    # Coordinates of the fist spell level spot with a max spell level of 4
+    # Default: 
+    CoordType.SPELL_LEVEL_1_max4: Coordinates(x=1220, y=1250),
     
-    # max level 5
-    #CoordType.SPELL_LEVEL_2_max5: Coordinates(x=1190, y=1250),
-    #
-    #
-    #
+    # Coordinates of the fist spell level spot with a max spell level of 5
+    # Default: 
+    CoordType.SPELL_LEVEL_1_max5: Coordinates(x=1190, y=1250),
 }
 
 #################################################
