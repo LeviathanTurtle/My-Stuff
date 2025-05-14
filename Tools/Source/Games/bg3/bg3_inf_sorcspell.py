@@ -29,7 +29,7 @@ from time import sleep, time, perf_counter
 
 import threading
 import config
-from config import COORDINATE_MAP, CoordType
+from config import PATCH_VERSION, COORDINATE_MAP, CoordType
 import sys
 import os
 
@@ -160,7 +160,6 @@ def wait_if_paused() -> None:
     while is_paused:
         sleep(1)
 
-# todo: use on separate thread
 def toggle_pause() -> None:
     """Helper function to raise or lower the pause flag."""
     
@@ -305,9 +304,11 @@ def spend_stuff(
 def use_equipment(using_shield: bool) -> None:
     """Equips, uses the equipment's spell slot to create sorc pts, then unequips it."""
     
-    # put on the equipment
-    equipment_coords = COORDINATE_MAP[CoordType.EQUIPMENT]
-    move_and_click(equipment_coords.x,equipment_coords.y)
+    equipment1_coords = COORDINATE_MAP[CoordType.EQUIPMENT_1]
+    equipment2_coords = COORDINATE_MAP[CoordType.EQUIPMENT_2]
+    
+    # put on the first shield
+    move_and_click(equipment1_coords.x,equipment1_coords.y)
     
     # sorc pts based on the equipment
     if using_shield:
@@ -316,7 +317,11 @@ def use_equipment(using_shield: bool) -> None:
         spend_stuff("SORCPTS",2)
     
     # take off the equipment
-    move_and_click(equipment_coords.x,equipment_coords.y)
+    if PATCH_VERSION == 8:
+        # use the second shield here
+        move_and_click(equipment2_coords.x,equipment2_coords.y)
+    else:
+        move_and_click(equipment1_coords.x,equipment1_coords.y)
     
     sleep(.05)
 

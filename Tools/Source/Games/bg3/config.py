@@ -18,6 +18,8 @@ EXIT_HOTKEY: str = 'esc'
 # Vanilla: [1,5]
 MAX_SPELL_LEVEL: int = 4
 
+PATCH_VERSION: int = 8
+
 # UPDATE THESE VALUES TO REFLECT YOUR CURRENT SPELL SLOTS
 Current_spellslots_1: int = 3
 Current_spellslots_2: int = 2
@@ -69,11 +71,11 @@ class Coordinates:
 COORDINATE_MAP = {
     # Coordinates of the shield or amulet
     # Default: 1285, 1330
-    CoordType.EQUIPMENT_1: Coordinates(x=1910, y=1220),
+    CoordType.EQUIPMENT_1: Coordinates(x=1225, y=1330),
     
     # Coordinates of the second shield (for Patch 8)
-    # Default: 
-    CoordType.EQUIPMENT_2: Coordinates(x=0, y=0),
+    # Default: 1225, 1275
+    CoordType.EQUIPMENT_2: Coordinates(x=1225, y=1275),
     
     # Coordinates of freecast icon
     # Default: 1660, 1160
@@ -85,30 +87,30 @@ COORDINATE_MAP = {
     
     # Coordinates of sorcery point conversion metamagic icon
     # Default: 1745, 1215
-    CoordType.SORC_PTS: Coordinates(x=1850, y=1280),
+    CoordType.SORC_PTS: Coordinates(x=1745, y=1215),
     
     # Coordinates of spell slot conversion metamagic icon
     # Default: 1745, 1275
-    CoordType.SPELL_SLOTS: Coordinates(x=1850, y=1340),
+    CoordType.SPELL_SLOTS: Coordinates(x=1745, y=1275),
     
     # Coordinates of the spot above the UI to cast the thing
     # Default: 1200, 950
     CoordType.CAST: Coordinates(x=1200, y=950),
     
     # Coordinates of the fist spell level spot with a max spell level of 2
-    # Default: 
+    # Default: 1275, 1250
     CoordType.SPELL_LEVEL_1_max2: Coordinates(x=1275, y=1250),
     
     # Coordinates of the fist spell level spot with a max spell level of 3
-    # Default: 
+    # Default: 1250, 1250
     CoordType.SPELL_LEVEL_1_max3: Coordinates(x=1250, y=1250),
     
     # Coordinates of the fist spell level spot with a max spell level of 4
-    # Default: 
+    # Default: 1220, 1250
     CoordType.SPELL_LEVEL_1_max4: Coordinates(x=1220, y=1250),
     
     # Coordinates of the fist spell level spot with a max spell level of 5
-    # Default: 
+    # Default: 1190, 1250
     CoordType.SPELL_LEVEL_1_max5: Coordinates(x=1190, y=1250),
 }
 

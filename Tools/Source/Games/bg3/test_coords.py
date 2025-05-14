@@ -22,9 +22,6 @@ def main() -> None:
         print(f"\n{name.value}: {spot.x}, {spot.y}")
         moveTo(spot.x,spot.y)
         
-        #if len(others) > 0:
-        #    print(f"On line(s): {others}")
-        
         input("Press Enter to continue...")
     
     set_key(ENV_FILE, "CHECKED_MOUSE_COORDS", "True")
