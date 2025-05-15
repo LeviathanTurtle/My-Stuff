@@ -1,7 +1,10 @@
 
 # 
 # William Wadsworth
-# 
+# Usage:
+#     progress = ProgressBar(n)
+#     for i in range(n):
+#         progress.update(i+1)
 # 
 
 import time
@@ -30,7 +33,7 @@ class ProgressBar:
 
         # output msg
         sys.stdout.write(
-            f"\rProgress: |{bar}| {percent:.1%} "
+            f"\r{bar} {percent:.1%} "
             f"Elapsed: {elapsed:.1f}s ETA: {eta:.1f}s"
         )
         # force output to appear immediately

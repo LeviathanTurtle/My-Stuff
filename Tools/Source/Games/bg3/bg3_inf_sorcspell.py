@@ -25,7 +25,7 @@ from typing import Tuple, Optional, Literal
 from keyboard import add_hotkey, wait
 from pydirectinput import moveTo, mouseDown, mouseUp
 from dotenv import load_dotenv
-from time import sleep, perf_counter
+from time import sleep, time
 
 import threading
 import sys
@@ -33,12 +33,14 @@ import os
 
 import config
 from config import PATCH_VERSION, COORDINATE_MAP, CoordType
-from Tools.Source.runtime_estimator import RuntimeEstimator
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 from Tools.Source.progress_bar import ProgressBar
 
 
 # the length of time to sleep between inputs (in seconds)
 SLEEP_DURATION: float = .025
+MACRO_START_TIME = 0
 
 is_paused = False
 macro_lock = threading.Lock()
@@ -66,7 +68,8 @@ def macro(
     """Runs the macro, starting with creating the sorcery points from the equipment then creating
     the spell slots."""
     
-    #start_time = time()
+    global MACRO_START_TIME
+    MACRO_START_TIME = time()
     LOOP_COUNTER: int = 0
     
     # -------------------------------------------
@@ -76,45 +79,38 @@ def macro(
     else:
         update_globals(using_shield,using_amulet,using_freecast)
     
+    #print(spellslot_data)
+    #sys.exit()
+    
     if not using_freecast:
         print(f"Need {LOOP_COUNTER} more sorc pts ({LOOP_COUNTER+config.Current_sorc_pts} total)")
-        #est_runtime: float = ((SLEEP_DURATION/2 + .01) * 5 + 1.95) * LOOP_COUNTER + estimate_runtime(using_freecast)
-        #print(f"Estimated runtime: {est_runtime:.2f}s ({est_runtime/60:.2f} min)")
         
-        # create the sorc pts
-        if config.TIMESTAMP_COUNT is None: config.TIMESTAMP_COUNT = LOOP_COUNTER
-        estimator = RuntimeEstimator(LOOP_COUNTER, update_every=LOOP_COUNTER//config.TIMESTAMP_COUNT)
-        
+        progress = ProgressBar(LOOP_COUNTER)
+
         # create sorcery points
-        estimator.start()
         for i in range(LOOP_COUNTER):
             wait_if_paused()
             use_equipment(using_shield) if using_shield else use_equipment(using_amulet)
-            estimator.update(i+1)
-
-        # setup second loop
-        iteration_cnt = 0
-        estimator = RuntimeEstimator(
-            len(spellslot_data),
-            update_every=len(spellslot_data)//config.TIMESTAMP_COUNT
-        )
+            progress.update(i+1)
         
         # loop through levels and create spellslots if unlocked
-        estimator.start()
         for level, data in spellslot_data.items():
             if data["unlocked"]: # check if the level is unlocked
                 print(f"Creating {data['needed']} lvl {level} spellslots...")
+                progress = ProgressBar(data["needed"])
+                iteration_cnt = 0
+                
                 for _ in range(data["needed"]):
                     wait_if_paused()
                     spend_stuff("SPELLSLOTS",level)
+                    
                     iteration_cnt += 1
-                    estimator.update(iteration_cnt)
+                    progress.update(iteration_cnt)
     else:
-        #est_runtime: float = ((SLEEP_DURATION/2 + .01) * 5 + 1.95) * LOOP_COUNTER + estimate_runtime(using_freecast)
-        #print(f"Estimated runtime: {est_runtime:.2f}s ({est_runtime/60:.2f} min)")
         freecast()
     
-    #print(f"Macro completed in {time()-start_time:.2f}s")
+    print(f"Macro completed in {time()-MACRO_START_TIME:.2f}s")
+    sys.exit()
 
 def macro_threaded(
     using_shield: bool,
@@ -143,8 +139,10 @@ def update_globals(
 
     if using_shield:
         spellslot_data[1]['current'] = 0
+        spellslot_data[1]['needed'] = spellslot_data[1]['target']
     if using_amulet:
         spellslot_data[2]['current'] = 0
+        spellslot_data[2]['needed'] = spellslot_data[2]['target']
     
     loop_counter: int = 0
     if not using_freecast:
@@ -158,13 +156,13 @@ def update_globals(
     # construct update message
     msg = ""
     if not using_freecast:
-        msg += f"Getting {loop_counter} sorc pts ({config.Target_sorc_pts} pt targ"
+        msg += f"Generating {loop_counter} sorc pts ({config.Target_sorc_pts} pt targ"
         for level, slot in spellslot_data.items():
             if level == 1 or slot['unlocked'] == True:
                 msg += f" + {slot['needed']*slot['cost']} for lvl {level} spellslots"
         msg += ")"
     else:
-        msg += f"Getting {Needed_sorc_pts} sorc pts"
+        msg += f"Generating {Needed_sorc_pts} sorc pts"
         for level, slot in spellslot_data.items():
             if level == 1 or slot['unlocked'] == True:
                 msg += f", {slot['needed']} lvl {level} spellslots"
@@ -203,19 +201,30 @@ def freecast() -> None:
     #print(f"{Target_sorc_pts}, {Current_sorc_pts}, {Needed_sorc_pts}")
     List_sorc_pts = find_combination(Needed_sorc_pts)
     print(f"Creating sorcery points from the following levels: {List_sorc_pts}")
+    progress = ProgressBar(len(List_sorc_pts))
     
     # maximize gains for sorc pts
+    iteration_cnt = 0
     for num in List_sorc_pts:
-        print(f"Creating {num} sorcery points from spell level {num}")
+        print(f"Creating {num} sorcery points from spell level {num}...")
         toggle_freecast()
         spend_stuff("SORCPTS",num)
+        
+        iteration_cnt += 1
+        progress.update(iteration_cnt)
     
     # maximize gains for ascending spellslots
     for level, needed_slots in enumerate(List_spell_slots,start=1):
         print(f"Creating {needed_slots} spell slots for spell level {level}")
+        progress = ProgressBar(needed_slots)
+        iteration_cnt = 0
+        
         for _ in range(needed_slots):
             toggle_freecast()
             spend_stuff("SPELLSLOTS",level)
+            
+            iteration_cnt += 1
+            progress.update(iteration_cnt)
 
 def toggle_freecast() -> None:
     """Selects the equipment and freecast icon."""
@@ -242,27 +251,6 @@ def find_combination(x):
             x -= num
     
     return result
-
-# broken
-# todo: loop once, calc time based on that, do for creating sorcpts/spellslots (two est runtimes shown)
-def estimate_runtime(using_freecast: bool) -> float:
-    """Estimate the main loop runtime of the macro."""
-    
-    global spellslot_data
-    
-    start_time = perf_counter()
-    time_elapsed: float = 0
-    
-    if using_freecast:
-        pass
-    else:
-        for level, data in spellslot_data.items():
-            if data["unlocked"]: # check if the level is unlocked
-                print(f"Creating {data['target']} lvl {level} spellslots...")
-                for _ in range(data["target"]):
-                    time_elapsed += (SLEEP_DURATION/2 + .01) * 3 + 1.9
-
-    return perf_counter()-start_time + time_elapsed
 
 def move_and_click(coord_x: int, coord_y: int) -> None:
     """Moves the mouse to an onscreen coordinate and clicks."""
@@ -388,8 +376,11 @@ def main() -> None:
     try:
         while True:
             sleep(1) # keep the main thread alive
+            # todo: does not exit when macro finishes
     except KeyboardInterrupt:
+        global MACRO_START_TIME
         print("Macro interrupted.")
+        print(f"Macro completed in {time()-MACRO_START_TIME:.2f}s")
 
 
 if __name__ == "__main__":
