@@ -14,9 +14,17 @@ START_HOTKEY: str = 'shift+r'
 PAUSE_HOTKEY: str = 'p'
 EXIT_HOTKEY: str = 'esc'
 
-# NOTE: this value should be the max spell level you can convert from sorc pts
+# This value should be the max spell level you can convert from sorc pts
 # Vanilla: [1,5]
-MAX_SPELL_LEVEL: int = 4
+MAX_SPELL_LEVEL: int = 3
+
+# This value determines how many times the current/estimated timestamp should show
+# Some examples:
+# - 2 = halfway and end
+# - 3 = every third %
+# - 4 = every quarter %
+# - None = every iteration is output
+TIMESTAMP_COUNT = 4
 
 PATCH_VERSION: int = 8
 
@@ -26,15 +34,15 @@ Current_spellslots_2: int = 2
 Current_spellslots_3: int = 3
 Current_spellslots_4: int = 0
 Current_spellslots_5: int = 1
-Current_sorc_pts: int = 4
+Current_sorc_pts: int = 3
 
 # THESE ARE THE TARGET VALUES YOU WANT
-Target_spellslots_1: int = 10
-Target_spellslots_2: int = 5
+Target_spellslots_1: int = 7
+Target_spellslots_2: int = 6
 Target_spellslots_3: int = 5
 Target_spellslots_4: int = 5
 Target_spellslots_5: int = 50
-Target_sorc_pts: int = 30
+Target_sorc_pts: int = 10
 
 #################################################
 #################################################

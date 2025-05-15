@@ -25,18 +25,23 @@ from typing import Tuple, Optional, Literal
 from keyboard import add_hotkey, wait
 from pydirectinput import moveTo, mouseDown, mouseUp
 from dotenv import load_dotenv
-from time import sleep, time, perf_counter
+from time import sleep, perf_counter
 
 import threading
-import config
-from config import PATCH_VERSION, COORDINATE_MAP, CoordType
 import sys
 import os
+
+import config
+from config import PATCH_VERSION, COORDINATE_MAP, CoordType
+from Tools.Source.runtime_estimator import RuntimeEstimator
+from Tools.Source.progress_bar import ProgressBar
 
 
 # the length of time to sleep between inputs (in seconds)
 SLEEP_DURATION: float = .025
+
 is_paused = False
+macro_lock = threading.Lock()
 
 spell_costs = [2,3,5,6,7]
 spellslot_data = {
@@ -50,8 +55,6 @@ spellslot_data = {
     for level in range(1, config.MAX_SPELL_LEVEL+1)
 }
 Needed_sorc_pts = max(0, config.Target_sorc_pts-config.Current_sorc_pts)
-print(spellslot_data)
-#sys.exit()
 macro_lock = threading.Lock()
 
 
@@ -63,11 +66,11 @@ def macro(
     """Runs the macro, starting with creating the sorcery points from the equipment then creating
     the spell slots."""
     
-    start_time = time()
+    #start_time = time()
+    LOOP_COUNTER: int = 0
     
     # -------------------------------------------
     
-    LOOP_COUNTER: int = 0
     if not using_freecast:
         LOOP_COUNTER = update_globals(using_shield,using_amulet,using_freecast)
     else:
@@ -79,23 +82,39 @@ def macro(
         #print(f"Estimated runtime: {est_runtime:.2f}s ({est_runtime/60:.2f} min)")
         
         # create the sorc pts
-        for _ in range(LOOP_COUNTER):
+        if config.TIMESTAMP_COUNT is None: config.TIMESTAMP_COUNT = LOOP_COUNTER
+        estimator = RuntimeEstimator(LOOP_COUNTER, update_every=LOOP_COUNTER//config.TIMESTAMP_COUNT)
+        
+        # create sorcery points
+        estimator.start()
+        for i in range(LOOP_COUNTER):
             wait_if_paused()
             use_equipment(using_shield) if using_shield else use_equipment(using_amulet)
+            estimator.update(i+1)
 
+        # setup second loop
+        iteration_cnt = 0
+        estimator = RuntimeEstimator(
+            len(spellslot_data),
+            update_every=len(spellslot_data)//config.TIMESTAMP_COUNT
+        )
+        
         # loop through levels and create spellslots if unlocked
+        estimator.start()
         for level, data in spellslot_data.items():
             if data["unlocked"]: # check if the level is unlocked
-                print(f"Creating {data['target']} lvl {level} spellslots...")
-                for _ in range(data["target"]):
+                print(f"Creating {data['needed']} lvl {level} spellslots...")
+                for _ in range(data["needed"]):
                     wait_if_paused()
                     spend_stuff("SPELLSLOTS",level)
+                    iteration_cnt += 1
+                    estimator.update(iteration_cnt)
     else:
         #est_runtime: float = ((SLEEP_DURATION/2 + .01) * 5 + 1.95) * LOOP_COUNTER + estimate_runtime(using_freecast)
         #print(f"Estimated runtime: {est_runtime:.2f}s ({est_runtime/60:.2f} min)")
         freecast()
     
-    print(f"Macro completed in {time()-start_time:.2f}s")
+    #print(f"Macro completed in {time()-start_time:.2f}s")
 
 def macro_threaded(
     using_shield: bool,
