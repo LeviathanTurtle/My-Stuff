@@ -4,3 +4,4 @@
 Games/Source/Jeopardy/token
 Games/Source/Jeopardy/__pycache__/*
 Games/Source/Jeopardy/assets/logs/log_*
+.DS_Store
